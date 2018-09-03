@@ -24,7 +24,7 @@ def load_label_map():
 
     return {
         'encoding': label_map.to_dict()['encoding'],
-        'label': label_map.set_index('encoding').to_dict()['label'],
+        'labels': label_map.set_index('encoding').to_dict()['label'],
     }
 
 

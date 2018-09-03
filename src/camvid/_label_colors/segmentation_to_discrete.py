@@ -9,7 +9,9 @@ class SegmentationToDiscreteTransformer(object):
     def __init__(self) -> None:
         """
         Initialize a new segmentation image to discrete mapper."""
-        self._mapping = load_label_map()['encoding']
+        label_map = load_label_map()
+        self._mapping = label_map['encoding']
+        self.labels = label_map['labels']
         self._demap = np.vectorize({v: k for k, v in self._mapping.items()}.get)
 
     def __len__(self) -> int:
