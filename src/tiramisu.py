@@ -12,8 +12,8 @@ from keras.layers import Lambda
 from keras.optimizers import RMSprop
 from keras.regularizers import l2
 from keras import backend as K
-from iou import mean_iou
-from iou import build_iou_for
+from .iou import mean_iou
+from .iou import build_iou_for
 
 
 def _dense_block(inputs,
@@ -184,7 +184,7 @@ def build_tiramisu(
         optimizer=RMSprop(lr=learning_rate),
         loss='categorical_crossentropy',
         metrics=[
-            'accuracy', 
+            'accuracy',
             mean_iou,
             *build_iou_for(list(range(num_classes)), label_names),
         ],
