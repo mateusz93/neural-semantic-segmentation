@@ -1,37 +1,29 @@
 """Methods to visualize data from the dataset."""
-import numpy as np
 from matplotlib import pyplot as plt
 
 
-def plot(
-    X: np.ndarray,
-    y_true: np.ndarray,
-    y_pred: np.ndarray=None,
-) -> None:
+def plot(**kwargs: dict) -> None:
     """
     Plot the original image, the true y, and an optional predicted y.
 
     Args:
-        X: the original image
-        y_true: the actual segmentation mapping
-        y_pred: the predicted segmentation mapping
+        kwargs: images to plot
 
     Returns:
         None
 
     """
-    # setup the values to display
-    if y_pred is None:
-        values = (X, y_true)
-        title = '$X, y$'
-    else:
-        values = (X, y_true, y_pred)
-        title = '$X, y, \\hat{y}$'
-    # concatenate the values to display into a single tensor
-    img = np.concatenate(values, axis=1).astype('uint8') / 255
-    # plot the values
-    plt.imshow(img)
-    plt.title(title)
+    # create subplots for each image
+    _, axarr = plt.subplots(1, len(kwargs))
+    # iterate over the images in the dictionary
+    for idx, (title, img) in enumerate(kwargs.items()):
+        # plot the image
+        axarr[idx].imshow(img.astype('uint8') / 255)
+        # set the title for this subplot
+        axarr[idx].set_title(title)
+        # remove the ticks from the x and y axes
+        axarr[idx].xaxis.set_major_locator(plt.NullLocator())
+        axarr[idx].yaxis.set_major_locator(plt.NullLocator())
 
 
 # explicitly define the outward facing API of this module
