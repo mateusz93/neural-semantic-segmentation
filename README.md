@@ -15,13 +15,14 @@ python -m pip install -r requirements.txt
 
 ## Usage
 
-[Train-Tiramisu103-CamVid.ipynb](Train-Tiramisu103-CamVid.ipynb) contains logic to
-train and validate the 103 layers Tiramisu on both crops and full size images.
+[Train-Tiramisu103-CamVid.ipynb](Train-Tiramisu103-CamVid.ipynb) contains
+logic to train and validate the 103 layers Tiramisu on both crops and full
+size images.
 
 ## Results
 
-Note that results are for the 32 class CamVid dataset, not the 11 class used in the 
-original paper.
+Note that results are for the 32 class CamVid dataset, not the 11 class used
+in the original paper.
 
 ### Training
 
