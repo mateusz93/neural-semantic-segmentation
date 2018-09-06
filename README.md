@@ -20,6 +20,9 @@ train and validate the 103 layers Tiramisu on both crops and full size images.
 
 ## Results
 
+Note that results are for the 32 class CamVid dataset, not the 11 class used in the 
+original paper.
+
 ### Training
 
 ![train](https://user-images.githubusercontent.com/2184469/45189870-a8690880-b200-11e8-9b34-ae98fccd0e34.png)
