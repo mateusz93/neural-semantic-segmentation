@@ -22,9 +22,20 @@ size images.
 ## Results
 
 Note that results are for the 32 class CamVid dataset, not the 11 class used
-in the original paper. The first 32 table entries represent the final IoU 
-for a given class label. The last two entries are general accuracy and mean 
-IoU.
+in the original paper. 
+
+### Training Sample
+
+![train](https://user-images.githubusercontent.com/2184469/45319559-b6bb6b00-b505-11e8-90d7-4fb10c2a79f0.png)
+
+### Validation Sample
+
+![test](https://user-images.githubusercontent.com/2184469/45319558-b6bb6b00-b505-11e8-9c9c-9433781850f7.png)
+
+### Metrics
+
+The first 32 table entries represent the final IoU  for a given class 
+label. The last two entries are general accuracy and mean IoU.
 
 <table>
   <thead>
@@ -207,11 +218,3 @@ IoU.
     </tr>
   </tbody>
 </table>
-
-### Training
-
-![train](https://user-images.githubusercontent.com/2184469/45189870-a8690880-b200-11e8-9b34-ae98fccd0e34.png)
-
-### Validation
-
-![validation](https://user-images.githubusercontent.com/2184469/45189872-aacb6280-b200-11e8-9597-030f6bccdf79.png)
