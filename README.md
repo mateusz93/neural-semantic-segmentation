@@ -22,7 +22,8 @@ size images.
 ## Results
 
 Note that results are for the 32 class CamVid dataset, not the 11 class used
-in the original paper. 
+in the original paper. Results were generated using a machine equipped with 
+128GB RAM, nVidia P100 GPU, and Intel Xeon CPU @ 2.10GHz. 
 
 ### Training Sample
 
