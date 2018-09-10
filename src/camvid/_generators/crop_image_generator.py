@@ -3,7 +3,34 @@ import numpy as np
 from keras.preprocessing.image import ImageDataGenerator
 
 
-def _random_crop(tensor: 'numpy.ndarray', image_size: tuple):
+def _crop_dim(s: int, s_crop: int) -> tuple:
+    """
+    Return the crop bounds of a dimension using RNG.
+
+    Args:
+        s: the value of the dimension
+        s_crop: the value to crop the dimension to
+
+    Returns:
+        a tuple of:
+        -   the starting point of the crop
+        -   the stopping point of the crop
+
+    """
+    # if the crop size is equal to the input size,
+    # just return the uncropped dimension
+    if s_crop == s:
+        return 0, s
+    # otherwise generate a random anchor point and
+    # add s crop to it to get the start and stop
+    # points
+    else:
+        s0 = np.random.randint(0, s - s_crop)
+        s1 = s0 + s_crop
+        return s0, s1
+
+
+def _random_crop(tensor: 'numpy.ndarray', image_size: tuple) -> 'numpy.ndarray':
     """
     Return a random crop of a tensor.
 
@@ -15,16 +42,11 @@ def _random_crop(tensor: 'numpy.ndarray', image_size: tuple):
         a random crop of the tensor with shape image_size
 
     """
-    # extract the dimensions of the image
-    h = tensor.shape[0]
-    w = tensor.shape[1]
-    # generate the random crop height dimensions
-    h0 = np.random.randint(0, h - image_size[0])
-    h1 = h0 + image_size[0]
-    # generate the random crop width dimensions
-    w0 = np.random.randint(0, w - image_size[1])
-    w1 = w0 + image_size[1]
-
+    # crop the height
+    h0, h1 = _crop_dim(tensor.shape[0], image_size[0])
+    # crop the width
+    w0, w1 = _crop_dim(tensor.shape[1], image_size[1])
+    # return the cropped tensor
     return tensor[h0:h1, w0:w1]
 
 
