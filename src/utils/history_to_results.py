@@ -10,9 +10,7 @@ def history_to_results(history):
         history: the history object to extract training history from
 
     Returns:
-        a tuple of data-frames:
-        - the training data
-        - the validation data
+        a data frame with the training and validation data
 
     """
     # make a data-frame from the fit history
