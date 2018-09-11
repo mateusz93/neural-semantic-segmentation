@@ -27,6 +27,8 @@ in the original paper. Results were generated using a machine equipped with
 
 ### Coarse Crops
 
+results from training on random crops and flips of size 224x224.
+
 #### Training Sample
 
 ![coarse-train](https://user-images.githubusercontent.com/2184469/45374681-6f41e700-b5b8-11e8-94d5-5fbcb534072e.png)
@@ -225,6 +227,8 @@ in the original paper. Results were generated using a machine equipped with
 </table>
 
 ### Fine Tuning
+
+Fine tuning on larger images size 512x640.
 
 #### Training Sample
 
