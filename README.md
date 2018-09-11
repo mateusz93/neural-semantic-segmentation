@@ -1,5 +1,10 @@
 # The 100 Layers Tiramisu (Implementation)
 
+[![build-status][]][ci-server]
+
+[build-status]: https://travis-ci.com/Kautenja/the-100-layers-tiramisu.svg?branch=master
+[ci-server]: https://travis-ci.com/Kautenja/the-100-layers-tiramisu
+
 An Implementation of
 _[The One Hundred Layers Tiramisu: Fully Convolutional DenseNets for Semantic Segmentation][100-layer-tiramisu]_.
 
