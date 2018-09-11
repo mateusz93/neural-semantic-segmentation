@@ -234,7 +234,7 @@ Fine tuning on larger images size 512x640.
 
 ![fine-training](https://user-images.githubusercontent.com/2184469/45374683-6f41e700-b5b8-11e8-840c-a2736f2d5b58.png)
 
-#### Fine Validation Sample
+#### Validation Sample
 
 ![fine-validation](https://user-images.githubusercontent.com/2184469/45374685-6f41e700-b5b8-11e8-84f3-422747af89a3.png)
 
