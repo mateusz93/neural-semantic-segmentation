@@ -49,11 +49,6 @@ results from training on random crops and flips of size 224x224.
   </thead>
   <tbody>
     <tr>
-      <th>acc</th>
-      <td>0.728145</td>
-      <td>0.476104</td>
-    </tr>
-    <tr>
       <th>Animal</th>
       <td>0.981557</td>
       <td>1.000000</td>
@@ -214,14 +209,14 @@ results from training on random crops and flips of size 224x224.
       <td>0.115342</td>
     </tr>
     <tr>
-      <th>loss</th>
-      <td>1.121514</td>
-      <td>2.072659</td>
-    </tr>
-    <tr>
       <th>mean_iou</th>
       <td>0.521928</td>
       <td>0.575145</td>
+    </tr>
+    <tr>
+      <th>acc</th>
+      <td>0.728145</td>
+      <td>0.476104</td>
     </tr>
   </tbody>
 </table>
@@ -249,11 +244,6 @@ Fine tuning on larger images size 512x640.
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <th>acc</th>
-      <td>0.896648</td>
-      <td>0.546369</td>
-    </tr>
     <tr>
       <th>Animal</th>
       <td>0.963340</td>
@@ -415,14 +405,14 @@ Fine tuning on larger images size 512x640.
       <td>0.211167</td>
     </tr>
     <tr>
-      <th>loss</th>
-      <td>0.441265</td>
-      <td>2.002783</td>
-    </tr>
-    <tr>
       <th>mean_iou</th>
       <td>0.598503</td>
       <td>0.521340</td>
+    </tr>
+    <tr>
+      <th>acc</th>
+      <td>0.896648</td>
+      <td>0.546369</td>
     </tr>
   </tbody>
 </table>
