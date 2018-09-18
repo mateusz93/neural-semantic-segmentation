@@ -1,8 +1,8 @@
 """A class for interacting with the CamVid data."""
+import ast
 import os
-from ast import literal_eval as make_tuple
-import pandas as pd
 import numpy as np
+import pandas as pd
 from ._generators import CropImageDataGenerator
 from ._generators import CropNumpyDataGenerator
 from ._generators import repeat_generator
@@ -111,7 +111,7 @@ class CamVid(object):
         """Return a dictionary mapping discrete codes to RGB pixels."""
         rgb_draw = self._discrete_dict('rgb_draw')
         # convert the strings in the RGB draw column to tuples
-        return {k: make_tuple(v) for (k, v) in rgb_draw.items()}
+        return {k: ast.literal_eval(v) for (k, v) in rgb_draw.items()}
 
     @property
     def discrete_to_label_map(self) -> dict:
