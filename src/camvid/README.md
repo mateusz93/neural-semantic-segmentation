@@ -3,7 +3,9 @@
 ## `CamVid` class
 
 `CamVid` works like a Keras DataGenerator to load the dataset dynamically at
-runtime training of the model.
+runtime training of the model. The first time you initialize `CamVid` with a
+new mapping on a machine, it will pre-process the target values from RGB to
+OneHot vectors.
 
 ```python
 import camvid
@@ -21,6 +23,7 @@ of replacements to the mapping keyword:
 
 ```python
 import camvid
+# map Animal class to Void (31 labels in output space now instead of 32)
 camvid.CamVid(mapping={'Animal': 'Void'})
 ```
 
