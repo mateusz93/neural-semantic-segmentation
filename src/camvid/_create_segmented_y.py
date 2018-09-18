@@ -79,7 +79,7 @@ def create_segmented_y(
     data_dir = os.path.join(output_dir, 'data')
     os.makedirs(data_dir)
     # iterate over all the files in the source directory
-    for img_file in tqdm(sorted(glob.glob(y_dir))):
+    for img_file in tqdm(sorted(glob.glob(y_dir)), unit='image'):
         # get the name of the output file
         output_file = os.path.basename(os.path.normpath(img_file))
         # replace png extension with npy for NumPy file
