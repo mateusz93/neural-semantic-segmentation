@@ -7,11 +7,14 @@ import numpy as np
 from ._label_colors import load_label_metadata
 
 
-def create_segmented_y(mapping: dict=None):
+def create_segmented_y(mapping: dict=None, output_dtype: str='uint8'):
     """
     Create a segmented version of an RGB dataset.
 
     Args:
+        mapping: a dictionary mapping existing values to new ones for
+                 dimensionality reduction
+        output_dtype: the dtype of the output numpy array of values
 
     Returns:
         None
@@ -49,7 +52,7 @@ def create_segmented_y(mapping: dict=None):
             # set all points equal to this in the image to the discrete code
             discrete[(img == rgb).all(axis=-1)] = code
         # convert the discrete mapping to a one hot encoding
-        onehot = np.eye(num_labels)[discrete.astype(int)]
+        onehot = np.eye(num_labels)[discrete.astype(int)].astype(output_dtype)
         # save the file to its output location
         np.save(output_file, onehot)
     # save the metadata to disk for working with the encoded data
