@@ -16,6 +16,10 @@ import camvid
 camvid.create_segmented_y()
 ```
 
+The labels follow the distribution:
+
+![DataPercents](DataPercents.jpg)
+
 ### <32 Class
 
 To generate the new label data using an alternate mapping, supply a dictionary
