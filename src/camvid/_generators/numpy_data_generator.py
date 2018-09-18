@@ -63,23 +63,7 @@ class DirectoryIterator(Iterator):
         if color_mode not in {'rgb', 'rgba', 'grayscale'}:
             raise ValueError('Invalid color mode:', color_mode,
                              '; expected "rgb", "rgba", or "grayscale".')
-        self.color_mode = color_mode
-        self.data_format = 'channels_last'
-        if self.color_mode == 'rgba':
-            if self.data_format == 'channels_last':
-                self.image_shape = self.target_size + (4,)
-            else:
-                self.image_shape = (4,) + self.target_size
-        elif self.color_mode == 'rgb':
-            if self.data_format == 'channels_last':
-                self.image_shape = self.target_size + (3,)
-            else:
-                self.image_shape = (3,) + self.target_size
-        else:
-            if self.data_format == 'channels_last':
-                self.image_shape = self.target_size + (1,)
-            else:
-                self.image_shape = (1,) + self.target_size
+        self.image_shape = None, None, None, None
         self.save_to_dir = save_to_dir
         self.save_prefix = save_prefix
         self.save_format = save_format
@@ -157,9 +141,6 @@ class DirectoryIterator(Iterator):
                                                 seed)
 
     def _get_batches_of_transformed_samples(self, index_array):
-        batch_x = np.zeros(
-            (len(index_array),) + self.image_shape,
-            dtype=self.dtype)
         batch_x = [None] * len(index_array)
         # build batch of image data
         for i, j in enumerate(index_array):
@@ -172,14 +153,15 @@ class DirectoryIterator(Iterator):
         batch_x = np.stack(batch_x)
         # optionally save augmented images to disk for debugging purposes
         if self.save_to_dir:
-            for i, j in enumerate(index_array):
-                img = array_to_img(batch_x[i], self.data_format, scale=True)
-                fname = '{prefix}_{index}_{hash}.{format}'.format(
-                    prefix=self.save_prefix,
-                    index=j,
-                    hash=np.random.randint(1e7),
-                    format=self.save_format)
-                img.save(os.path.join(self.save_to_dir, fname))
+            raise NotImplementedError
+            # for i, j in enumerate(index_array):
+            #     img = array_to_img(batch_x[i], self.data_format, scale=True)
+            #     fname = '{prefix}_{index}_{hash}.{format}'.format(
+            #         prefix=self.save_prefix,
+            #         index=j,
+            #         hash=np.random.randint(1e7),
+            #         format=self.save_format)
+            #     img.save(os.path.join(self.save_to_dir, fname))
         # build batch of labels
         if self.class_mode == 'input':
             batch_y = batch_x.copy()
