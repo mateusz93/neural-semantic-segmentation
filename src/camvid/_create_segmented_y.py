@@ -53,32 +53,36 @@ def create_segmented_y(
     # get the path to the directory with the current y data
     this_dir = os.path.dirname(os.path.abspath(__file__))
     y_dir = os.path.join(this_dir, 'y/data/*.png')
-    # load the original label map
+    # load the original label map with the mapping applied
     label_metadata = load_label_metadata(mapping)
+    # get the code for the Void label to use for invalid pixels
     void_code = label_metadata[label_metadata['label'] == 'Void'].code
     # determine the number of labels and create the identity matrix
     I = np.eye(len(label_metadata['label_used'].unique()))
-    # create the output directory for the data
+    # create the output directory for the y data
     if mapping is None:
         output_dir = os.path.join(this_dir, 'y_32')
     else:
+        # use the mapping dictionary as a hash to locate its files on disk
         output_dir = os.path.join(this_dir, 'y_{}'.format(_hash(mapping)))
+    # check if the metadata file exists (data is corrupt if missing)
     metadata_filename = os.path.join(output_dir, 'metadata.csv')
-    data_dir = os.path.join(output_dir, 'data')
-    # check if the directory exists
     if os.path.isfile(metadata_filename) and not force_overwrite:
         return output_dir
-    # delete the directory if it exists
-    shutil.rmtree(data_dir, ignore_errors=True)
-    # create the directory
+    # delete the data directory if it exists
+    shutil.rmtree(output_dir, ignore_errors=True)
+    # create the data directory
+    data_dir = os.path.join(output_dir, 'data')
     os.makedirs(data_dir)
     # iterate over all the files in the source directory
     for img_file in tqdm(sorted(glob.glob(y_dir))):
         # get the name of the output file
         output_file = os.path.basename(os.path.normpath(img_file))
+        # replace png extension with npy for NumPy file
         output_file = output_file.replace('.png', '.npy')
+        # add the file name to the data directory path to save to
         output_file = os.path.join(data_dir, output_file)
-        # load the image
+        # load the data as a NumPy array
         with Image.open(img_file) as raw_img:
             img = np.array(raw_img)
         # create a placeholder for the new image's discrete coding
