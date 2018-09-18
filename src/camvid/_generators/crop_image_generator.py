@@ -74,7 +74,7 @@ class CropDataGenerator(object):
         batch = super().apply_transform(*args, **kwargs)
         # map this batch of items to output dimension
         if self.image_size is not None:
-            return _random_crop(batch, self.image_size)
+            return random_crop(batch, self.image_size)
 
         return batch
 
