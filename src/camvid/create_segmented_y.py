@@ -7,7 +7,11 @@ import numpy as np
 from ._label_colors import load_label_metadata
 
 
-def create_segmented_y(mapping: dict=None, output_dtype: str='uint8'):
+def create_segmented_y(
+    mapping: dict=None,
+    output_dtype: str='uint8',
+    force_overwrite=False,
+):
     """
     Create a segmented version of an RGB dataset.
 
@@ -15,6 +19,7 @@ def create_segmented_y(mapping: dict=None, output_dtype: str='uint8'):
         mapping: a dictionary mapping existing values to new ones for
                  dimensionality reduction
         output_dtype: the dtype of the output numpy array of values
+        force_overwrite: whether to overwrite the data if it already exists
 
     Returns:
         None
@@ -30,6 +35,11 @@ def create_segmented_y(mapping: dict=None, output_dtype: str='uint8'):
     # create the output directory for the data
     output_dir = os.path.join(this_dir, 'y_{}'.format(num_labels))
     data_dir = os.path.join(output_dir, 'data'.format(num_labels))
+    # check if the directory exists and return early if force overwrite
+    # is disabled
+    if os.path.isdir(data_dir):
+        if not force_overwrite:
+            return
     # delete the directory if it exists
     shutil.rmtree(data_dir, ignore_errors=True)
     # create the directory
