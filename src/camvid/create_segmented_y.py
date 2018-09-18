@@ -33,6 +33,7 @@ def create_segmented_y(
     y_dir = os.path.join(this_dir, 'y/data/*.png')
     # load the original label map
     label_metadata = load_label_metadata(mapping)
+    void_code = label_metadata[label_metadata['label'] == 'Void'].code
     # determine the number of labels and create the identity matrix
     num_labels = len(label_metadata['label_used'].unique())
     # create the output directory for the data
@@ -58,12 +59,17 @@ def create_segmented_y(
             img = np.array(raw_img)
         # create a placeholder for the new image's discrete coding
         discrete = np.empty(img.shape[:-1])
+        discrete[:] = -1
         # iterate over the RGB points in the dataset
         for rgb in label_metadata['rgb']:
             # extract the discrete code for this RGB point
             code = label_metadata[label_metadata['rgb'] == rgb].code
             # set all points equal to this in the image to the discrete code
             discrete[(img == rgb).all(axis=-1)] = code
+        # check that each pixel has been overwritten
+        if (discrete == -1).sum() > 0:
+            print('WARNING invalid pixels in: {}'.format(img_file))
+            discrete[discrete == -1] = void_code
         # convert the discrete mapping to a one hot encoding
         onehot = np.eye(num_labels)[discrete.astype(int)].astype(output_dtype)
         # save the file to its output location
@@ -71,6 +77,8 @@ def create_segmented_y(
     # save the metadata to disk for working with the encoded data
     metadata_filename = os.path.join(output_dir, 'metadata.csv')
     label_metadata.to_csv(metadata_filename, index=False)
+
+    return output_dir, label_metadata
 
 
 # explicitly define the outward facing API of this module
