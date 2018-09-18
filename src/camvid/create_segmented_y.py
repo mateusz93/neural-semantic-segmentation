@@ -24,21 +24,22 @@ def create_segmented_y(mapping: dict=None):
     label_metadata = load_label_metadata(mapping)
     # determine the number of labels and create the identity matrix
     num_labels = len(label_metadata['label_used'].unique())
-    I = np.eye(num_labels)
     # create the output directory for the data
-    output_dir = os.path.join(this_dir, 'y_{}/data'.format(num_labels))
+    output_dir = os.path.join(this_dir, 'y_{}'.format(num_labels))
+    data_dir = os.path.join(output_dir, 'data'.format(num_labels))
     # delete the directory if it exists
-    shutil.rmtree(output_dir, ignore_errors=True)
+    shutil.rmtree(data_dir, ignore_errors=True)
     # create the directory
-    os.makedirs(output_dir)
+    os.makedirs(data_dir)
     # iterate over all the files in the source directory
-    for y in sorted(glob.glob(y_dir)):
+    for img_file in sorted(glob.glob(y_dir)):
         # get the name of the output file
-        output_file = os.path.basename(os.path.normpath(y))
+        output_file = os.path.basename(os.path.normpath(img_file))
         output_file = output_file.replace('.png', '.npy')
-        output_file = os.path.join(output_dir, output_file)
+        output_file = os.path.join(data_dir, output_file)
         # load the image
-        img = np.array(Image.open(y))
+        with Image.open(img_file) as raw_img:
+            img = np.array(raw_img)
         # create a placeholder for the new image's discrete coding
         discrete = np.empty(img.shape[:-1])
         # iterate over the RGB points in the dataset
@@ -48,11 +49,12 @@ def create_segmented_y(mapping: dict=None):
             # set all points equal to this in the image to the discrete code
             discrete[(img == rgb).all(axis=-1)] = code
         # convert the discrete mapping to a one hot encoding
-        onehot = I[discrete.astype(int)]
+        onehot = np.eye(num_labels)[discrete.astype(int)]
         # save the file to its output location
         np.save(output_file, onehot)
-
-    print(label_metadata)
+    # save the metadata to disk for working with the encoded data
+    metadata_filename = os.path.join(output_dir, 'metadata.csv')
+    label_metadata.to_csv(metadata_filename, index=False)
 
 
 # explicitly define the outward facing API of this module
