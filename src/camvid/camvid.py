@@ -67,7 +67,7 @@ class CamVid(object):
     @property
     def n(self) -> int:
         """Return the number of training classes in this dataset."""
-        return int(self._y.split('_')[-1])
+        return len(self.metadata['code'].unique())
 
     @property
     def data_gen_args(self) -> dict:
