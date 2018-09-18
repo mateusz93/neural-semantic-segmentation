@@ -1,4 +1,4 @@
-# The One Hundred Layers Tiramisu (Implementation)
+# The 100 Layers Tiramisu (Implementation)
 
 [![build-status][]][ci-server]
 
