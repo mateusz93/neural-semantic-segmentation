@@ -150,8 +150,15 @@ class DirectoryIterator(Iterator):
         for i, j in enumerate(index_array):
             fname = self.filenames[j]
             x = np.load(os.path.join(self.directory, fname))
-            target_size = (self.target_size[1], self.target_size[0])
-            x = cv2.resize(x, target_size, interpolation=cv2.INTER_NEAREST)
+            from skimage.transform import resize
+            x = resize(x, self.target_size,
+                anti_aliasing=False,
+                mode='symmetric',
+                clip=False,
+                preserve_range=True,
+            )
+            # target_size = (self.target_size[1], self.target_size[0])
+            # x = cv2.resize(x, target_size, interpolation=cv2.INTER_NEAREST)
             # x = np.resize(x, self.target_size + (x.shape[-1],))
             params = self.image_data_generator.get_random_transform(x.shape)
             x = self.image_data_generator.apply_transform(x, params)
