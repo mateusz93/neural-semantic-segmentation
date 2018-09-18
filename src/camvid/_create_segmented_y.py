@@ -54,15 +54,15 @@ def create_segmented_y(
     this_dir = os.path.dirname(os.path.abspath(__file__))
     y_dir = os.path.join(this_dir, 'y/data/*.png')
     # load the original label map with the mapping applied
-    label_metadata = load_label_metadata(mapping)
+    metadata = load_label_metadata(mapping)
     # create a vectorized method to convert RGB points to discrete codes
-    rgb_to_code = label_metadata[['rgb', 'code']].set_index('rgb')['code'].to_dict()
-    rgb_to_code = {(k[0] << 16) + (k[1] << 8) + k[2]: v for (k, v) in rgb_to_code.items()}
-    rgb_to_code = np.vectorize(rgb_to_code.get, otypes=['object'])
+    codes = metadata[['rgb', 'code']].set_index('rgb')['code'].to_dict()
+    codes = {(k[0] << 16) + (k[1] << 8) + k[2]: v for (k, v) in codes.items()}
+    rgb_to_code = np.vectorize(codes.get, otypes=['object'])
     # get the code for the Void label to use for invalid pixels
-    void_code = label_metadata[label_metadata['label'] == 'Void'].code
+    void_code = metadata[metadata['label'] == 'Void'].code
     # determine the number of labels and create the identity matrix
-    identity = np.eye(len(label_metadata['label_used'].unique()))
+    identity = np.eye(len(metadata['label_used'].unique()))
     # create the output directory for the y data
     if mapping is None:
         output_dir = os.path.join(this_dir, 'y_32')
@@ -107,7 +107,7 @@ def create_segmented_y(
         # save the file to its output location
         np.save(output_file, onehot)
     # save the metadata to disk for working with the encoded data
-    label_metadata.to_csv(metadata_filename, index=False)
+    metadata.to_csv(metadata_filename, index=False)
 
     return output_dir
 
