@@ -59,7 +59,7 @@ generators = camvid32.generators()
 X, y = next(generators['training'])
 # unmap the discrete onehot tensor into an RGB image
 y = camvid32.unmap(y)
-# plot the data
+# plot the data (first image)
 camvid.plot(
     X=X[0],
     y=y[0],
