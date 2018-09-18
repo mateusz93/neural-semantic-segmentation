@@ -4,6 +4,7 @@ import glob
 import shutil
 from PIL import Image
 import numpy as np
+from tqdm import tqdm
 from ._label_colors import load_label_metadata
 
 
@@ -47,7 +48,7 @@ def create_segmented_y(
     # create the directory
     os.makedirs(data_dir)
     # iterate over all the files in the source directory
-    for img_file in sorted(glob.glob(y_dir)):
+    for img_file in tqdm(sorted(glob.glob(y_dir))):
         # get the name of the output file
         output_file = os.path.basename(os.path.normpath(img_file))
         output_file = output_file.replace('.png', '.npy')
