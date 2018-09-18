@@ -103,13 +103,13 @@ class CamVid(object):
 
     def unmap(self, y):
         """
-        Unmap a onehot vector y frame to the target RGB values.
+        Un-map a one-hot vector y frame to the target RGB values.
 
         Args:
-            y: the softmax values to convert to an RGB image
+            y: the one-hot vector to convert to an RGB image
 
         Returns:
-            an RGB encoding of the softmax (or onehot) input tensor
+            an RGB encoding of the one-hot input tensor
 
         """
         return np.stack(self._unmap(y.argmax(axis=-1)), axis=-1)
