@@ -55,10 +55,14 @@ def create_segmented_y(
     y_dir = os.path.join(this_dir, 'y/data/*.png')
     # load the original label map with the mapping applied
     label_metadata = load_label_metadata(mapping)
+    # create a vectorized method to convert RGB points to discrete codes
+    rgb_to_code = label_metadata[['rgb', 'code']].set_index('rgb')['code'].to_dict()
+    rgb_to_code = {(k[0] << 16) + (k[1] << 8) + k[2]: v for (k, v) in rgb_to_code.items()}
+    rgb_to_code = np.vectorize(rgb_to_code.get, otypes=['object'])
     # get the code for the Void label to use for invalid pixels
     void_code = label_metadata[label_metadata['label'] == 'Void'].code
     # determine the number of labels and create the identity matrix
-    I = np.eye(len(label_metadata['label_used'].unique()))
+    identity = np.eye(len(label_metadata['label_used'].unique()))
     # create the output directory for the y data
     if mapping is None:
         output_dir = os.path.join(this_dir, 'y_32')
@@ -85,22 +89,21 @@ def create_segmented_y(
         # load the data as a NumPy array
         with Image.open(img_file) as raw_img:
             img = np.array(raw_img)
-        # create a placeholder for the new image's discrete coding
-        discrete = np.empty(img.shape[:-1])
-        discrete[:] = -1
-        # iterate over the RGB points in the dataset
-        for rgb in label_metadata['rgb']:
-            # extract the discrete code for this RGB point
-            code = label_metadata[label_metadata['rgb'] == rgb].code
-            # set all points equal to this in the image to the discrete code
-            discrete[(img == rgb).all(axis=-1)] = code
+        # create a map to shift images left (to convert to hex)
+        red = np.full(img.shape[:-1], 16)
+        green = np.full(img.shape[:-1], 8)
+        blue = np.zeros(img.shape[:-1])
+        left = np.stack([red, green, blue], axis=-1).astype(int)
+        # convert the image to hex and decode its discrete values
+        discrete = rgb_to_code(np.left_shift(img, left).sum(axis=-1))
         # check that each pixel has been overwritten
-        if (discrete == -1).sum() > 0:
-            invalid = (discrete == -1).sum()
-            print('WARNING: {} invalid pixels in {}'.format(invalid, img_file))
-            discrete[discrete == -1] = void_code
+        invalid = discrete == None
+        if invalid.any():
+            template = 'WARNING: {} invalid pixels in {}'
+            print(template.format(invalid.sum(), img_file))
+            discrete[invalid] = void_code
         # convert the discrete mapping to a one hot encoding
-        onehot = I[discrete.astype(int)].astype(output_dtype)
+        onehot = identity[discrete.astype(int)].astype(output_dtype)
         # save the file to its output location
         np.save(output_file, onehot)
     # save the metadata to disk for working with the encoded data
