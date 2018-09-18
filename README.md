@@ -24,10 +24,9 @@ GPU, and Intel Xeon CPU @ 2.10GHz.
 
 ### 11 Class
 
-The following results use the reduced 11 class version of the dataset defined
-by the mapping file [11_class.txt](11_class.txt).
 [Train-Tiramisu103-CamVid11.ipynb](Train-Tiramisu103-CamVid11.ipynb) generates
-these results.
+these results for the 11 class version of CamVid defined in the mapping file
+[11_class.txt](11_class.txt).
 
 <!-- TODO: images -->
 
@@ -37,9 +36,8 @@ these results.
 
 ### 32 Class
 
-The following results use the dataset with all 32 original class labels.
 [Train-Tiramisu103-CamVid32.ipynb](Train-Tiramisu103-CamVid32.ipynb) generates
-these results.
+these results for the full 32 class version of CamVid.
 
 <!-- TODO: images -->
 
