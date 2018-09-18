@@ -2,8 +2,9 @@
 import os
 import glob
 import shutil
-from PIL import Image
 import numpy as np
+import pandas as pd
+from PIL import Image
 from tqdm import tqdm
 from ._label_colors import load_label_metadata
 
@@ -12,7 +13,7 @@ def create_segmented_y(
     mapping: dict=None,
     output_dtype: str='uint8',
     force_overwrite=False,
-) -> tuple:
+) -> pd.DataFrame:
     """
     Create a segmented version of an RGB dataset.
 
@@ -23,9 +24,7 @@ def create_segmented_y(
         force_overwrite: whether to overwrite the data if it already exists
 
     Returns:
-        a tuple of:
-        - the directory where the encoded data is stored
-        - a DataFrame describing the label data mapping
+        a DataFrame describing the label data mapping
 
     """
     # get the path to the directory with the current y data
@@ -43,7 +42,7 @@ def create_segmented_y(
     # is disabled
     if os.path.isdir(data_dir):
         if not force_overwrite:
-            return output_dir, label_metadata
+            return label_metadata
     # delete the directory if it exists
     shutil.rmtree(data_dir, ignore_errors=True)
     # create the directory
@@ -78,7 +77,7 @@ def create_segmented_y(
     metadata_filename = os.path.join(output_dir, 'metadata.csv')
     label_metadata.to_csv(metadata_filename, index=False)
 
-    return output_dir, label_metadata
+    return label_metadata
 
 
 # explicitly define the outward facing API of this module
