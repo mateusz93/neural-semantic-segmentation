@@ -22,7 +22,9 @@ def create_segmented_y(
         force_overwrite: whether to overwrite the data if it already exists
 
     Returns:
-        None
+        a tuple of:
+        - the directory the label data was saved to
+        - a dataframe describing the label data mapping
 
     """
     # get the path to the directory with the current y data
@@ -39,7 +41,7 @@ def create_segmented_y(
     # is disabled
     if os.path.isdir(data_dir):
         if not force_overwrite:
-            return
+            return output_dir, label_metadata
     # delete the directory if it exists
     shutil.rmtree(data_dir, ignore_errors=True)
     # create the directory
