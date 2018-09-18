@@ -1,6 +1,7 @@
 """An Image Generator extension to crop images to a given size."""
 import numpy as np
 from keras.preprocessing.image import ImageDataGenerator
+from .numpy_data_generator import NumpyDataGenerator
 
 
 def _crop_dim(s: int, s_crop: int) -> tuple:
@@ -50,7 +51,7 @@ def _random_crop(tensor: 'numpy.ndarray', image_size: tuple) -> 'numpy.ndarray':
     return tensor[h0:h1, w0:w1]
 
 
-class CropImageDataGenerator(ImageDataGenerator):
+class CropDataGenerator(object):
     """An Image Generator extension to crop images to a given size."""
 
     def __init__(self, *args, image_size=None, **kwargs) -> None:
@@ -92,5 +93,16 @@ class CropImageDataGenerator(ImageDataGenerator):
         return iterator
 
 
+class CropImageDataGenerator(CropDataGenerator, ImageDataGenerator):
+    pass
+
+
+class CropNumpyDataGenerator(CropDataGenerator, NumpyDataGenerator):
+    pass
+
+
 # explicitly define the outward facing API of this module
-__all__ = [CropImageDataGenerator.__name__]
+__all__ = [
+    CropImageDataGenerator.__name__,
+    CropNumpyDataGenerator.__name__,
+]

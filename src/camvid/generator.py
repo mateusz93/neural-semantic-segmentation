@@ -1,8 +1,7 @@
 """A generator to buffer CamVid images to a Keras fit method."""
 import os
 from ._generators import CropImageDataGenerator
-# from ._generators import SegmentImageDataGenerator
-# from ._label_colors import SegmentationToOnehotTransformer
+from ._generators import CropNumpyDataGenerator
 
 
 # the directory housing this file.
@@ -57,8 +56,7 @@ def data_generators(
     # create the RAW image data generator
     x_generator = CropImageDataGenerator(**data_gen, image_size=crop_size)
     # create the segmentation data generator as a One-Hot tensor
-    transformer = SegmentationToOnehotTransformer()
-    y_generator = SegmentImageDataGenerator(**data_gen,
+    y_generator = CropNumpyDataGenerator(**data_gen,
         transformer=transformer,
         image_size=crop_size
     )
