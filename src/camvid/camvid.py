@@ -57,6 +57,11 @@ class CamVid(object):
         self._unmap = np.vectorize(self.discrete_to_rgb_map.get)
 
     @property
+    def n(self):
+        """Return the number of training classes in this dataset."""
+        return int(self.y_dir.split('_')[-1])
+
+    @property
     def data_gen_args(self):
         """Return the keyword arguments for creating a new data generator."""
         return dict(
@@ -77,6 +82,38 @@ class CamVid(object):
             seed=self.seed
         )
 
+    @property
+    def metadata(self):
+        """Return the metadata associated with this dataset."""
+        return pd.read_csv(os.path.join(self.y_dir, 'metadata.csv'))
+
+    @property
+    def discrete_to_rgb_map(self):
+        """Return a dictionary mapping discrete codes to RGB pixels."""
+        df = self.metadata[['code', 'rgb_draw']].set_index('code')
+        pixel_map = df.to_dict()['rgb_draw']
+        return {k: make_tuple(v) for (k, v) in pixel_map.items()}
+
+    @property
+    def discrete_to_label_map(self):
+        """Return a dictionary mapping discrete codes to RGB pixels."""
+        df = self.metadata[['code', 'label_used']].set_index('code')
+        pixel_map = df.to_dict()['label_used']
+        {k: v for (k, v) in pixel_map.items()}
+
+    def unmap(self, y):
+        """
+        .
+
+        Args:
+            y
+
+        Returns:
+
+
+        """
+        return np.stack(self._unmap(y.argmax(axis=-1)), axis=-1)
+
     def generators(self):
         """Return a dictionary with both training and validation generators."""
         # create the RAW image data generator
@@ -94,30 +131,7 @@ class CamVid(object):
 
         return generators
 
-    @property
-    def metadata(self):
-        """Return the metadata associated with this dataset."""
-        return pd.read_csv(os.path.join(self.y_dir, 'metadata.csv'))
 
-    @property
-    def discrete_to_rgb_map(self):
-        """Return a dictionary mapping discrete codes to RGB pixels."""
-        df = self.metadata[['code', 'rgb_draw']].set_index('code')
-        pixel_map = df.to_dict()['rgb_draw']
-        return {k: make_tuple(v) for (k, v) in pixel_map.items()}
-
-    def unmap(self, y):
-        """
-        .
-
-        Args:
-            y
-
-        Returns:
-
-
-        """
-        return np.stack(self._unmap(y.argmax(axis=-1)), axis=-1)
 
 
 # explicitly define the outward facing API of this module
