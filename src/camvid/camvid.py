@@ -103,7 +103,7 @@ class CamVid(object):
     @property
     def discrete_to_rgb_map(self) -> dict:
         """Return a dictionary mapping discrete codes to RGB pixels."""
-        rgb_draw = self._discrete_dict('rgb_draw').items()
+        rgb_draw = self._discrete_dict('rgb_draw')
         # convert the strings in the rgb draw column to tuples
         return {k: make_tuple(v) for (k, v) in rgb_draw.items()}
 
