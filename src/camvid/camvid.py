@@ -7,12 +7,6 @@ from ._generators import CropImageDataGenerator
 from ._generators import CropNumpyDataGenerator
 
 
-# the directory housing this file.
-THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-# the directory to load the X images from
-X_DIR = os.path.join(THIS_DIR, 'X')
-
-
 class CamVid(object):
     """An instance of a CamVid dataset."""
 
@@ -26,7 +20,7 @@ class CamVid(object):
         batch_size: int=3,
         shuffle: bool=True,
         seed: int=1,
-    ):
+    ) -> None:
         """
         Initialize a new CamVid dataset instance.
 
@@ -45,7 +39,12 @@ class CamVid(object):
             None
 
         """
-        self.y_dir = os.path.join(THIS_DIR, y_dir)
+        # get the directory this file is in to locate X and y
+        this_dir = os.path.dirname(os.path.abspath(__file__))
+        # locate the X and y directories
+        self.x_dir = os.path.join(this_dir, 'X')
+        self.y_dir = os.path.join(this_dir, y_dir)
+        # store remaining keyword arguments
         self.target_size = target_size
         self.crop_size = crop_size
         self.horizontal_flip = horizontal_flip
@@ -54,15 +53,16 @@ class CamVid(object):
         self.batch_size = batch_size
         self.shuffle = shuffle
         self.seed = seed
+        # create a vectorized method to map discrete codes to RGB pixels
         self._unmap = np.vectorize(self.discrete_to_rgb_map.get)
 
     @property
-    def n(self):
+    def n(self) -> int:
         """Return the number of training classes in this dataset."""
         return int(self.y_dir.split('_')[-1])
 
     @property
-    def data_gen_args(self):
+    def data_gen_args(self) -> dict:
         """Return the keyword arguments for creating a new data generator."""
         return dict(
             horizontal_flip=self.horizontal_flip,
@@ -72,7 +72,7 @@ class CamVid(object):
         )
 
     @property
-    def flow_args(self):
+    def flow_args(self) -> dict:
         """Return the keyword arguments for flowing from a data generator."""
         return dict(
             class_mode=None,
@@ -83,25 +83,36 @@ class CamVid(object):
         )
 
     @property
-    def metadata(self):
+    def metadata(self) -> pd.DataFrame:
         """Return the metadata associated with this dataset."""
         return pd.read_csv(os.path.join(self.y_dir, 'metadata.csv'))
 
-    @property
-    def discrete_to_rgb_map(self):
-        """Return a dictionary mapping discrete codes to RGB pixels."""
-        df = self.metadata[['code', 'rgb_draw']].set_index('code')
-        pixel_map = df.to_dict()['rgb_draw']
-        return {k: make_tuple(v) for (k, v) in pixel_map.items()}
+    def _discrete_dict(self, col: str) -> dict:
+        """
+        Return a dictionary mapping discrete codes to values in another column.
+
+        Args:
+            col: the name of the column to map discrete code values to
+
+        Returns:
+            a dictionary mapping unique codes to values in the given column
+
+        """
+        return self.metadata[['code', col]].set_index('code').to_dict()[col]
 
     @property
-    def discrete_to_label_map(self):
+    def discrete_to_rgb_map(self) -> dict:
         """Return a dictionary mapping discrete codes to RGB pixels."""
-        df = self.metadata[['code', 'label_used']].set_index('code')
-        pixel_map = df.to_dict()['label_used']
-        return pixel_map
+        rgb_draw = self._discrete_dict('rgb_draw').items()
+        # convert the strings in the rgb draw column to tuples
+        return {k: make_tuple(v) for (k, v) in rgb_draw}
 
-    def unmap(self, y):
+    @property
+    def discrete_to_label_map(self) -> dict:
+        """Return a dictionary mapping discrete codes to RGB pixels."""
+        return self._discrete_dict('label_used')
+
+    def unmap(self, y: np.ndarray) -> np.ndarray:
         """
         Un-map a one-hot vector y frame to the target RGB values.
 
@@ -114,7 +125,7 @@ class CamVid(object):
         """
         return np.stack(self._unmap(y.argmax(axis=-1)), axis=-1)
 
-    def generators(self):
+    def generators(self) -> dict:
         """Return a dictionary with both training and validation generators."""
         # create the RAW image data generator
         x_data = CropImageDataGenerator(**self.data_gen_args)
@@ -124,7 +135,7 @@ class CamVid(object):
         generators = {}
         # iterate over the subsets in the generators
         for subset in ['training', 'validation']:
-            x = x_data.flow_from_directory(X_DIR, subset=subset, **self.flow_args)
+            x = x_data.flow_from_directory(self.x_dir, subset=subset, **self.flow_args)
             y = y_data.flow_from_directory(self.y_dir, subset=subset, **self.flow_args)
             # zip the X and y generators into a single generator
             generators[subset] = zip(x, y)
