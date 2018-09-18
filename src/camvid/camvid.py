@@ -3,6 +3,7 @@ import ast
 import os
 import numpy as np
 import pandas as pd
+from ._create_segmented_y import create_segmented_y
 from ._generators import CropImageDataGenerator
 from ._generators import CropNumpyDataGenerator
 from ._generators import repeat_generator
@@ -11,7 +12,8 @@ from ._generators import repeat_generator
 class CamVid(object):
     """An instance of a CamVid dataset."""
 
-    def __init__(self, y: str,
+    def __init__(self,
+        mapping: dict=None,
         x_repeats: int=0,
         y_repeats: int=0,
         target_size: tuple=(720, 960),
@@ -43,11 +45,11 @@ class CamVid(object):
             None
 
         """
-        # get the directory this file is in to locate X and y
+        # get the directory this file is in to locate X
         this_dir = os.path.dirname(os.path.abspath(__file__))
         # locate the X and y directories
         self._x = os.path.join(this_dir, 'X')
-        self._y = os.path.join(this_dir, y)
+        self._y = create_segmented_y(mapping)
         # store remaining keyword arguments
         self.x_repeats = x_repeats
         self.y_repeats = y_repeats

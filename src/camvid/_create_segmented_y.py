@@ -42,7 +42,7 @@ def create_segmented_y(
     # is disabled
     if os.path.isdir(data_dir):
         if not force_overwrite:
-            return label_metadata
+            return output_dir
     # delete the directory if it exists
     shutil.rmtree(data_dir, ignore_errors=True)
     # create the directory
@@ -77,7 +77,7 @@ def create_segmented_y(
     metadata_filename = os.path.join(output_dir, 'metadata.csv')
     label_metadata.to_csv(metadata_filename, index=False)
 
-    return label_metadata
+    return output_dir
 
 
 # explicitly define the outward facing API of this module
