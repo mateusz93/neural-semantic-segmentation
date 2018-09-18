@@ -99,7 +99,7 @@ class CamVid(object):
         """Return a dictionary mapping discrete codes to RGB pixels."""
         df = self.metadata[['code', 'label_used']].set_index('code')
         pixel_map = df.to_dict()['label_used']
-        {k: v for (k, v) in pixel_map.items()}
+        return {k: v for (k, v) in pixel_map.items()}
 
     def unmap(self, y):
         """
