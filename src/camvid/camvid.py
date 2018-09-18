@@ -11,8 +11,7 @@ from ._generators import repeat_generator
 class CamVid(object):
     """An instance of a CamVid dataset."""
 
-    def __init__(self,
-        y_dir: str,
+    def __init__(self, y: str,
         x_repeats: int=0,
         y_repeats: int=0,
         target_size: tuple=(720, 960),
@@ -28,7 +27,7 @@ class CamVid(object):
         Initialize a new CamVid dataset instance.
 
         Args:
-            y_dir: the directory name with the y label data
+            y: the directory name with the y label data
             x_repeats: the number of times to repeat the output of x generator
             y_repeats: the number of times to repeat the output of y generator
             target_size: the image size of the dataset
@@ -47,8 +46,8 @@ class CamVid(object):
         # get the directory this file is in to locate X and y
         this_dir = os.path.dirname(os.path.abspath(__file__))
         # locate the X and y directories
-        self.x_dir = os.path.join(this_dir, 'X')
-        self.y_dir = os.path.join(this_dir, y_dir)
+        self._x = os.path.join(this_dir, 'X')
+        self._y = os.path.join(this_dir, y)
         # store remaining keyword arguments
         self.x_repeats = x_repeats
         self.y_repeats = y_repeats
@@ -66,7 +65,7 @@ class CamVid(object):
     @property
     def n(self) -> int:
         """Return the number of training classes in this dataset."""
-        return int(self.y_dir.split('_')[-1])
+        return int(self._y.split('_')[-1])
 
     @property
     def data_gen_args(self) -> dict:
@@ -92,7 +91,7 @@ class CamVid(object):
     @property
     def metadata(self) -> pd.DataFrame:
         """Return the metadata associated with this dataset."""
-        return pd.read_csv(os.path.join(self.y_dir, 'metadata.csv'))
+        return pd.read_csv(os.path.join(self._y, 'metadata.csv'))
 
     def _discrete_dict(self, col: str) -> dict:
         """
@@ -119,38 +118,37 @@ class CamVid(object):
         """Return a dictionary mapping discrete codes to RGB pixels."""
         return self._discrete_dict('label_used')
 
-    def unmap(self, y: np.ndarray) -> np.ndarray:
+    def unmap(self, y_discrete: np.ndarray) -> np.ndarray:
         """
         Un-map a one-hot vector y frame to the target RGB values.
 
         Args:
-            y: the one-hot vector to convert to an RGB image
+            y_discrete: the one-hot vector to convert to an RGB image
 
         Returns:
             an RGB encoding of the one-hot input tensor
 
         """
-        return np.stack(self._unmap(y.argmax(axis=-1)), axis=-1)
+        return np.stack(self._unmap(y_discrete.argmax(axis=-1)), axis=-1)
 
     def generators(self) -> dict:
         """Return a dictionary with both training and validation generators."""
-        # create the RAW image data generator
-        x_data = CropImageDataGenerator(**self.data_gen_args)
-        # create the segmentation data generator as a One-Hot tensor
-        y_data = CropNumpyDataGenerator(**self.data_gen_args)
-        # the dictionaries to hold generators by key value
-        generators = {}
-        # iterate over the subsets in the generators
-        for subset in ['training', 'validation']:
-            x = x_data.flow_from_directory(self.x_dir, subset=subset, **self.flow_args)
-            y = y_data.flow_from_directory(self.y_dir, subset=subset, **self.flow_args)
+        # create generators to load images (X) and NumPy tensors (y)
+        x_g = CropImageDataGenerator(**self.data_gen_args)
+        y_g = CropNumpyDataGenerator(**self.data_gen_args)
+        # the dictionary to hold generators by key value (training, validation)
+        gen = dict()
+        # iterate over the generator subsets
+        for key in ['training', 'validation']:
             # combine X and y generators into a single generator with repeats
-            generators[subset] = repeat_generator(x, y,
+            gen[key] = repeat_generator(
+                x_g.flow_from_directory(self._x, subset=key, **self.flow_args),
+                y_g.flow_from_directory(self._y, subset=key, **self.flow_args),
                 x_repeats=self.x_repeats,
                 y_repeats=self.y_repeats,
             )
 
-        return generators
+        return gen
 
 
 # explicitly define the outward facing API of this module
