@@ -51,12 +51,17 @@ of the image and the value is a NumPy tensor of pixel data.
 
 ```python
 import camvid
+# load the 32 label dataset
 camvid32 = camvid.CamVid('y_32')
+# create a generator for the data
 generators = camvid32.generators()
+# generate a batch of 3 images from the training set
 X, y = next(generators['training'])
+# unmap the discrete onehot tensor into an RGB image
 y = camvid32.unmap(y)
+# plot the data
 camvid.plot(
-    X=...,
-    y=...,
+    X=X[0],
+    y=y[0],
 )
 ```
