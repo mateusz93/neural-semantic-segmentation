@@ -19,13 +19,13 @@ def create_segmented_y(
     Args:
         mapping: a dictionary mapping existing values to new ones for
                  dimensionality reduction
-        output_dtype: the dtype of the output numpy array of values
+        output_dtype: the dtype of the output NumPy array of values
         force_overwrite: whether to overwrite the data if it already exists
 
     Returns:
         a tuple of:
-        - the directory the label data was saved to
-        - a dataframe describing the label data mapping
+        - the directory where the encoded data is stored
+        - a DataFrame describing the label data mapping
 
     """
     # get the path to the directory with the current y data
