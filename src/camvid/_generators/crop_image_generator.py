@@ -75,7 +75,6 @@ class CropDataGenerator(object):
         # map this batch of items to output dimension
         if self.image_size is not None:
             return random_crop(batch, self.image_size)
-        print(batch.shape)
         return batch
 
     def flow_from_directory(self, *args, **kwargs):
