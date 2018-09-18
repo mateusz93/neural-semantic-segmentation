@@ -1,10 +1,8 @@
 """A package for loading label data mappers."""
-from .segmentation_to_discrete import SegmentationToDiscreteTransformer
-from .segmentation_to_onehot import SegmentationToOnehotTransformer
+from .load_label_metadata import load_label_metadata
 
 
 # explicitly define the outward facing API of this package
 __all__ = [
-    SegmentationToDiscreteTransformer.__name__,
-    SegmentationToOnehotTransformer.__name__,
+    load_label_metadata.__name__,
 ]

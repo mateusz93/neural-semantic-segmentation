@@ -1,8 +1,8 @@
 """A generator to buffer CamVid images to a Keras fit method."""
 import os
 from ._generators import CropImageDataGenerator
-from ._generators import SegmentImageDataGenerator
-from ._label_colors import SegmentationToOnehotTransformer
+# from ._generators import SegmentImageDataGenerator
+# from ._label_colors import SegmentationToOnehotTransformer
 
 
 # the directory housing this file.

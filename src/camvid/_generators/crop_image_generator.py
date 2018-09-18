@@ -18,7 +18,7 @@ def _crop_dim(s: int, s_crop: int) -> tuple:
 
     """
     # if the crop size is equal to the input size,
-    # just return the uncropped dimension
+    # just return the un-cropped dimension
     if s_crop == s:
         return 0, s
     # otherwise generate a random anchor point and
