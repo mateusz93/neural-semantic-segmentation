@@ -12,7 +12,7 @@ def create_segmented_y(
     mapping: dict=None,
     output_dtype: str='uint8',
     force_overwrite=False,
-):
+) -> tuple:
     """
     Create a segmented version of an RGB dataset.
 
