@@ -1,4 +1,6 @@
 """A class for generating data from a NumPy tensor on disk"""
+import glob
+import cv2
 from keras_preprocessing.image import *
 from keras_preprocessing.image import _count_valid_files_in_directory
 from keras_preprocessing.image import _list_valid_filenames_in_directory
@@ -63,7 +65,8 @@ class DirectoryIterator(Iterator):
         if color_mode not in {'rgb', 'rgba', 'grayscale'}:
             raise ValueError('Invalid color mode:', color_mode,
                              '; expected "rgb", "rgba", or "grayscale".')
-        self.image_shape = None, None, None, None
+        c = np.load(glob.glob('{}/**/*.npy'.format(directory))[0]).shape[-1]
+        self.image_shape = self.target_size + (c, )
         self.save_to_dir = save_to_dir
         self.save_prefix = save_prefix
         self.save_format = save_format
@@ -82,6 +85,7 @@ class DirectoryIterator(Iterator):
             split = None
         self.split = split
         self.subset = subset
+
         self.directory = directory
         self.classes = classes
         if class_mode not in {'categorical', 'binary', 'sparse',
@@ -146,6 +150,9 @@ class DirectoryIterator(Iterator):
         for i, j in enumerate(index_array):
             fname = self.filenames[j]
             x = np.load(os.path.join(self.directory, fname))
+            target_size = (self.target_size[1], self.target_size[0])
+            x = cv2.resize(x, target_size, interpolation=cv2.INTER_NEAREST)
+            # x = np.resize(x, self.target_size + (x.shape[-1],))
             params = self.image_data_generator.get_random_transform(x.shape)
             x = self.image_data_generator.apply_transform(x, params)
             x = self.image_data_generator.standardize(x)
