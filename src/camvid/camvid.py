@@ -20,7 +20,7 @@ class CamVid(object):
         y_dir: str,
         target_size: tuple=(720, 960),
         crop_size: tuple=(224, 224),
-        horizontal_flip: bool=True,
+        horizontal_flip: bool=False,
         vertical_flip: bool=True,
         validation_split: float=0.3,
         batch_size: int=3,
