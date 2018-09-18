@@ -3,10 +3,10 @@ from matplotlib import pyplot as plt
 
 
 # the DPI for CamVid images is 72.0
-DPI = 36.0
+DPI = 72.0
 
 
-def plot(dpi: float=96.0, **kwargs: dict) -> None:
+def plot(dpi: float=256.0, **kwargs: dict) -> None:
     """
     Plot the original image, the true y, and an optional predicted y.
 
