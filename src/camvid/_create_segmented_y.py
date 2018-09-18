@@ -2,11 +2,34 @@
 import os
 import glob
 import shutil
+import hashlib
 import numpy as np
 import pandas as pd
 from PIL import Image
 from tqdm import tqdm
 from ._label_colors import load_label_metadata
+
+
+def _hash(mapping: dict) -> str:
+    """
+    Return a hash of an entire dictionary.
+
+    Args:
+        mapping: a dictionary of hash-able keys to hash-able values, i.e.,
+                 __str__ should return a unique representation of each object
+
+    Returns:
+        a hash of the dictionary
+
+    """
+    # create a string to store the mapping in
+    mapping_str = ''
+    # iterate over the sorted dictionary keys to ensure reproducibility
+    for key in sorted(mapping.keys()):
+        # add the key value pairing to the string representation
+        mapping_str += '{}{}'.format(key, mapping[key])
+    # convert the string to bytes and return the MD5 has of the bytes
+    return hashlib.md5(bytes(mapping_str, 'utf8')).hexdigest()
 
 
 def create_segmented_y(
@@ -34,15 +57,17 @@ def create_segmented_y(
     label_metadata = load_label_metadata(mapping)
     void_code = label_metadata[label_metadata['label'] == 'Void'].code
     # determine the number of labels and create the identity matrix
-    num_labels = len(label_metadata['label_used'].unique())
+    I = np.eye(len(label_metadata['label_used'].unique()))
     # create the output directory for the data
-    output_dir = os.path.join(this_dir, 'y_{}'.format(num_labels))
-    data_dir = os.path.join(output_dir, 'data'.format(num_labels))
-    # check if the directory exists and return early if force overwrite
-    # is disabled
-    if os.path.isdir(data_dir):
-        if not force_overwrite:
-            return output_dir
+    if mapping is None:
+        output_dir = os.path.join(this_dir, 'y_32')
+    else:
+        output_dir = os.path.join(this_dir, 'y_{}'.format(_hash(mapping)))
+    metadata_filename = os.path.join(output_dir, 'metadata.csv')
+    data_dir = os.path.join(output_dir, 'data')
+    # check if the directory exists
+    if os.path.isfile(metadata_filename) and not force_overwrite:
+        return output_dir
     # delete the directory if it exists
     shutil.rmtree(data_dir, ignore_errors=True)
     # create the directory
@@ -67,14 +92,14 @@ def create_segmented_y(
             discrete[(img == rgb).all(axis=-1)] = code
         # check that each pixel has been overwritten
         if (discrete == -1).sum() > 0:
-            print('WARNING invalid pixels in: {}'.format(img_file))
+            invalid = (discrete == -1).sum()
+            print('WARNING: {} invalid pixels in {}'.format(invalid, img_file))
             discrete[discrete == -1] = void_code
         # convert the discrete mapping to a one hot encoding
-        onehot = np.eye(num_labels)[discrete.astype(int)].astype(output_dtype)
+        onehot = I[discrete.astype(int)].astype(output_dtype)
         # save the file to its output location
         np.save(output_file, onehot)
     # save the metadata to disk for working with the encoded data
-    metadata_filename = os.path.join(output_dir, 'metadata.csv')
     label_metadata.to_csv(metadata_filename, index=False)
 
     return output_dir
