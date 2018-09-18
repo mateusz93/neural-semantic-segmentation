@@ -1,7 +1,7 @@
 Animal              Pedestrian
-Archway             Wall
+Archway             Building
 Bicyclist           Bicyclist
-Bridge              Wall
+Bridge              Building
 Building            Building
 Car                 Car
 CartLuggagePram     Car
