@@ -103,13 +103,13 @@ class CamVid(object):
 
     def unmap(self, y):
         """
-        .
+        Unmap a onehot vector y frame to the target RGB values.
 
         Args:
-            y
+            y: the softmax values to convert to an RGB image
 
         Returns:
-
+            an RGB encoding of the softmax (or onehot) input tensor
 
         """
         return np.stack(self._unmap(y.argmax(axis=-1)), axis=-1)
@@ -130,8 +130,6 @@ class CamVid(object):
             generators[subset] = zip(x, y)
 
         return generators
-
-
 
 
 # explicitly define the outward facing API of this module
