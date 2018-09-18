@@ -117,15 +117,15 @@ class CamVid(object):
     def generators(self):
         """Return a dictionary with both training and validation generators."""
         # create the RAW image data generator
-        x = CropImageDataGenerator(**self.data_gen_args)
+        x_data = CropImageDataGenerator(**self.data_gen_args)
         # create the segmentation data generator as a One-Hot tensor
-        y = CropNumpyDataGenerator(**self.data_gen_args)
+        y_data = CropNumpyDataGenerator(**self.data_gen_args)
         # the dictionaries to hold generators by key value
         generators = {}
         # iterate over the subsets in the generators
         for subset in ['training', 'validation']:
-            x = x.flow_from_directory(X_DIR, subset=subset, **self.flow_args)
-            y = y.flow_from_directory(self.y_dir, subset=subset, **self.flow_args)
+            x = x_data.flow_from_directory(X_DIR, subset=subset, **self.flow_args)
+            y = y_data.flow_from_directory(self.y_dir, subset=subset, **self.flow_args)
             # zip the X and y generators into a single generator
             generators[subset] = zip(x, y)
 
