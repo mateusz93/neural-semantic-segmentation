@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 from ._generators import CropImageDataGenerator
 from ._generators import CropNumpyDataGenerator
+from ._generators import repeat_generator
 
 
 class CamVid(object):
@@ -12,6 +13,8 @@ class CamVid(object):
 
     def __init__(self,
         y_dir: str,
+        x_repeats: int=0,
+        y_repeats: int=0,
         target_size: tuple=(720, 960),
         crop_size: tuple=(224, 224),
         horizontal_flip: bool=False,
@@ -26,6 +29,8 @@ class CamVid(object):
 
         Args:
             y_dir: the directory name with the y label data
+            x_repeats: the number of times to repeat the output of x generator
+            y_repeats: the number of times to repeat the output of y generator
             target_size: the image size of the dataset
             crop_size: the size to crop images to. if None, apply no crop
             horizontal_flip: whether to randomly flip images horizontally
@@ -45,6 +50,8 @@ class CamVid(object):
         self.x_dir = os.path.join(this_dir, 'X')
         self.y_dir = os.path.join(this_dir, y_dir)
         # store remaining keyword arguments
+        self.x_repeats = x_repeats
+        self.y_repeats = y_repeats
         self.target_size = target_size
         self.crop_size = crop_size
         self.horizontal_flip = horizontal_flip
@@ -104,7 +111,7 @@ class CamVid(object):
     def discrete_to_rgb_map(self) -> dict:
         """Return a dictionary mapping discrete codes to RGB pixels."""
         rgb_draw = self._discrete_dict('rgb_draw')
-        # convert the strings in the rgb draw column to tuples
+        # convert the strings in the RGB draw column to tuples
         return {k: make_tuple(v) for (k, v) in rgb_draw.items()}
 
     @property
@@ -137,8 +144,11 @@ class CamVid(object):
         for subset in ['training', 'validation']:
             x = x_data.flow_from_directory(self.x_dir, subset=subset, **self.flow_args)
             y = y_data.flow_from_directory(self.y_dir, subset=subset, **self.flow_args)
-            # zip the X and y generators into a single generator
-            generators[subset] = zip(x, y)
+            # combine X and y generators into a single generator with repeats
+            generators[subset] = repeat_generator(x, y,
+                x_repeats=self.x_repeats,
+                y_repeats=self.y_repeats,
+            )
 
         return generators
 
