@@ -86,6 +86,16 @@ def classification(x: 'Tensor', num_classes: int) -> 'Tensor':
         an updated graph with dense convolution followed by Softmax activation
 
     """
+    x = Conv2D(num_classes,
+        kernel_size=(1, 1),
+        padding='same',
+        kernel_initializer='he_uniform',
+        kernel_regularizer=l2(1e-4),
+    )(x)
+    x = BatchNormalization()(x)
+    x = Activation('softmax')(x)
+    return x
+
 
 def build_segnet(
     image_shape: tuple,
@@ -110,27 +120,20 @@ def build_segnet(
     inputs = Input(image_shape)
     # assume 8-bit inputs and convert to floats in [0,1]
     x = Lambda(lambda x: x / 255.0)(inputs)
-    # downsample
+    # down-sample
     x = downsample(x, num_conv=2, num_filters=64)
     x = downsample(x, num_conv=2, num_filters=128)
     x = downsample(x, num_conv=3, num_filters=256)
     x = downsample(x, num_conv=3, num_filters=512)
     x = downsample(x, num_conv=3, num_filters=512)
-    # upsample
+    # up-sample
     x = upsample(x, num_conv=3, num_filters=512)
     x = upsample(x, num_conv=3, num_filters=512)
     x = upsample(x, num_conv=3, num_filters=256)
     x = upsample(x, num_conv=2, num_filters=128)
     x = upsample(x, num_conv=1, num_filters=64)
     # classification
-    x = Conv2D(num_classes,
-        kernel_size=(1, 1),
-        padding='same',
-        kernel_initializer='he_uniform',
-        kernel_regularizer=l2(1e-4),
-    )(x)
-    x = BatchNormalization()(x)
-    x = Activation('softmax')(x)
+    x = classification(x, num_classes)
     # compile the graph
     model = Model(inputs=[inputs], outputs=[x])
     model.compile(
