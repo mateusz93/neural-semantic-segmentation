@@ -13,16 +13,16 @@ from .iou import mean_iou
 from .iou import build_iou_for
 
 
-def conv_bn(x: 'Tensor', num_filters: int) -> 'Tensor':
+def conv_bn_relu(x: 'Tensor', num_filters: int) -> 'Tensor':
     """
-    Append a Conv + Batch Normalization block to an input tensor.
+    Append a conv + batch normalization + relu block to an input tensor.
 
     Args:
         x: the input tensor to append this dense block to
         num_filters: the number of filters in the convolutional layer
 
     Returns:
-        an updated graph with Conv + Batch Normalization block added
+        an updated graph with conv + batch normalization + relu block added
 
     """
     x = Conv2D(num_filters,
@@ -32,22 +32,6 @@ def conv_bn(x: 'Tensor', num_filters: int) -> 'Tensor':
         kernel_regularizer=l2(1e-4),
     )(x)
     x = BatchNormalization()(x)
-    return x
-
-
-def conv_bn_relu(x: 'Tensor', num_filters: int) -> 'Tensor':
-    """
-    Append a Conv + Batch Normalization + ReLu block to an input tensor.
-
-    Args:
-        x: the input tensor to append this dense block to
-        num_filters: the number of filters in the convolutional layer
-
-    Returns:
-        an updated graph with Conv + Batch Normalization + ReLu block added
-
-    """
-    x = conv_bn(x, num_filters)
     x = Activation('relu')(x)
     return x
 
@@ -57,7 +41,7 @@ def downsample(x: 'Tensor', num_conv: int, num_filters: int) -> 'Tensor':
     Append a down-sampling block with a given size and number of filters.
 
     Args:
-        x: the input tensor to append this downsample block to
+        x: the input tensor to append this down-sample block to
         num_conv: the number of convolutional blocks to use before pooling
         num_filters: the number of filters in each convolutional layer
 
@@ -76,12 +60,12 @@ def upsample(x: 'Tensor', num_conv: int, num_filters: int) -> 'Tensor':
     Append an up-sampling block with a given size and number of filters.
 
     Args:
-        x: the input tensor to append this upsample block to
+        x: the input tensor to append this up-sample block to
         num_conv: the number of convolutional blocks to use before pooling
         num_filters: the number of filters in each convolutional layer
 
     Returns:
-        an updated graph with transpose conv followed by num_conv conv blocks
+        an updated graph with up-sampling followed by num_conv conv blocks
 
     """
     x = UpSampling2D(size=(2, 2))(x)
@@ -89,6 +73,19 @@ def upsample(x: 'Tensor', num_conv: int, num_filters: int) -> 'Tensor':
         x = conv_bn_relu(x, num_filters)
     return x
 
+
+def classification(x: 'Tensor', num_classes: int) -> 'Tensor':
+    """
+    .
+
+    Args:
+        x: the input tensor to append this classification block to
+        num_classes: the number of classes to predict
+
+    Returns:
+        an updated graph with dense convolution followed by Softmax activation
+
+    """
 
 def build_segnet(
     image_shape: tuple,
@@ -126,7 +123,13 @@ def build_segnet(
     x = upsample(x, num_conv=2, num_filters=128)
     x = upsample(x, num_conv=1, num_filters=64)
     # classification
-    x = conv_bn(x, num_classes)
+    x = Conv2D(num_classes,
+        kernel_size=(1, 1),
+        padding='same',
+        kernel_initializer='he_uniform',
+        kernel_regularizer=l2(1e-4),
+    )(x)
+    x = BatchNormalization()(x)
     x = Activation('softmax')(x)
     # compile the graph
     model = Model(inputs=[inputs], outputs=[x])
