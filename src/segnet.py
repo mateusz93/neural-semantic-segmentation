@@ -13,7 +13,7 @@ from .iou import mean_iou
 from .iou import build_iou_for
 
 
-def conv_bn_relu(x: 'Tensor', num_filters: int) -> 'Tensor':
+def conv_bn_relu(x, num_filters: int):
     """
     Append a conv + batch normalization + relu block to an input tensor.
 
@@ -36,7 +36,7 @@ def conv_bn_relu(x: 'Tensor', num_filters: int) -> 'Tensor':
     return x
 
 
-def downsample(x: 'Tensor', num_conv: int, num_filters: int) -> 'Tensor':
+def downsample(x, num_conv: int, num_filters: int):
     """
     Append a down-sampling block with a given size and number of filters.
 
@@ -46,22 +46,25 @@ def downsample(x: 'Tensor', num_conv: int, num_filters: int) -> 'Tensor':
         num_filters: the number of filters in each convolutional layer
 
     Returns:
-        an updated graph with num_conv conv blocks followed by max pooling
+        a tuple of:
+        - an updated graph with num_conv conv blocks followed by max pooling
+        - the pooling layer to get indexes from for up-sampling
 
     """
     for _ in range(num_conv):
         x = conv_bn_relu(x, num_filters)
     pool = MemorizedMaxPooling2D(pool_size=(2, 2), strides=(2, 2))
     x = pool(x)
-    return x, pool.idx
+    return x, pool
 
 
-def upsample(x: 'Tensor', idx: 'Tensor', num_conv: int, num_filters: int) -> 'Tensor':
+def upsample(x, pool: MemorizedMaxPooling2D, num_conv: int, num_filters: int):
     """
     Append an up-sampling block with a given size and number of filters.
 
     Args:
         x: the input tensor to append this up-sample block to
+        pool: the corresponding memorized pooling layer to reference indexes
         num_conv: the number of convolutional blocks to use before pooling
         num_filters: the number of filters in each convolutional layer
 
@@ -69,19 +72,19 @@ def upsample(x: 'Tensor', idx: 'Tensor', num_conv: int, num_filters: int) -> 'Te
         an updated graph with up-sampling followed by num_conv conv blocks
 
     """
-    x = MemorizedUpsampling2D(size=(2, 2), idx=idx)(x)
+    x = MemorizedUpsampling2D(pool=pool)(x)
     for _ in range(num_conv):
         x = conv_bn_relu(x, num_filters)
     return x
 
 
-def classification(x: 'Tensor', num_classes: int) -> 'Tensor':
+def classification(x, num_classes: int):
     """
-    .
+    Add a Softmax classification block to an input CNN.
 
     Args:
-        x: the input tensor to append this classification block to
-        num_classes: the number of classes to predict
+        x: the input tensor to append this classification block to (CNN)
+        num_classes: the number of classes to predict with Softmax
 
     Returns:
         an updated graph with dense convolution followed by Softmax activation
