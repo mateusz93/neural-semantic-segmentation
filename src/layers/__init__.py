@@ -1,6 +1,6 @@
 """Custom Keras layers used by graphs in this repository."""
-from .memorize_pooling_2d import MemorizedMaxPooling2D
-from .memorize_upsampling_2d import MemorizedUpsampling2D
+from .memorized_pooling_2d import MemorizedMaxPooling2D
+from .memorized_upsampling_2d import MemorizedUpsampling2D
 
 
 # explicitly define the outward facing API of this package
