@@ -1,4 +1,4 @@
-"""An implementation of the Tiramisu DenseNet for semantic segmentation."""
+"""An implementation of Tiramisu DenseNet."""
 from keras.models import Model
 from keras.layers import Input
 from keras.layers import BatchNormalization
