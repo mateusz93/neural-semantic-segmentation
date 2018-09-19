@@ -42,8 +42,7 @@ def categorical_crossentropy(target, output, weights=None, axis=-1):
     # manual computation of crossentropy
     _epsilon = _to_tensor(K.epsilon(), output.dtype.base_dtype)
     output = tf.clip_by_value(output, _epsilon, 1. - _epsilon)
-    output = output * weights
-    return - tf.reduce_sum(target * tf.log(output), axis)
+    return - tf.reduce_sum(target * tf.log(output) * weights, axis)
 
 
 def pool2d_argmax(x, pool_size,
