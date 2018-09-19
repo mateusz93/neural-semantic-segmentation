@@ -11,8 +11,7 @@ class MemorizedMaxPooling2D(MaxPooling2D):
         super(MemorizedMaxPooling2D, self).__init__(*args, **kwargs)
         self.idx = None
 
-    def _pooling_function(self, inputs, pool_size, strides,
-                          padding, data_format):
+    def _pooling_function(self, inputs, pool_size, strides, padding, data_format):
         pool = pool2d_argmax(inputs, pool_size, strides, padding, data_format,
             pool_mode='max'
         )
@@ -21,6 +20,4 @@ class MemorizedMaxPooling2D(MaxPooling2D):
 
 
 # explicitly define the outward facing API of this module
-__all__ = [
-    MemorizedMaxPooling2D.__name__,
-]
+__all__ = [MemorizedMaxPooling2D.__name__]
