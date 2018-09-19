@@ -73,7 +73,7 @@ class CamVid(object):
         # calculate the frequency of each class
         freq = weights['pixels'] / weights['pixels_total']
         # calculate the weights as the median frequency divided by all freq
-        return (freq.median() / freq).to_dict()
+        return (freq.median() / freq).values
 
     @property
     def data_gen_args(self) -> dict:

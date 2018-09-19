@@ -3,6 +3,47 @@ from keras import backend as K
 from keras.backend.tensorflow_backend import tf
 from keras.backend.tensorflow_backend import _preprocess_conv2d_input
 from keras.backend.tensorflow_backend import _preprocess_padding
+from keras.backend.tensorflow_backend import _to_tensor
+
+
+def categorical_crossentropy(target, output, weights=None, axis=-1):
+    """Categorical crossentropy between an output tensor and a target tensor.
+    # Arguments
+        target: A tensor of the same shape as `output`.
+        output: A tensor resulting from a softmax
+            (unless `from_logits` is True, in which
+            case `output` is expected to be the logits).
+        weights:
+        axis: Int specifying the channels axis. `axis=-1`
+            corresponds to data format `channels_last`,
+            and `axis=1` corresponds to data format
+            `channels_first`.
+    # Returns
+        Output tensor.
+    # Raises
+        ValueError: if `axis` is neither -1 nor one of
+            the axes of `output`.
+    """
+    if weights is None:
+        return K.categorical_crossentropy(target, output,
+            from_logits=False,
+            axis=axis
+        )
+    output_dimensions = list(range(len(output.get_shape())))
+    if axis != -1 and axis not in output_dimensions:
+        raise ValueError(
+            '{}{}{}'.format(
+                'Unexpected channels axis {}. '.format(axis),
+                'Expected to be -1 or one of the axes of `output`, ',
+                'which has {} dimensions.'.format(len(output.get_shape()))))
+
+    # scale preds so that the class probas of each sample sum to 1
+    output /= tf.reduce_sum(output, axis, True)
+    # manual computation of crossentropy
+    _epsilon = _to_tensor(K.epsilon(), output.dtype.base_dtype)
+    output = tf.clip_by_value(output, _epsilon, 1. - _epsilon)
+    output = output * weights
+    return - tf.reduce_sum(target * tf.log(output), axis)
 
 
 def pool2d_argmax(x, pool_size,

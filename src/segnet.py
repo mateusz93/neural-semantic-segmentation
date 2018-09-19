@@ -12,6 +12,7 @@ from .layers import MemorizedMaxPooling2D
 from .layers import MemorizedUpsampling2D
 from .metrics import mean_iou
 from .metrics import build_iou_for
+from .losses import build_weighted_categorical_crossentropy
 
 
 def conv_bn_relu(x, num_filters: int, num_blocks: int=1):
@@ -108,6 +109,7 @@ def build_segnet(
     label_names: dict=None,
     optimizer=SGD(lr=0.1, momentum=0.9),
     pretrain_encoder: bool=True,
+    class_weights=None
 ) -> Model:
     """
     Build a SegNet model for the given image shape.
@@ -118,6 +120,7 @@ def build_segnet(
         label_names: a dictionary mapping discrete labels to names for IoU
         optimizer: the optimizer for training the network
         pretrain_encoder: whether to initialize the encoder from VGG16
+        class_weights: the weights for each class
 
     Returns:
         a Keras model of the 103 layer Tiramisu version of DenseNet
@@ -145,7 +148,7 @@ def build_segnet(
     model = Model(inputs=[inputs], outputs=[x])
     model.compile(
         optimizer=optimizer,
-        loss='categorical_crossentropy',
+        loss=build_weighted_categorical_crossentropy(class_weights),
         metrics=[
             'accuracy',
             mean_iou,
