@@ -7,7 +7,7 @@ from keras.layers import Activation
 from keras.layers import UpSampling2D
 from keras.layers import MaxPooling2D
 from keras.layers import Lambda
-from keras.optimizers import RMSprop
+from keras.optimizers import SGD
 from keras.regularizers import l2
 from .iou import mean_iou
 from .iou import build_iou_for
@@ -94,7 +94,7 @@ def build_segnet(
     image_shape: tuple,
     num_classes: int,
     label_names: dict=None,
-    learning_rate: float=1e-3,
+    optimizer=SGD(lr=0.1, momentum=0.9)
 ) -> Model:
     """
     Build a SegNet model for the given image shape.
@@ -103,7 +103,7 @@ def build_segnet(
         image_shape: the image shape to create the model for
         num_classes: the number of classes to segment for (e.g. c)
         label_names: a dictionary mapping discrete labels to names for IoU
-        learning_rate: the learning rate for the RMSprop optimizer
+        optimizer: the optimizer for training the network
 
     Returns:
         a Keras model of the 103 layer Tiramisu version of DenseNet
@@ -131,7 +131,7 @@ def build_segnet(
     # compile the graph
     model = Model(inputs=[inputs], outputs=[x])
     model.compile(
-        optimizer=RMSprop(lr=learning_rate),
+        optimizer=optimizer,
         loss='categorical_crossentropy',
         metrics=[
             'accuracy',
