@@ -67,6 +67,15 @@ class CamVid(object):
         return len(self.metadata['code'].unique())
 
     @property
+    def class_weights(self) -> dict:
+        """Return a dictionary of class weights keyed by discrete label."""
+        weights = pd.read_csv(os.path.join(self._y, 'weights.csv'), index_col=0)
+        # calculate the frequency of each class
+        freq = weights['pixels'] / weights['pixels_total']
+        # calculate the weights as the median frequency divided by all freq
+        return (freq.median() / freq).to_dict()
+
+    @property
     def data_gen_args(self) -> dict:
         """Return the keyword arguments for creating a new data generator."""
         return dict(

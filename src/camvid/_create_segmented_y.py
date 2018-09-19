@@ -112,6 +112,13 @@ def create_segmented_y(
         np.save(output_file, onehot)
     # save the metadata to disk for working with the encoded data
     metadata.to_csv(metadata_filename, index=False)
+    # calculate the number of pixels belonging to each class in training
+    train_files = glob.glob(os.path.join(train, 'data/*.npy'))
+    imgs = np.stack(np.load(file) for file in train_files)
+    class_totals = imgs.sum(axis=(0, 1, 2))
+    file_totals = imgs.any(axis=(1, 2)).sum(axis=0) * np.prod(imgs.shape[1:-1])
+    class_totals = pd.DataFrame([class_totals, file_totals], index=['pixels', 'pixels_total']).T
+    class_totals.to_csv(os.path.join(output_dir, 'weights.csv'))
 
     return output_dir
 
