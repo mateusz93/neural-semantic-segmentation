@@ -7,6 +7,7 @@ from keras.layers import Activation
 from keras.layers import Lambda
 from keras.optimizers import SGD
 from keras.regularizers import l2
+from keras.applications.vgg16 import VGG16
 from .layers import MemorizedMaxPooling2D
 from .layers import MemorizedUpsampling2D
 from .iou import mean_iou
@@ -105,7 +106,8 @@ def build_segnet(
     image_shape: tuple,
     num_classes: int,
     label_names: dict=None,
-    optimizer=SGD(lr=0.1, momentum=0.9)
+    optimizer=SGD(lr=0.1, momentum=0.9),
+    transfer_imagenet: bool=True,
 ) -> Model:
     """
     Build a SegNet model for the given image shape.
@@ -115,6 +117,7 @@ def build_segnet(
         num_classes: the number of classes to segment for (e.g. c)
         label_names: a dictionary mapping discrete labels to names for IoU
         optimizer: the optimizer for training the network
+        transfer_imagenet: whether to initialize the down-sampler from VGG16
 
     Returns:
         a Keras model of the 103 layer Tiramisu version of DenseNet
@@ -149,6 +152,20 @@ def build_segnet(
             *build_iou_for(list(range(num_classes)), label_names),
         ],
     )
+    # if transfer learning from ImageNet is disabled, return the model as is
+    if not transfer_imagenet:
+        return model
+    # load the pre-trained VGG16 model using ImageNet weights
+    vgg16 = VGG16(weights='imagenet', include_top=False)
+    # extract all the convolutional layers (downsampling layers) from VGG16
+    vgg16_conv = [layer for layer in vgg16.layers if isinstance(layer, Conv2D)]
+    # extract all convolutional layers from SegNet, the first len(vgg16_conv)
+    # layers in this list are architecturally congruent with the layers in
+    # vgg16_conv by index
+    model_conv = [layer for layer in model.layers if isinstance(layer, Conv2D)]
+    # iterate over the VGG16 layers and replace the SegNet downsampling weights
+    for idx, layer in enumerate(vgg16_conv):
+        model_conv[idx].set_weights(layer.get_weights())
 
     return model
 
