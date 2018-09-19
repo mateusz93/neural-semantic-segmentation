@@ -1,7 +1,7 @@
 """A Keras metric to calculate the per class accuracy given some weights."""
 from keras import backend as K
 
-
+# weights info: https://github.com/alexgkendall/caffe-segnet/issues/37
 def build_per_class_accuracy(weights=None):
     """
     Build a per class metric accuracy with input parameters.
