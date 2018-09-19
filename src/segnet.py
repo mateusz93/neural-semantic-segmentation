@@ -131,7 +131,7 @@ def build_segnet(
     x = upsample(x, num_conv=3, num_filters=512)
     x = upsample(x, num_conv=3, num_filters=256)
     x = upsample(x, num_conv=2, num_filters=128)
-    x = upsample(x, num_conv=1, num_filters=64)
+    x = upsample(x, num_conv=2, num_filters=64)
     # classification
     x = classification(x, num_classes)
     # compile the graph
