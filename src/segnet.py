@@ -10,8 +10,8 @@ from keras.regularizers import l2
 from keras.applications.vgg16 import VGG16
 from .layers import MemorizedMaxPooling2D
 from .layers import MemorizedUpsampling2D
-from .iou import mean_iou
-from .iou import build_iou_for
+from .metrics import mean_iou
+from .metrics import build_iou_for
 
 
 def conv_bn_relu(x, num_filters: int, num_blocks: int=1):
