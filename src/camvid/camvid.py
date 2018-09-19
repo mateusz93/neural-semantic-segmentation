@@ -20,7 +20,6 @@ class CamVid(object):
         crop_size: tuple=(224, 224),
         horizontal_flip: bool=False,
         vertical_flip: bool=True,
-        validation_split: float=0.3,
         batch_size: int=3,
         shuffle: bool=True,
         seed: int=1,
@@ -36,7 +35,6 @@ class CamVid(object):
             crop_size: the size to crop images to. if None, apply no crop
             horizontal_flip: whether to randomly flip images horizontally
             vertical_flip whether to randomly flip images vertically
-            validation_split: the size of the validation set in [0, 1]
             batch_size: the number of images to load per batch
             shuffle: whether to shuffle images in the dataset
             seed: the random seed to use for the generator
@@ -57,7 +55,6 @@ class CamVid(object):
         self.crop_size = crop_size
         self.horizontal_flip = horizontal_flip
         self.vertical_flip = vertical_flip
-        self.validation_split = validation_split
         self.batch_size = batch_size
         self.shuffle = shuffle
         self.seed = seed
@@ -75,7 +72,6 @@ class CamVid(object):
         return dict(
             horizontal_flip=self.horizontal_flip,
             vertical_flip=self.vertical_flip,
-            validation_split=self.validation_split,
             image_size=self.crop_size
         )
 
@@ -139,18 +135,20 @@ class CamVid(object):
         x_g = CropImageDataGenerator(**self.data_gen_args)
         y_g = CropNumpyDataGenerator(**self.data_gen_args)
         # the dictionary to hold generators by key value (training, validation)
-        gen = dict()
+        generators = dict()
         # iterate over the generator subsets
-        for key in ['training', 'validation']:
+        for subset in ['train', 'val', 'test']:
+            _x = os.path.join(self._x, subset)
+            _y = os.path.join(self._y, subset)
             # combine X and y generators into a single generator with repeats
-            gen[key] = repeat_generator(
-                x_g.flow_from_directory(self._x, subset=key, **self.flow_args),
-                y_g.flow_from_directory(self._y, subset=key, **self.flow_args),
+            generators[subset] = repeat_generator(
+                x_g.flow_from_directory(_x, **self.flow_args),
+                y_g.flow_from_directory(_y, **self.flow_args),
                 x_repeats=self.x_repeats,
                 y_repeats=self.y_repeats,
             )
 
-        return gen
+        return generators
 
 
 # explicitly define the outward facing API of this module
