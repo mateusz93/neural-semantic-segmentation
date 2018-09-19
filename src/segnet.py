@@ -9,6 +9,8 @@ from keras.layers import MaxPooling2D
 from keras.layers import Lambda
 from keras.optimizers import SGD
 from keras.regularizers import l2
+from .layers import MemorizedMaxPooling2D
+from .layers import MemorizedUpsampling2D
 from .iou import mean_iou
 from .iou import build_iou_for
 
@@ -51,11 +53,12 @@ def downsample(x: 'Tensor', num_conv: int, num_filters: int) -> 'Tensor':
     """
     for _ in range(num_conv):
         x = conv_bn_relu(x, num_filters)
-    x = MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(x)
-    return x
+    pool = MemorizedMaxPooling2D(pool_size=(2, 2), strides=(2, 2))
+    x = pool(x)
+    return x, pool.idx
 
 
-def upsample(x: 'Tensor', num_conv: int, num_filters: int) -> 'Tensor':
+def upsample(x: 'Tensor', idx: 'Tensor', num_conv: int, num_filters: int) -> 'Tensor':
     """
     Append an up-sampling block with a given size and number of filters.
 
@@ -68,7 +71,7 @@ def upsample(x: 'Tensor', num_conv: int, num_filters: int) -> 'Tensor':
         an updated graph with up-sampling followed by num_conv conv blocks
 
     """
-    x = UpSampling2D(size=(2, 2))(x)
+    x = MemorizedUpsampling2D(size=(2, 2), idx=idx)(x)
     for _ in range(num_conv):
         x = conv_bn_relu(x, num_filters)
     return x
@@ -121,17 +124,17 @@ def build_segnet(
     # assume 8-bit inputs and convert to floats in [0,1]
     x = Lambda(lambda x: x / 255.0)(inputs)
     # down-sample
-    x = downsample(x, num_conv=2, num_filters=64)
-    x = downsample(x, num_conv=2, num_filters=128)
-    x = downsample(x, num_conv=3, num_filters=256)
-    x = downsample(x, num_conv=3, num_filters=512)
-    x = downsample(x, num_conv=3, num_filters=512)
+    x, p1 = downsample(x, num_conv=2, num_filters=64)
+    x, p2 = downsample(x, num_conv=2, num_filters=128)
+    x, p3 = downsample(x, num_conv=3, num_filters=256)
+    x, p4 = downsample(x, num_conv=3, num_filters=512)
+    x, p5 = downsample(x, num_conv=3, num_filters=512)
     # up-sample
-    x = upsample(x, num_conv=3, num_filters=512)
-    x = upsample(x, num_conv=3, num_filters=512)
-    x = upsample(x, num_conv=3, num_filters=256)
-    x = upsample(x, num_conv=2, num_filters=128)
-    x = upsample(x, num_conv=2, num_filters=64)
+    x = upsample(x, p5, num_conv=3, num_filters=512)
+    x = upsample(x, p4, num_conv=3, num_filters=256)
+    x = upsample(x, p3, num_conv=3, num_filters=128)
+    x = upsample(x, p2, num_conv=2, num_filters=64)
+    x = upsample(x, p1, num_conv=2, num_filters=64)
     # classification
     x = classification(x, num_classes)
     # compile the graph
