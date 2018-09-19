@@ -38,7 +38,7 @@ def build_iou_for(label: int, name: str=None):
 
     Returns:
         a keras metric to evaluate IoU for the given label
-        
+
     Note:
         label and name support list inputs for multiple labels
 
@@ -71,7 +71,7 @@ def build_iou_for(label: int, name: str=None):
     label_iou.__name__ = 'iou_{}'.format(name)
 
     return label_iou
-        
+
 
 def mean_iou(y_true, y_pred):
     """
@@ -97,4 +97,7 @@ def mean_iou(y_true, y_pred):
 
 
 # explicitly define the outward facing API of this module
-__all__ = [build_iou_for.__name__, mean_iou.__name__]
+__all__ = [
+    build_iou_for.__name__,
+    mean_iou.__name__
+]
