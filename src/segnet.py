@@ -4,8 +4,6 @@ from keras.layers import Input
 from keras.layers import BatchNormalization
 from keras.layers import Conv2D
 from keras.layers import Activation
-from keras.layers import UpSampling2D
-from keras.layers import MaxPooling2D
 from keras.layers import Lambda
 from keras.optimizers import SGD
 from keras.regularizers import l2
