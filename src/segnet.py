@@ -14,26 +14,28 @@ from .iou import mean_iou
 from .iou import build_iou_for
 
 
-def conv_bn_relu(x, num_filters: int):
+def conv_bn_relu(x, num_filters: int, num_blocks: int=1):
     """
     Append a conv + batch normalization + relu block to an input tensor.
 
     Args:
         x: the input tensor to append this dense block to
         num_filters: the number of filters in the convolutional layer
+        num_blocks: the number of blocks in the layer (repetitions)
 
     Returns:
         an updated graph with conv + batch normalization + relu block added
 
     """
-    x = Conv2D(num_filters,
-        kernel_size=(3, 3),
-        padding='same',
-        kernel_initializer='he_uniform',
-        kernel_regularizer=l2(1e-4),
-    )(x)
-    x = BatchNormalization()(x)
-    x = Activation('relu')(x)
+    for _ in range(num_blocks):
+        x = Conv2D(num_filters,
+            kernel_size=(3, 3),
+            padding='same',
+            kernel_initializer='he_uniform',
+            kernel_regularizer=l2(1e-4),
+        )(x)
+        x = BatchNormalization()(x)
+        x = Activation('relu')(x)
     return x
 
 
@@ -52,8 +54,7 @@ def encode(x, num_conv: int, num_filters: int):
         - the pooling layer to get indexes from for up-sampling
 
     """
-    for _ in range(num_conv):
-        x = conv_bn_relu(x, num_filters)
+    x = conv_bn_relu(x, num_filters, num_conv)
     pool = MemorizedMaxPooling2D(pool_size=(2, 2), strides=(2, 2))
     x = pool(x)
     return x, pool
@@ -74,8 +75,7 @@ def decode(x, pool: MemorizedMaxPooling2D, num_conv: int, num_filters: int):
 
     """
     x = MemorizedUpsampling2D(pool=pool)(x)
-    for _ in range(num_conv):
-        x = conv_bn_relu(x, num_filters)
+    x = conv_bn_relu(x, num_filters, num_conv)
     return x
 
 
