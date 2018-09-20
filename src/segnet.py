@@ -131,8 +131,8 @@ def build_segnet(
     # assume 8-bit inputs and convert to floats in [0,1]
     x = Lambda(lambda x: x / 255.0)(inputs)
     # apply contrast normalization if set
-    if contrast_normalization is not None:
-        x = ContrastNormalization(method=contrast_normalization)(x)
+    if contrast_norm is not None:
+        x = ContrastNormalization(method=contrast_norm)(x)
     # encoder
     x, p1 = encode(x, 2 * [64])
     x, p2 = encode(x, 2 * [128])
