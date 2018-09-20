@@ -42,11 +42,19 @@ The following table outlines the testing results from SegNet on CamVid 11.
 | iou_Sky         | 0.896308
 | iou_Tree        | 0.647563
 
-![download 2](https://user-images.githubusercontent.com/2184469/45790933-f5ab9800-bc4c-11e8-92ec-d867022647a5.png)
-
-![download 1](https://user-images.githubusercontent.com/2184469/45790934-f5ab9800-bc4c-11e8-9cf3-bd4d1a752a65.png)
-
-![download](https://user-images.githubusercontent.com/2184469/45790935-f5ab9800-bc4c-11e8-82d2-ce8f80e9c706.png)
+<table style="width:100%">
+  <tr>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/45790933-f5ab9800-bc4c-11e8-92ec-d867022647a5.png" />
+    </td>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/45790934-f5ab9800-bc4c-11e8-9cf3-bd4d1a752a65.png" />
+    </td> 
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/45790935-f5ab9800-bc4c-11e8-82d2-ce8f80e9c706.png" />
+    </td>
+  </tr>
+</table>
 
 <!-- ### 11 Class
 
