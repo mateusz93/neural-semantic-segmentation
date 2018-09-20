@@ -1,15 +1,16 @@
 """An Image Generator extension to crop images to a given size."""
 import numpy as np
 from keras.preprocessing.image import ImageDataGenerator
+from .numpy_data_generator import NumpyDataGenerator
 
 
-def _crop_dim(s: int, s_crop: int) -> tuple:
+def crop_dim(dim: int, crop_size: int) -> tuple:
     """
     Return the crop bounds of a dimension using RNG.
 
     Args:
-        s: the value of the dimension
-        s_crop: the value to crop the dimension to
+        dim: the value of the dimension
+        crop_size: the value to crop the dimension to
 
     Returns:
         a tuple of:
@@ -17,20 +18,16 @@ def _crop_dim(s: int, s_crop: int) -> tuple:
         -   the stopping point of the crop
 
     """
-    # if the crop size is equal to the input size,
-    # just return the uncropped dimension
-    if s_crop == s:
-        return 0, s
-    # otherwise generate a random anchor point and
-    # add s crop to it to get the start and stop
-    # points
-    else:
-        s0 = np.random.randint(0, s - s_crop)
-        s1 = s0 + s_crop
-        return s0, s1
+    # if crop size is equal to input size, return the input dimension
+    if crop_size == dim:
+        return 0, dim
+    # otherwise generate a random anchor point and add the crop size to it
+    dim_0 = np.random.randint(0, dim - crop_size)
+    dim_1 = dim_0 + crop_size
+    return dim_0, dim_1
 
 
-def _random_crop(tensor: 'numpy.ndarray', image_size: tuple) -> 'numpy.ndarray':
+def random_crop(tensor: np.ndarray, image_size: tuple) -> np.ndarray:
     """
     Return a random crop of a tensor.
 
@@ -43,24 +40,24 @@ def _random_crop(tensor: 'numpy.ndarray', image_size: tuple) -> 'numpy.ndarray':
 
     """
     # crop the height
-    h0, h1 = _crop_dim(tensor.shape[0], image_size[0])
+    h_0, h_1 = crop_dim(tensor.shape[0], image_size[0])
     # crop the width
-    w0, w1 = _crop_dim(tensor.shape[1], image_size[1])
+    w_0, w_1 = crop_dim(tensor.shape[1], image_size[1])
     # return the cropped tensor
-    return tensor[h0:h1, w0:w1]
+    return tensor[h_0:h_1, w_0:w_1]
 
 
-class CropImageDataGenerator(ImageDataGenerator):
-    """An Image Generator extension to crop images to a given size."""
+class CropDataGenerator(object):
+    """An Image Generator extension to crop tensors to a given size."""
 
     def __init__(self, *args, image_size=None, **kwargs) -> None:
         """
         Create a new Segment Image Data generator.
 
         Args:
-            args: positional arguments for the ImageDataGenerator super class
+            *args: positional arguments for the ImageDataGenerator super class
             image_size: the image size to crop to
-            kwargs: keyword arguments for the ImageDataGenerator super class
+            **kwargs: keyword arguments for the ImageDataGenerator super class
 
         Returns:
             None
@@ -77,8 +74,7 @@ class CropImageDataGenerator(ImageDataGenerator):
         batch = super().apply_transform(*args, **kwargs)
         # map this batch of items to output dimension
         if self.image_size is not None:
-            return _random_crop(batch, self.image_size)
-
+            return random_crop(batch, self.image_size)
         return batch
 
     def flow_from_directory(self, *args, **kwargs):
@@ -92,5 +88,16 @@ class CropImageDataGenerator(ImageDataGenerator):
         return iterator
 
 
+class CropImageDataGenerator(CropDataGenerator, ImageDataGenerator):
+    """An Image Generator extension to crop images to a given size."""
+
+
+class CropNumpyDataGenerator(CropDataGenerator, NumpyDataGenerator):
+    """An Image Generator extension to crop NumPy tensors to a given size."""
+
+
 # explicitly define the outward facing API of this module
-__all__ = [CropImageDataGenerator.__name__]
+__all__ = [
+    CropImageDataGenerator.__name__,
+    CropNumpyDataGenerator.__name__,
+]
