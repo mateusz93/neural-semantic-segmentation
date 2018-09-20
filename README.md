@@ -24,7 +24,11 @@ GPU, and Intel Xeon CPU @ 2.10GHz.
 
 ### SegNet
 
-The following table outlines the testing results from SegNet on CamVid 11.
+-   [x] median frequency balancing of class labels [Eigen et al. (2014)](https://arxiv.org/abs/1411.4734)
+-   [x] local contrast normalization of inputs [LeCun et al. (2009)](http://yann.lecun.com/exdb/publis/pdf/jarrett-iccv-09.pdf)
+-   [x] pooling indexes [Badrinarayanan et al. (2016)](https://arxiv.org/pdf/1511.00561.pdf)
+
+The following table outlines the testing results from SegNet.
 
 | Metric          | Validation |
 |:----------------|:-----------|
