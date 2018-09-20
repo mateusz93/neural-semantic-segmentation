@@ -25,7 +25,7 @@ dataset.
 
 ## [SegNet][Badrinarayanan et al. (2016)]
 
-<table style="width:100%">
+<table>
   <tr>
     <td>
       <img src="https://user-images.githubusercontent.com/2184469/45845186-1118b080-bcea-11e8-967f-d1d0b9d93bb8.png" />
@@ -67,7 +67,7 @@ The following table outlines the testing results from SegNet.
 
 ### Qualitative Results
 
-<table style="width:100%">
+<table>
   <tr>
     <td>
       <img src="https://user-images.githubusercontent.com/2184469/45790933-f5ab9800-bc4c-11e8-92ec-d867022647a5.png" />
