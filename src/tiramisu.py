@@ -1,4 +1,4 @@
-"""An implementation of Tiramisu DenseNet."""
+"""An implementation of Tiramisu auto-encoder for semantic segmentation."""
 from keras import backend as K
 from keras.layers import Activation
 from keras.layers import BatchNormalization
