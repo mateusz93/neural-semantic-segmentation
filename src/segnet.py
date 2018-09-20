@@ -1,19 +1,19 @@
 """An implementation of SegNet auto-encoder for semantic segmentation."""
-from keras.models import Model
-from keras.layers import Input
+from keras.applications.vgg16 import VGG16
+from keras.layers import Activation
 from keras.layers import BatchNormalization
 from keras.layers import Conv2D
-from keras.layers import Activation
+from keras.layers import Input
 from keras.layers import Lambda
+from keras.models import Model
 from keras.optimizers import SGD
 from keras.regularizers import l2
-from keras.applications.vgg16 import VGG16
+from .layers import ContrastNormalization
 from .layers import MemorizedMaxPooling2D
 from .layers import MemorizedUpsampling2D
-from .layers.local_contrast_normalization import ContrastNormalization
+from .losses import build_weighted_categorical_crossentropy
 from .metrics import mean_iou
 from .metrics import build_iou_for
-from .losses import build_weighted_categorical_crossentropy
 
 
 def conv_bn_relu(x, num_filters: int):
@@ -107,7 +107,8 @@ def build_segnet(
     label_names: dict=None,
     optimizer=SGD(lr=0.1, momentum=0.9),
     pretrain_encoder: bool=True,
-    class_weights=None
+    class_weights=None,
+    contrast_normalization: str='slrn'
 ) -> Model:
     """
     Build a SegNet model for the given image shape.
@@ -127,10 +128,10 @@ def build_segnet(
     # the input block of the network
     inputs = Input(image_shape)
     # assume 8-bit inputs and convert to floats in [0,1]
-    x = Lambda(lambda x: x / 255.0)(inputs)
-
-    x = ContrastNormalization()(x)
-
+    x = Lambda(lambda x: x / 1.0)(inputs)
+    # apply contrast normalization if set
+    if contrast_normalization is not None:
+        x = ContrastNormalization(method=contrast_normalization)(x)
     # encoder
     x, p1 = encode(x, 2 * [64])
     x, p2 = encode(x, 2 * [128])
