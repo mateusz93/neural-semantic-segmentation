@@ -183,7 +183,7 @@ def build_tiramisu(
     # the classification block
     x = Conv2D(num_classes,
         kernel_size=(1, 1),
-        padding='same',
+        padding='valid',
         kernel_initializer='he_uniform',
         kernel_regularizer=l2(1e-4),
     )(x)
