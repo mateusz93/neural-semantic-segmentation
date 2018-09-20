@@ -10,6 +10,7 @@ from keras.regularizers import l2
 from keras.applications.vgg16 import VGG16
 from .layers import MemorizedMaxPooling2D
 from .layers import MemorizedUpsampling2D
+from .layers.local_contrast_normalization import LocalContrastNormalization
 from .metrics import mean_iou
 from .metrics import build_iou_for
 from .losses import build_weighted_categorical_crossentropy
@@ -127,6 +128,9 @@ def build_segnet(
     inputs = Input(image_shape)
     # assume 8-bit inputs and convert to floats in [0,1]
     x = Lambda(lambda x: x / 255.0)(inputs)
+
+    x = LocalContrastNormalization()(x)
+
     # encoder
     x, p1 = encode(x, 2 * [64])
     x, p2 = encode(x, 2 * [128])
