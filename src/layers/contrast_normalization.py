@@ -19,7 +19,7 @@ def conv2d(inputs, kernel):
     return K.conv2d(inputs, kernel, padding='same')
 
 
-def normal_kernel(kernel_size, mean=10, scale=1, input_channels=3):
+def normal_kernel(kernel_size, mean=1.0, scale=0.05, input_channels=3):
     """
     Return a new Gaussian RGB kernel with given layer size.
 
@@ -37,7 +37,7 @@ def normal_kernel(kernel_size, mean=10, scale=1, input_channels=3):
     # and 1 filter in total (i.e., 1 output channel)
     kernel_shape = (kernel_size, kernel_size, 1, 1)
     # create a random normal variable with given mean and scale
-    kernel = K.random_normal_variable(kernel_shape, mean=mean, scale=scale)
+    kernel = K.random_normal(kernel_shape, mean=mean, stddev=scale)
     # normalize the values to ensure the sum of the filter is 1
     kernel = kernel / K.sum(kernel)
     # repeat along the input channel axis if input channels is more than 1

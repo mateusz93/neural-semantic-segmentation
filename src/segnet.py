@@ -128,10 +128,10 @@ def build_segnet(
     # the input block of the network
     inputs = Input(image_shape)
     # assume 8-bit inputs and convert to floats in [0,1]
-    x = Lambda(lambda x: x / 1.0)(inputs)
     # apply contrast normalization if set
     if contrast_normalization is not None:
-        x = ContrastNormalization(method=contrast_normalization)(x)
+        x = ContrastNormalization(method=contrast_normalization)(inputs)
+    x = Lambda(lambda x: x / 255.0)(x)
     # encoder
     x, p1 = encode(x, 2 * [64])
     x, p2 = encode(x, 2 * [128])
