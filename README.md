@@ -25,7 +25,16 @@ dataset.
 
 ## [SegNet][Badrinarayanan et al. (2016)]
 
-![SegNet](https://user-images.githubusercontent.com/2184469/45845186-1118b080-bcea-11e8-967f-d1d0b9d93bb8.png)
+<table style="width:100%">
+  <tr>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/45845186-1118b080-bcea-11e8-967f-d1d0b9d93bb8.png" />
+    </td>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/45845185-1118b080-bcea-11e8-8fb3-82ebb3f15ea6.png" />
+    </td>
+  </tr>
+</table>
 
 -   [x] encoder transfer learning from VGG16 trained on ImageNet
 -   [x] optimized using SGD with 𝛃=0.9, α=0.1 (constant)
@@ -35,8 +44,6 @@ dataset.
     -   weighted categorical cross-entropy loss function
 -   [x] local contrast normalization of inputs ([LeCun et al. (2009)][])
 -   [x] pooling indexes ([Badrinarayanan et al. (2016)][])
-
-![Pooling](https://user-images.githubusercontent.com/2184469/45845185-1118b080-bcea-11e8-8fb3-82ebb3f15ea6.png)
 
 ### Quantitative Results
 
