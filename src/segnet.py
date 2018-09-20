@@ -15,68 +15,66 @@ from .metrics import build_iou_for
 from .losses import build_weighted_categorical_crossentropy
 
 
-def conv_bn_relu(x, num_filters: int, num_blocks: int=1):
+def conv_bn_relu(x, num_filters: int):
     """
     Append a conv + batch normalization + relu block to an input tensor.
 
     Args:
         x: the input tensor to append this dense block to
         num_filters: the number of filters in the convolutional layer
-        num_blocks: the number of blocks in the layer (repetitions)
 
     Returns:
         an updated graph with conv + batch normalization + relu block added
 
     """
-    for _ in range(num_blocks):
-        x = Conv2D(num_filters,
-            kernel_size=(3, 3),
-            padding='same',
-            kernel_initializer='he_uniform',
-            kernel_regularizer=l2(1e-4),
-        )(x)
-        x = BatchNormalization()(x)
-        x = Activation('relu')(x)
+    x = Conv2D(num_filters,
+        kernel_size=(3, 3),
+        padding='same',
+        kernel_initializer='he_uniform',
+        kernel_regularizer=l2(1e-4),
+    )(x)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
     return x
 
 
-def encode(x, num_conv: int, num_filters: int):
+def encode(x, nums_filters: list):
     """
     Append a encoder block with a given size and number of filters.
 
     Args:
         x: the input tensor to append this encoder block to
-        num_conv: the number of convolutional blocks to use before pooling
-        num_filters: the number of filters in each convolutional layer
+        num_filters: a list of the number of filters for each block
 
     Returns:
         a tuple of:
-        - an updated graph with num_conv conv blocks followed by max pooling
+        - an updated graph with conv blocks followed by max pooling
         - the pooling layer to get indexes from for up-sampling
 
     """
-    x = conv_bn_relu(x, num_filters, num_conv)
+    for num_filters in nums_filters:
+        x = conv_bn_relu(x, num_filters)
     pool = MemorizedMaxPooling2D(pool_size=(2, 2), strides=(2, 2))
     x = pool(x)
     return x, pool
 
 
-def decode(x, pool: MemorizedMaxPooling2D, num_conv: int, num_filters: int):
+def decode(x, pool: MemorizedMaxPooling2D, nums_filters: list):
     """
     Append a decoder block with a given size and number of filters.
 
     Args:
         x: the input tensor to append this decoder block to
         pool: the corresponding memorized pooling layer to reference indexes
-        num_conv: the number of convolutional blocks to use before pooling
-        num_filters: the number of filters in each convolutional layer
+        num_filters: a list of the number of filters for each block
 
     Returns:
-        an updated graph with up-sampling followed by num_conv conv blocks
+        an updated graph with up-sampling followed by conv blocks
 
     """
     x = MemorizedUpsampling2D(pool=pool)(x)
-    x = conv_bn_relu(x, num_filters, num_conv)
+    for num_filters in nums_filters:
+        x = conv_bn_relu(x, num_filters)
     return x
 
 
@@ -94,7 +92,6 @@ def classify(x, num_classes: int):
     """
     x = Conv2D(num_classes,
         kernel_size=(1, 1),
-        padding='same',
         kernel_initializer='he_uniform',
         kernel_regularizer=l2(1e-4),
     )(x)
@@ -131,17 +128,17 @@ def build_segnet(
     # assume 8-bit inputs and convert to floats in [0,1]
     x = Lambda(lambda x: x / 255.0)(inputs)
     # encoder
-    x, p1 = encode(x, num_conv=2, num_filters=64)
-    x, p2 = encode(x, num_conv=2, num_filters=128)
-    x, p3 = encode(x, num_conv=3, num_filters=256)
-    x, p4 = encode(x, num_conv=3, num_filters=512)
-    x, p5 = encode(x, num_conv=3, num_filters=512)
+    x, p1 = encode(x, 2 * [64])
+    x, p2 = encode(x, 2 * [128])
+    x, p3 = encode(x, 3 * [256])
+    x, p4 = encode(x, 3 * [512])
+    x, p5 = encode(x, 3 * [512])
     # decoder
-    x = decode(x, p5, num_conv=3, num_filters=512)
-    x = decode(x, p4, num_conv=3, num_filters=256)
-    x = decode(x, p3, num_conv=3, num_filters=128)
-    x = decode(x, p2, num_conv=2, num_filters=64)
-    x = decode(x, p1, num_conv=2, num_filters=64)
+    x = decode(x, p5, 3 * [512])
+    x = decode(x, p4, [512, 512, 256])
+    x = decode(x, p3, [256, 256, 128])
+    x = decode(x, p2, [128, 64])
+    x = decode(x, p1, [64])
     # classifier
     x = classify(x, num_classes)
     # compile the graph
