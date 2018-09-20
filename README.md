@@ -22,13 +22,37 @@ python -m pip install -r requirements.txt
 Results were generated using a machine equipped with  128GB RAM, nVidia P100
 GPU, and Intel Xeon CPU @ 2.10GHz.
 
-### 11 Class
+### SegNet
+
+The following table outlines the testing results from SegNet on CamVid 11.
+
+| Metric          | Validation |
+|:----------------|:-----------|
+| acc             | 0.840661
+| mean_iou        | 0.485506
+| iou_Bicyclist   | 0.149914
+| iou_Building    | 0.688313
+| iou_Car         | 0.639180
+| iou_Column_Pole | 0.207784
+| iou_Fence       | 0.162744
+| iou_Pedestrian  | 0.262279
+| iou_Road        | 0.828501
+| iou_Sidewalk    | 0.696738
+| iou_SignSymbol  | 0.161242
+| iou_Sky         | 0.896308
+| iou_Tree        | 0.647563
+
+![download 2](https://user-images.githubusercontent.com/2184469/45790933-f5ab9800-bc4c-11e8-92ec-d867022647a5.png)
+
+![download 1](https://user-images.githubusercontent.com/2184469/45790934-f5ab9800-bc4c-11e8-9cf3-bd4d1a752a65.png)
+
+![download](https://user-images.githubusercontent.com/2184469/45790935-f5ab9800-bc4c-11e8-82d2-ce8f80e9c706.png)
+
+<!-- ### 11 Class
 
 [Train-Tiramisu103-CamVid11.ipynb](Train-Tiramisu103-CamVid11.ipynb) generates
 these results for the 11 class version of CamVid defined in the mapping file
 [11_class.txt](11_class.txt).
-
-<!-- TODO: images -->
 
 #### Metrics
 
@@ -52,8 +76,6 @@ these results for the 11 class version of CamVid defined in the mapping file
 
 [Train-Tiramisu103-CamVid32.ipynb](Train-Tiramisu103-CamVid32.ipynb) generates
 these results for the full 32 class version of CamVid.
-
-<!-- TODO: images -->
 
 #### Metrics
 
@@ -93,3 +115,5 @@ these results for the full 32 class version of CamVid.
 | iou_VegetationMisc      | 0.469454
 | iou_Void                | 0.057503
 | iou_Wall                | 0.183900
+
+-->
