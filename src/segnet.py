@@ -157,13 +157,13 @@ def build_segnet(
         return model
     # load the pre-trained VGG16 model using ImageNet weights
     vgg16 = VGG16(weights='imagenet', include_top=False)
-    # extract all the convolutional layers (downsampling layers) from VGG16
+    # extract all the convolutional layers (encoder layers) from VGG16
     vgg16_conv = [layer for layer in vgg16.layers if isinstance(layer, Conv2D)]
     # extract all convolutional layers from SegNet, the first len(vgg16_conv)
     # layers in this list are architecturally congruent with the layers in
     # vgg16_conv by index
     model_conv = [layer for layer in model.layers if isinstance(layer, Conv2D)]
-    # iterate over the VGG16 layers and replace the SegNet downsampling weights
+    # iterate over the VGG16 layers and replace the SegNet encoder weights
     for idx, layer in enumerate(vgg16_conv):
         model_conv[idx].set_weights(layer.get_weights())
 
