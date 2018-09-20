@@ -16,10 +16,13 @@ def conv2d(inputs, kernel):
 
     """
     # convolve over the inputs using the kernel with same shape padding
-    return K.conv2d(inputs, kernel, padding='same')
+    channels = []
+    for i in range(K.int_shape(inputs)[-1]):
+        channels += [K.conv2d(inputs[..., i:i+1], kernel, padding='same')]
+    return K.mean(K.concatenate(channels, axis=-1), axis=-1, keepdims=True)
 
 
-def normal_kernel(kernel_size, mean=1.0, scale=0.05, input_channels=3):
+def normal_kernel(kernel_size, mean=1.0, scale=0.05):
     """
     Return a new Gaussian RGB kernel with given layer size.
 
@@ -27,7 +30,6 @@ def normal_kernel(kernel_size, mean=1.0, scale=0.05, input_channels=3):
         kernel_size: the size of the kernel
         mean: the mean for the Gaussian randomness
         scale: the scale for the Gaussian randomness
-        input_channels: the number of input channels into the kernel
 
     Returns:
         a Gaussian RGB kernel normalized to sum to 1
@@ -40,9 +42,6 @@ def normal_kernel(kernel_size, mean=1.0, scale=0.05, input_channels=3):
     kernel = K.random_normal(kernel_shape, mean=mean, stddev=scale)
     # normalize the values to ensure the sum of the filter is 1
     kernel = kernel / K.sum(kernel)
-    # repeat along the input channel axis if input channels is more than 1
-    if input_channels > 1:
-        kernel = K.repeat_elements(kernel, input_channels, axis=-2)
     return kernel
 
 
