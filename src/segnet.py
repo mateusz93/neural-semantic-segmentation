@@ -96,7 +96,6 @@ def classify(x, num_classes: int):
         kernel_initializer='he_uniform',
         kernel_regularizer=l2(1e-4),
     )(x)
-    x = BatchNormalization()(x)
     x = Activation('softmax')(x)
     return x
 
