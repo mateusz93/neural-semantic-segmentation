@@ -27,6 +27,9 @@ GPU, and Intel Xeon CPU @ 2.10GHz.
 -   [x] median frequency balancing of class labels [Eigen et al. (2014)](https://arxiv.org/abs/1411.4734)
 -   [x] local contrast normalization of inputs [LeCun et al. (2009)](http://yann.lecun.com/exdb/publis/pdf/jarrett-iccv-09.pdf)
 -   [x] pooling indexes [Badrinarayanan et al. (2016)](https://arxiv.org/pdf/1511.00561.pdf)
+-   optimized using SGD with 𝛃=0.9, α=0.1 (constant)
+-   trained for 50 epochs with a batch size of 6
+-   best model in terms of training loss is kept as final model
 
 The following table outlines the testing results from SegNet.
 
