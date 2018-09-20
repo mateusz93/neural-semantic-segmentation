@@ -108,7 +108,7 @@ def build_segnet(
     optimizer=SGD(lr=0.1, momentum=0.9),
     pretrain_encoder: bool=True,
     class_weights=None,
-    contrast_normalization: str='lcn'
+    contrast_norm: str='lcn'
 ) -> Model:
     """
     Build a SegNet model for the given image shape.
@@ -120,6 +120,7 @@ def build_segnet(
         optimizer: the optimizer for training the network
         pretrain_encoder: whether to initialize the encoder from VGG16
         class_weights: the weights for each class
+        contrast_norm: the method of contrast normalization for inputs
 
     Returns:
         a Keras model of the 103 layer Tiramisu version of DenseNet
