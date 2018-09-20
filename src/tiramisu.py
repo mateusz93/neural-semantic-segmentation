@@ -1,19 +1,21 @@
 """An implementation of Tiramisu DenseNet."""
-from keras.models import Model
-from keras.layers import Input
+from keras import backend as K
+from keras.layers import Activation
 from keras.layers import BatchNormalization
+from keras.layers import Concatenate
 from keras.layers import Conv2D
 from keras.layers import Conv2DTranspose
-from keras.layers import Activation
 from keras.layers import Dropout
-from keras.layers import MaxPooling2D
-from keras.layers import Concatenate
+from keras.layers import Input
 from keras.layers import Lambda
+from keras.layers import MaxPooling2D
+from keras.models import Model
 from keras.optimizers import RMSprop
 from keras.regularizers import l2
-from keras import backend as K
-from .iou import mean_iou
-from .iou import build_iou_for
+from .layers import ContrastNormalization
+from .metrics import mean_iou
+from .metrics import build_iou_for
+from .losses import build_weighted_categorical_crossentropy
 
 
 def _dense_block(inputs,
@@ -130,6 +132,8 @@ def build_tiramisu(
     layer_sizes: list=[4, 5, 7, 10, 12],
     bottleneck_size: int=15,
     learning_rate: float=1e-3,
+    class_weights=None,
+    contrast_norm: str='lcn'
 ) -> Model:
     """
     Build a DenseNet model for the given image shape.
@@ -143,6 +147,8 @@ def build_tiramisu(
                      reversed to determine the size of the up-sample blocks
         bottleneck_size: the number of convolutional layers in the bottleneck
         learning_rate: the learning rate for the RMSprop optimizer
+        class_weights: the weights for each class
+        contrast_norm: the method of contrast normalization for inputs
 
     Returns:
         a Keras model of the 103 layer Tiramisu version of DenseNet
@@ -152,6 +158,10 @@ def build_tiramisu(
     inputs = Input(image_shape)
     # assume 8-bit inputs and convert to floats in [0,1]
     x = Lambda(lambda x: x / 255.0)(inputs)
+    # apply contrast normalization if set
+    if contrast_norm is not None:
+        x = ContrastNormalization(method=contrast_norm)(x)
+    # start the Tiramisu network
     x = Conv2D(48,
         kernel_size=(3, 3),
         padding='same',
@@ -182,7 +192,7 @@ def build_tiramisu(
     model = Model(inputs=[inputs], outputs=[x])
     model.compile(
         optimizer=RMSprop(lr=learning_rate),
-        loss='categorical_crossentropy',
+        loss=build_weighted_categorical_crossentropy(class_weights),
         metrics=[
             'accuracy',
             mean_iou,
