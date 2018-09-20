@@ -90,7 +90,6 @@ class CamVid(object):
         return dict(
             class_mode=None,
             target_size=self.target_size,
-            batch_size=self.batch_size,
             shuffle=self.shuffle,
             seed=self.seed
         )
@@ -147,12 +146,14 @@ class CamVid(object):
         generators = dict()
         # iterate over the generator subsets
         for subset in ['train', 'val', 'test']:
+            # train has a custom batch size, val and test have a size of 1
+            batch_size = self.batch_size if subset == 'train' else 1
             _x = os.path.join(self._x, subset)
             _y = os.path.join(self._y, subset)
             # combine X and y generators into a single generator with repeats
             generators[subset] = repeat_generator(
-                x_g.flow_from_directory(_x, **self.flow_args),
-                y_g.flow_from_directory(_y, **self.flow_args),
+                x_g.flow_from_directory(_x, **self.flow_args, batch_size=batch_size),
+                y_g.flow_from_directory(_y, **self.flow_args, batch_size=batch_size),
                 x_repeats=self.x_repeats,
                 y_repeats=self.y_repeats,
             )
