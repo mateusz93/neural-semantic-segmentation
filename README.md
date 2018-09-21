@@ -1,6 +1,7 @@
 # Neural Semantic Segmentation
 
-Implementations of neural network papers for semantic segmentation using Keras.
+Implementations of neural network papers for semantic segmentation using Keras
+and TensorFlow.
 
 ## Installation
 
