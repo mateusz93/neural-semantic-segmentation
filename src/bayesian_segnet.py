@@ -101,19 +101,13 @@ def build_bayesian_segnet(
     return model
 
 
-def wrap_monte_carlo(model,
-    num_samples: int=40,
-    label_names: dict=None,
-    class_weights=None,
-):
+def wrap_monte_carlo(model, num_samples: int=40):
     """
     Return a model to estimate the mean/var of another model with Monte Carlo.
 
     Args:
         model: the model to wrap with a Monte Carlo estimation
         num_samples: the number of samples of the model to estimate the mean
-        label_names: a dictionary mapping discrete labels to names for IoU
-        class_weights: the weights for each class
 
     Returns:
         a new model estimating the mean output of the given model
@@ -124,23 +118,12 @@ def wrap_monte_carlo(model,
     # sample from the model for the given number of samples in Monte Carlo
     samples = MonteCarlo(model, num_samples)(inputs)
     # calculate the mean and variance of the Monte Carlo samples (axis -1)
-    mean = Mean(name='mc', axis=-1)(samples)
-    var = Var(axis=-1)(samples)
-    var = Mean(axis=-1)(var)
+    mean = Mean(name='mc')(samples)
+    var = Mean(name='var')(Var()(samples))
     # build the epistemic uncertainty model
-    mc_model = Model(inputs=inputs, outputs=[mean, var], name='uncertainty')
+    mc_model = Model(inputs=inputs, outputs=[mean, var])
     # compile the model (optimizer is arbitrary, this is test only)
-    mc_model.compile(
-        optimizer='sgd',
-        loss={'mc': build_weighted_categorical_crossentropy(class_weights)},
-        metrics={
-            'mc': [
-                'accuracy',
-                mean_iou,
-                *build_iou_for(list(range(model.output_shape[-1])), label_names),
-            ]
-        },
-    )
+    mc_model.compile(optimizer='sgd', loss={'mc': model.loss}, metrics={'mc': model.metrics})
 
     return mc_model
 
