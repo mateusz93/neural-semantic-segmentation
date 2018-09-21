@@ -31,7 +31,7 @@ dataset.
 
 -   [x] encoder transfer learning from VGG16 trained on ImageNet
 -   [x] optimized using SGD with 𝛃=0.9, α=0.1 (constant)
--   [x] trained for 50 epochs with a batch size of 6 ([Badrinarayanan et al. (2016)][] used 12)
+-   [x] trained for 50 epochs with a batch size of 4 ([Badrinarayanan et al. (2016)][] used 12)
 -   [x] best model in terms of training loss is kept as final model
 -   [x] median frequency balancing of class labels ([Eigen et al. (2014)][])
     -   weighted categorical cross-entropy loss function
