@@ -80,7 +80,6 @@ def build_bayesian_segnet(
         metrics=[
             'accuracy',
             mean_iou,
-            mean_per_class_accuracy,
             *build_iou_for(list(range(num_classes)), label_names),
         ],
     )
