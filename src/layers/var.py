@@ -6,12 +6,13 @@ from keras.layers import Layer
 class Var(Layer):
     """A layer to calculate the variance over an axis."""
 
-    def __init__(self, axis=-1, **kwargs):
+    def __init__(self, axis=-1, keepdims=False, **kwargs):
         """
         Initialize a new variance layer.
 
         Args:
             axis: the axis to calculate the variance over
+            keepdims: whether to keep the same rank
 
         Returns:
             None
@@ -21,6 +22,7 @@ class Var(Layer):
         super(Var, self).__init__(**kwargs)
         # store the instance variables of this layer
         self.axis = axis
+        self.keepdims = keepdims
 
     def compute_output_shape(self, input_shape):
         """
@@ -38,6 +40,8 @@ class Var(Layer):
             axis = shape_size + self.axis
         else:
             axis = self.axis
+        if self.keepdims:
+            return input_shape[:axis] + (1, ) + input_shape[axis+1:]
         return input_shape[:axis] + input_shape[axis+1:]
 
     def call(self, inputs, **kwargs):
@@ -52,7 +56,7 @@ class Var(Layer):
             the input tensor stacked self.n times along axis 1
 
         """
-        return K.var(inputs, axis=self.axis)
+        return K.var(inputs, axis=self.axis, keepdims=self.keepdims)
 
 
 # explicitly define the outward facing API of this module

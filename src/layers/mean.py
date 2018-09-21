@@ -6,12 +6,13 @@ from keras.layers import Layer
 class Mean(Layer):
     """A layer to calculate the mean over an axis."""
 
-    def __init__(self, axis=-1, **kwargs):
+    def __init__(self, axis=-1, keepdims=False, **kwargs):
         """
         Initialize a new mean layer.
 
         Args:
             axis: the axis to calculate the mean over
+            keepdims: whether to keep the same rank
 
         Returns:
             None
@@ -21,6 +22,7 @@ class Mean(Layer):
         super(Mean, self).__init__(**kwargs)
         # store the instance variables of this layer
         self.axis = axis
+        self.keepdims = keepdims
 
     def compute_output_shape(self, input_shape):
         """
@@ -38,6 +40,8 @@ class Mean(Layer):
             axis = shape_size + self.axis
         else:
             axis = self.axis
+        if self.keepdims:
+            return input_shape[:axis] + (1, ) + input_shape[axis+1:]
         return input_shape[:axis] + input_shape[axis+1:]
 
     def call(self, inputs, **kwargs):
@@ -52,7 +56,7 @@ class Mean(Layer):
             the input tensor stacked self.n times along axis 1
 
         """
-        return K.mean(inputs, axis=self.axis)
+        return K.mean(inputs, axis=self.axis, keepdims=self.keepdims)
 
 
 # explicitly define the outward facing API of this module
