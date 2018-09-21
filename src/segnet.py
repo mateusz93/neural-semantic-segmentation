@@ -14,7 +14,6 @@ from .layers import MemorizedUpsampling2D
 from .losses import build_weighted_categorical_crossentropy
 from .metrics import mean_iou
 from .metrics import build_iou_for
-from .metrics import per_class_accuracy
 
 
 def conv_bn_relu(x, num_filters: int):
@@ -155,7 +154,6 @@ def build_segnet(
         metrics=[
             'accuracy',
             mean_iou,
-            per_class_accuracy,
             *build_iou_for(list(range(num_classes)), label_names),
         ],
     )
