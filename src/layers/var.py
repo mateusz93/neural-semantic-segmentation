@@ -22,6 +22,24 @@ class Var(Layer):
         # store the instance variables of this layer
         self.axis = axis
 
+    def get_output_shape_for(self, input_shape):
+        """
+        Return the output shape of the layer for given input shape.
+
+        Args:
+            input_shape: the input shape to transform to output shape
+
+        Returns:
+            the output shape as a function of the input shape (1 extra dim)
+
+        """
+        shape_size = len(input_shape)
+        if self.axis < 0:
+            axis = shape_size + self.axis
+        else:
+            axis = self.axis
+        return input_shape[:axis] + input_shape[axis+1:]
+
     def call(self, inputs, **kwargs):
         """
         Forward pass through the layer.
