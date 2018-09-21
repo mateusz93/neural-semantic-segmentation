@@ -16,6 +16,7 @@ from .metrics import build_iou_for
 from .segnet import classify
 from .segnet import decode
 from .segnet import encode
+from .segnet import transfer_vgg16_encoder
 
 
 def build_bayesian_segnet(
@@ -83,20 +84,9 @@ def build_bayesian_segnet(
             *build_iou_for(list(range(num_classes)), label_names),
         ],
     )
-    # if transfer learning from ImageNet is disabled, return the model as is
-    if not pretrain_encoder:
-        return model
-    # load the pre-trained VGG16 model using ImageNet weights
-    vgg16 = VGG16(weights='imagenet', include_top=False)
-    # extract all the convolutional layers (encoder layers) from VGG16
-    vgg16_conv = [layer for layer in vgg16.layers if isinstance(layer, Conv2D)]
-    # extract all convolutional layers from SegNet, the first len(vgg16_conv)
-    # layers in this list are architecturally congruent with the layers in
-    # vgg16_conv by index
-    model_conv = [layer for layer in model.layers if isinstance(layer, Conv2D)]
-    # iterate over the VGG16 layers and replace the SegNet encoder weights
-    for idx, layer in enumerate(vgg16_conv):
-        model_conv[idx].set_weights(layer.get_weights())
+    # if transfer learning from ImageNet is enabled, pre-train from VGG16
+    if pretrain_encoder:
+        transfer_vgg16_encoder(model)
 
     return model
 
@@ -123,7 +113,11 @@ def wrap_uncertainty(model, num_samples: int=40):
     # build the epistemic uncertainty model
     mc_model = Model(inputs=inputs, outputs=[mean, var])
     # compile the model (optimizer is arbitrary, this is test only)
-    mc_model.compile(optimizer='sgd', loss={'mc': model.loss}, metrics={'mc': model.metrics})
+    mc_model.compile(
+        optimizer='sgd',
+        loss={'mc': model.loss},
+        metrics={'mc': model.metrics}
+    )
 
     return mc_model
 
