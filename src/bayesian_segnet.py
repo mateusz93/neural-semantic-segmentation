@@ -48,7 +48,7 @@ def build_bayesian_segnet(
     # the input block of the network
     inputs = Input(image_shape)
     # assume 8-bit inputs and convert to floats in [0,1]
-    x = Lambda(lambda x: x / 255.0)(inputs)
+    x = Lambda(lambda x: x / 255.0, input_shape=image_shape)(inputs)
     # apply contrast normalization if set
     if contrast_norm is not None:
         x = ContrastNormalization(method=contrast_norm)(x)
@@ -120,27 +120,30 @@ def wrap_monte_carlo(model,
 
     """
     # the inputs for the Monte Carlo model (ignoring batch size)
-    inputs = model.inputs[0]
+    inputs = Input(model.input_shape[1:], tensor=model.inputs[0])
     # sample from the model for the given number of samples in Monte Carlo
     samples = MonteCarlo(model, num_samples, name='monte_carlo')(inputs)
     # calculate the mean and variance of the Monte Carlo samples (axis -1)
     mean = Mean(name='mean', axis=-1)(samples)
     var = Var(name='var', axis=-1)(samples)
+
+    from keras import backend as K
+    return K.function([inputs], [mean, var])
     # build the epistemic uncertainty model
-    mc_model = Model(inputs=[inputs], outputs=[mean, var])
+    # mc_model = Model(inputs=[inputs], outputs=[mean, var])
 
     # compile the model (optimizer is arbitrary, this is test only)
-    mc_model.compile(
-        optimizer='sgd',
-        loss={'mean': build_weighted_categorical_crossentropy(class_weights)},
-        metrics={
-            'mean': [
-                'accuracy',
-                mean_iou,
-                *build_iou_for(list(range(model.output_shape[-1])), label_names),
-            ]
-        },
-    )
+    # mc_model.compile(
+    #     optimizer='sgd',
+    #     loss={'mean': build_weighted_categorical_crossentropy(class_weights)},
+    #     metrics={
+    #         'mean': [
+    #             'accuracy',
+    #             mean_iou,
+    #             *build_iou_for(list(range(model.output_shape[-1])), label_names),
+    #         ]
+    #     },
+    # )
 
     return mc_model
 
