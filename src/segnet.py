@@ -32,7 +32,7 @@ def conv_bn_relu(x, num_filters: int):
         kernel_size=(3, 3),
         padding='same',
         kernel_initializer='he_uniform',
-        kernel_regularizer=l2(1e-4),
+        kernel_regularizer=l2(5e-4),
     )(x)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
@@ -94,7 +94,7 @@ def classify(x, num_classes: int):
     x = Conv2D(num_classes,
         kernel_size=(1, 1),
         kernel_initializer='he_uniform',
-        kernel_regularizer=l2(1e-4),
+        kernel_regularizer=l2(5e-4),
     )(x)
     x = Activation('softmax')(x)
     return x
