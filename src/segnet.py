@@ -104,7 +104,7 @@ def build_segnet(
     image_shape: tuple,
     num_classes: int,
     label_names: dict=None,
-    optimizer=SGD(lr=0.1, momentum=0.9),
+    optimizer=SGD(lr=0.001, momentum=0.9),
     pretrain_encoder: bool=True,
     class_weights=None,
     contrast_norm: str='lcn'
