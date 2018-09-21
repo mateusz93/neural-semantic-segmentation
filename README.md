@@ -76,15 +76,6 @@ The following table outlines the testing results from SegNet.
 
 ## [The One Hundred Layers Tiramisu][Jégou et al. (2016)]
 
--   [x] trained on 224 x 224 for for 50 epochs with batch size 4 (patience 100)
-    -   optimized using RMSprop with learning rate 0.001, decay 0.995
--   [x] trained on 352 (360) x 480 for for 50 epochs with batch size 1 (patience 50)
-    -   optimized using RMSprop with learning rate 0.001, decay 0.995
--   [x] median frequency balancing of class labels ([Eigen et al. (2014)][])
-    -   weighted categorical cross-entropy loss function
--   [x] local contrast normalization of inputs ([LeCun et al. (2009)][])
--   [x] skip connections ([Jégou et al. (2016)][])
-
 <table>
   <tr>
     <td>
@@ -95,6 +86,15 @@ The following table outlines the testing results from SegNet.
     </td>
   </tr>
 </table>
+
+-   [x] trained on 224 x 224 for for 50 epochs with batch size 4 (patience 100)
+    -   optimized using RMSprop with learning rate 0.001, decay 0.995
+-   [x] trained on 352 (360) x 480 for for 50 epochs with batch size 1 (patience 50)
+    -   optimized using RMSprop with learning rate 0.001, decay 0.995
+-   [x] median frequency balancing of class labels ([Eigen et al. (2014)][])
+    -   weighted categorical cross-entropy loss function
+-   [x] local contrast normalization of inputs ([LeCun et al. (2009)][])
+-   [x] skip connections ([Jégou et al. (2016)][])
 
 ### Quantitative Results
 
