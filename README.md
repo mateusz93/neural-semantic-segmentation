@@ -1,13 +1,6 @@
-# The 100 Layers Tiramisu (Implementation)
+# Neural Semantic Segmentation
 
-[![build-status][]][ci-server]
-
-[build-status]: https://travis-ci.com/Kautenja/the-100-layers-tiramisu.svg?branch=master
-[ci-server]: https://travis-ci.com/Kautenja/the-100-layers-tiramisu
-
-An Implementation of
-[The One Hundred Layers Tiramisu](https://arxiv.org/abs/1611.09326) using
-[Keras](https://keras.io/).
+Implementations of neural network papers for semantic segmentation using Keras.
 
 ## Installation
 
@@ -28,10 +21,10 @@ dataset.
 <table>
   <tr>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/45845186-1118b080-bcea-11e8-967f-d1d0b9d93bb8.png" />
+      <img alt="SegNet" src="https://user-images.githubusercontent.com/2184469/45845186-1118b080-bcea-11e8-967f-d1d0b9d93bb8.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/45845185-1118b080-bcea-11e8-8fb3-82ebb3f15ea6.png" />
+      <img alt="Pooling Indexes" src="https://user-images.githubusercontent.com/2184469/45845185-1118b080-bcea-11e8-8fb3-82ebb3f15ea6.png" />
     </td>
   </tr>
 </table>
@@ -81,6 +74,32 @@ The following table outlines the testing results from SegNet.
   </tr>
 </table>
 
+## [The One Hundred Layers Tiramisu][Jégou et al. (2016)]
+
+-   [x] trained on 224 x 224 for for 50 epochs with batch size 4 (patience 100)
+    -   optimized using RMSprop with learning rate 0.001, decay 0.995
+-   [x] trained on 352 (360) x 480 for for 50 epochs with batch size 1 (patience 50)
+    -   optimized using RMSprop with learning rate 0.001, decay 0.995
+-   [x] median frequency balancing of class labels ([Eigen et al. (2014)][])
+    -   weighted categorical cross-entropy loss function
+-   [x] local contrast normalization of inputs ([LeCun et al. (2009)][])
+-   [x] skip connections ([Jégou et al. (2016)][])
+
+<table>
+  <tr>
+    <td>
+        <img alt="103 Layers Tiramisu" src="https://user-images.githubusercontent.com/2184469/45852685-a88bfc80-bd06-11e8-9ea1-9044144b1442.png">
+    </td>
+    <td>
+        <img alt="Dense Blocks" src="https://user-images.githubusercontent.com/2184469/45852691-aa55c000-bd06-11e8-865b-b852485b40af.png">
+    </td>
+  </tr>
+</table>
+
+### Quantitative Results
+
+The following table outlines the testing results from 103 Layers Tiramisu.
+
 
 
 <!-- References -->
@@ -88,3 +107,4 @@ The following table outlines the testing results from SegNet.
 [LeCun et al. (2009)]: http://yann.lecun.com/exdb/publis/pdf/jarrett-iccv-09.pdf
 [Eigen et al. (2014)]: https://arxiv.org/abs/1411.4734
 [Badrinarayanan et al. (2016)]: https://arxiv.org/pdf/1511.00561.pdf
+[Jégou et al. (2016)]: https://arxiv.org/abs/1611.09326
