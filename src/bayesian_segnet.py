@@ -1,6 +1,7 @@
 """An implementation of SegNet auto-encoder for semantic segmentation."""
 from keras.applications.vgg16 import VGG16
 from keras.layers import Conv2D
+from keras.layers import Dropout
 from keras.layers import Input
 from keras.layers import Lambda
 from keras.models import Model
@@ -8,7 +9,6 @@ from keras.optimizers import SGD
 from .layers import ContrastNormalization
 from .layers import Mean
 from .layers import MonteCarlo
-from .layers import MonteCarloDropout
 from .layers import Var
 from .losses import build_weighted_categorical_crossentropy
 from .metrics import mean_iou
@@ -56,18 +56,18 @@ def build_bayesian_segnet(
     x, p1 = encode(x, 2 * [64])
     x, p2 = encode(x, 2 * [128])
     x, p3 = encode(x, 3 * [256])
-    x = MonteCarloDropout(dropout_rate)(x)
+    x = Dropout(dropout_rate)(x, training=True)
     x, p4 = encode(x, 3 * [512])
-    x = MonteCarloDropout(dropout_rate)(x)
+    x = Dropout(dropout_rate)(x, training=True)
     x, p5 = encode(x, 3 * [512])
-    x = MonteCarloDropout(dropout_rate)(x)
+    x = Dropout(dropout_rate)(x, training=True)
     # decoder
     x = decode(x, p5, 3 * [512])
-    x = MonteCarloDropout(dropout_rate)(x)
+    x = Dropout(dropout_rate)(x, training=True)
     x = decode(x, p4, [512, 512, 256])
-    x = MonteCarloDropout(dropout_rate)(x)
+    x = Dropout(dropout_rate)(x, training=True)
     x = decode(x, p3, [256, 256, 128])
-    x = MonteCarloDropout(dropout_rate)(x)
+    x = Dropout(dropout_rate)(x, training=True)
     x = decode(x, p2, [128, 64])
     x = decode(x, p1, [64])
     # classifier

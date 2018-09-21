@@ -4,7 +4,6 @@ from .mean import Mean
 from .memorized_pooling_2d import MemorizedMaxPooling2D
 from .memorized_upsampling_2d import MemorizedUpsampling2D
 from .monte_carlo import MonteCarlo
-from .monte_carlo_dropout import MonteCarloDropout
 from .var import Var
 
 
@@ -15,6 +14,5 @@ __all__ = [
     MemorizedMaxPooling2D.__name__,
     MemorizedUpsampling2D.__name__,
     MonteCarlo.__name__,
-    MonteCarloDropout.__name__,
     Var.__name__,
 ]
