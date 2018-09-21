@@ -100,6 +100,30 @@ def classify(x, num_classes: int):
     return x
 
 
+def transfer_vgg16_encoder(model):
+    """
+    Pre-train the encoder network of SegNet from VGG16.
+
+    Args:
+        model: the SegNet model to pre-train the encoder of with VGG19
+
+    Returns:
+        the model after replacing the encoder weights with VGG16's
+
+    """
+    # load the pre-trained VGG16 model using ImageNet weights
+    vgg16 = VGG16(weights='imagenet', include_top=False)
+    # extract all the convolutional layers (encoder layers) from VGG16
+    vgg16_conv = [layer for layer in vgg16.layers if isinstance(layer, Conv2D)]
+    # extract all convolutional layers from SegNet, the first len(vgg16_conv)
+    # layers in this list are architecturally congruent with the layers in
+    # vgg16_conv by index
+    model_conv = [layer for layer in model.layers if isinstance(layer, Conv2D)]
+    # iterate over the VGG16 layers and replace the SegNet encoder weights
+    for idx, layer in enumerate(vgg16_conv):
+        model_conv[idx].set_weights(layer.get_weights())
+
+
 def build_segnet(
     image_shape: tuple,
     num_classes: int,
@@ -157,20 +181,9 @@ def build_segnet(
             *build_iou_for(list(range(num_classes)), label_names),
         ],
     )
-    # if transfer learning from ImageNet is disabled, return the model as is
-    if not pretrain_encoder:
-        return model
-    # load the pre-trained VGG16 model using ImageNet weights
-    vgg16 = VGG16(weights='imagenet', include_top=False)
-    # extract all the convolutional layers (encoder layers) from VGG16
-    vgg16_conv = [layer for layer in vgg16.layers if isinstance(layer, Conv2D)]
-    # extract all convolutional layers from SegNet, the first len(vgg16_conv)
-    # layers in this list are architecturally congruent with the layers in
-    # vgg16_conv by index
-    model_conv = [layer for layer in model.layers if isinstance(layer, Conv2D)]
-    # iterate over the VGG16 layers and replace the SegNet encoder weights
-    for idx, layer in enumerate(vgg16_conv):
-        model_conv[idx].set_weights(layer.get_weights())
+    # if transfer learning from ImageNet is enabled, pre-train from VGG16
+    if pretrain_encoder:
+        transfer_vgg16_encoder(model)
 
     return model
 
