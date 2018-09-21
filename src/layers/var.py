@@ -22,7 +22,7 @@ class Var(Layer):
         # store the instance variables of this layer
         self.axis = axis
 
-    def get_output_shape_for(self, input_shape):
+    def compute_output_shape(self, input_shape):
         """
         Return the output shape of the layer for given input shape.
 
