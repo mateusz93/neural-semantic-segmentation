@@ -157,17 +157,17 @@ def build_segnet(
     if contrast_norm is not None:
         x = ContrastNormalization(method=contrast_norm)(x)
     # encoder
-    x, p1 = encode(x, 2 * [64])
-    x, p2 = encode(x, 2 * [128])
-    x, p3 = encode(x, 3 * [256])
-    x, p4 = encode(x, 3 * [512])
-    x, p5 = encode(x, 3 * [512])
+    x, pool_1 = encode(x, 2 * [64])
+    x, pool_2 = encode(x, 2 * [128])
+    x, pool_3 = encode(x, 3 * [256])
+    x, pool_4 = encode(x, 3 * [512])
+    x, pool_5 = encode(x, 3 * [512])
     # decoder
-    x = decode(x, p5, 3 * [512])
-    x = decode(x, p4, [512, 512, 256])
-    x = decode(x, p3, [256, 256, 128])
-    x = decode(x, p2, [128, 64])
-    x = decode(x, p1, [64])
+    x = decode(x, pool_5, 3 * [512])
+    x = decode(x, pool_4, [512, 512, 256])
+    x = decode(x, pool_3, [256, 256, 128])
+    x = decode(x, pool_2, [128, 64])
+    x = decode(x, pool_1, [64])
     # classifier
     x = classify(x, num_classes)
     # compile the graph
