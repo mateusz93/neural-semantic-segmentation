@@ -73,7 +73,7 @@ def build_bayesian_segnet(
     # classifier
     x = classify(x, num_classes)
     # compile the graph
-    model = Model(inputs=[inputs], outputs=[x])
+    model = Model(inputs=[inputs], outputs=[x], name='SegNet')
     model.compile(
         optimizer=optimizer,
         loss=build_weighted_categorical_crossentropy(class_weights),
@@ -120,31 +120,27 @@ def wrap_monte_carlo(model,
 
     """
     # the inputs for the Monte Carlo model (ignoring batch size)
-    inputs = Input(model.input_shape[1:], tensor=model.inputs[0])
+    inputs = model.inputs
     # sample from the model for the given number of samples in Monte Carlo
     samples = MonteCarlo(model, num_samples)(inputs)
     # calculate the mean and variance of the Monte Carlo samples (axis -1)
-    mean = Mean(name='mean', axis=-1)(samples)
+    mean = Mean(name='mc', axis=-1)(samples)
     var = Var(axis=-1)(samples)
     var = Mean(axis=-1)(var)
-    
-    from keras import backend as K
-    return K.function([inputs], [mean, var])
     # build the epistemic uncertainty model
-    # mc_model = Model(inputs=[inputs], outputs=[mean, var])
-
+    mc_model = Model(inputs=inputs, outputs=[mean, var], name='uncertainty')
     # compile the model (optimizer is arbitrary, this is test only)
-    # mc_model.compile(
-    #     optimizer='sgd',
-    #     loss={'mean': build_weighted_categorical_crossentropy(class_weights)},
-    #     metrics={
-    #         'mean': [
-    #             'accuracy',
-    #             mean_iou,
-    #             *build_iou_for(list(range(model.output_shape[-1])), label_names),
-    #         ]
-    #     },
-    # )
+    mc_model.compile(
+        optimizer='sgd',
+        loss={'mc': build_weighted_categorical_crossentropy(class_weights)},
+        metrics={
+            'mc': [
+                'accuracy',
+                mean_iou,
+                *build_iou_for(list(range(model.output_shape[-1])), label_names),
+            ]
+        },
+    )
 
     return mc_model
 
