@@ -122,7 +122,7 @@ def build_segnet(
         contrast_norm: the method of contrast normalization for inputs
 
     Returns:
-        a Keras model of the 103 layer Tiramisu version of DenseNet
+        a compiled model of SegNet
 
     """
     # the input block of the network
