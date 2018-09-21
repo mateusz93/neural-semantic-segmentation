@@ -1,6 +1,4 @@
 """An implementation of SegNet auto-encoder for semantic segmentation."""
-from keras.applications.vgg16 import VGG16
-from keras.layers import Conv2D
 from keras.layers import Dropout
 from keras.layers import Input
 from keras.layers import Lambda
