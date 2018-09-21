@@ -120,7 +120,7 @@ def wrap_monte_carlo(model,
 
     """
     # the inputs for the Monte Carlo model (ignoring batch size)
-    inputs = Input(model.input_shape[1:])
+    inputs = model.inputs[0]
     # sample from the model for the given number of samples in Monte Carlo
     samples = MonteCarlo(model, num_samples, name='monte_carlo')(inputs)
     # calculate the mean and variance of the Monte Carlo samples (axis -1)
