@@ -101,7 +101,7 @@ def build_bayesian_segnet(
     return model
 
 
-def wrap_monte_carlo(model, num_samples: int=40):
+def wrap_uncertainty(model, num_samples: int=40):
     """
     Return a model to estimate the mean/var of another model with Monte Carlo.
 
@@ -129,4 +129,4 @@ def wrap_monte_carlo(model, num_samples: int=40):
 
 
 # explicitly define the outward facing API of this module
-__all__ = [build_bayesian_segnet.__name__, wrap_monte_carlo.__name__]
+__all__ = [build_bayesian_segnet.__name__, wrap_uncertainty.__name__]
