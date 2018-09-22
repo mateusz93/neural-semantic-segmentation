@@ -10,11 +10,8 @@ from keras.models import Model
 from keras.optimizers import SGD
 from keras.regularizers import l2
 from .layers import ContrastNormalization
-from .layers import Mean
 from .layers import MemorizedMaxPooling2D
 from .layers import MemorizedUpsampling2D
-from .layers import MonteCarlo
-from .layers import Var
 from .losses import build_weighted_categorical_crossentropy
 from .metrics import mean_iou
 from .metrics import build_iou_for
@@ -208,36 +205,5 @@ def build_segnet(image_shape: tuple, num_classes: int,
     return model
 
 
-def wrap_uncertainty(model: Model, num_samples: int=50) -> Model:
-    """
-    Return a model to estimate the mean/var of another model with Monte Carlo.
-
-    Args:
-        model: the Bayesian model to wrap with a Monte Carlo estimator
-        num_samples: the number of samples of the model to estimate mean/var
-
-    Returns:
-        a new model estimating the mean/var of output of the given model
-
-    """
-    # the inputs for the Monte Carlo model
-    inputs = model.inputs
-    # sample from the model for the given number of samples in Monte Carlo
-    samples = MonteCarlo(model, num_samples)(inputs)
-    # calculate the mean and variance of the Monte Carlo samples (axis -1)
-    mean = Mean(name='mc')(samples)
-    var = Var(name='var')(samples)
-    # build the epistemic uncertainty model
-    mc_model = Model(inputs=inputs, outputs=[mean, var])
-    # compile the model (optimizer is arbitrary, model is not trainable)
-    mc_model.compile(
-        optimizer='sgd',
-        loss={'mc': model.loss},
-        metrics={'mc': model.metrics}
-    )
-
-    return mc_model
-
-
 # explicitly define the outward facing API of this module
-__all__ = [build_segnet.__name__, wrap_uncertainty.__name__]
+__all__ = [build_segnet.__name__]
