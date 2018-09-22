@@ -71,7 +71,7 @@ class MonteCarlo(object):
     def state_updates(self):
         """Return the `updates` from all layers that are stateful."""
         return self.model.state_updates
-    
+
     @property
     def trainable_weights(self):
         return self.model.trainable_weights
@@ -79,7 +79,7 @@ class MonteCarlo(object):
     @property
     def non_trainable_weights(self):
         return self.model.non_trainable_weights
-        
+
     def get_weights(self):
         """Return the weights of the model."""
         return self.model.get_weights()
@@ -107,7 +107,7 @@ class MonteCarlo(object):
     def compile(self, *args, **kwargs):
         """Configure the model for training."""
         return self.model.compile(*args, **kwargs)
-        
+
     @property
     def metrics_names(self) -> list:
         """Return the names of metrics for this Model wrapper."""
@@ -131,7 +131,7 @@ class MonteCarlo(object):
         Args:
             args: the positional arguments for evaluate_generator
             kwargs: the keyword arguments for evaluate_generator
-            
+
         Returns:
             a tuple of:
             - mean predictions over self.simulations passes
@@ -172,7 +172,7 @@ class MonteCarlo(object):
         Args:
             args: the positional arguments for evaluate_generator
             kwargs: the keyword arguments for evaluate_generator
-            
+
         Returns:
             the mean evaluation metrics over self.simulations passes
 
