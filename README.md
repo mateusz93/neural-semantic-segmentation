@@ -17,6 +17,14 @@ Results were generated using a machine equipped with  128GB RAM, nVidia P100
 GPU, and Intel Xeon CPU @ 2.10GHz. All results shown are from the testing
 dataset.
 
+## [CamVid][]
+
+-   [32 classes][32-class] generalized to 11 classes using mapping in [11_class.txt](11_class.txt)
+-   960 x 720 scaled down by factor of 2 to 480 x 360
+
+[CamVid]: http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid/
+[32-class]: http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid/#ClassLabels
+
 ## [SegNet][Badrinarayanan et al. (2015)]
 
 <table>
