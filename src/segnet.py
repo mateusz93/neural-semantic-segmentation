@@ -137,7 +137,7 @@ def build_segnet(image_shape: tuple, num_classes: int,
     class_weights=None,
     contrast_norm: str='lcn',
     dropout_rate: float=None,
-    optimizer=SGD(lr=0.001, momentum=0.9),
+    optimizer=SGD(lr=0.1, momentum=0.9),
     pretrain_encoder: bool=True,
 ) -> Model:
     """
@@ -208,7 +208,7 @@ def build_segnet(image_shape: tuple, num_classes: int,
     return model
 
 
-def wrap_uncertainty(model: Model, num_samples: int=40) -> Model:
+def wrap_uncertainty(model: Model, num_samples: int=50) -> Model:
     """
     Return a model to estimate the mean/var of another model with Monte Carlo.
 
