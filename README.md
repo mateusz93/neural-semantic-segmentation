@@ -17,7 +17,7 @@ Results were generated using a machine equipped with  128GB RAM, nVidia P100
 GPU, and Intel Xeon CPU @ 2.10GHz. All results shown are from the testing
 dataset.
 
-## [SegNet][Badrinarayanan et al. (2016)]
+## [SegNet][Badrinarayanan et al. (2015)]
 
 <table>
   <tr>
@@ -31,14 +31,15 @@ dataset.
 </table>
 
 -   encoder transfer learning from VGG16 trained on ImageNet
--   optimized using SGD with 𝛃=0.9, α=0.001 (constant)
+-   optimized using SGD with 𝛃=0.9, initial α=0.001
+    -   learning rate decay of 0.95 per epoch
 -   trained for for max of 200 epochs with batch size 8
     -   training stopped early based on training loss with patience 10
 -   best model in terms of training loss is kept as final model
 -   median frequency balancing of class labels ([Eigen et al. (2014)][])
     -   weighted categorical cross-entropy loss function
 -   local contrast normalization of inputs ([LeCun et al. (2009)][])
--   pooling indexes ([Badrinarayanan et al. (2016)][])
+-   pooling indexes ([Badrinarayanan et al. (2015)][])
 
 ### Quantitative Results
 
@@ -79,6 +80,31 @@ The following table outlines the testing results from SegNet.
   </tr>
 </table>
 
+
+<!--
+## [Bayesian SegNet][Kendall et al. (2015)]
+
+-   encoder transfer learning from VGG16 trained on ImageNet
+-   optimized using SGD with 𝛃=0.9, initial α=0.001
+    -   learning rate decay of 0.95 per epoch
+-   trained for for max of 200 epochs with batch size 8
+    -   training stopped early based on training loss with patience 10
+-   best model in terms of training loss is kept as final model
+-   median frequency balancing of class labels ([Eigen et al. (2014)][])
+    -   weighted categorical cross-entropy loss function
+-   local contrast normalization of inputs ([LeCun et al. (2009)][])
+-   pooling indexes ([Badrinarayanan et al. (2015)][])
+-   dropout rate of 50%
+-   40 Monte Carlo samples to estimate mean class and variance
+
+### Quantitative Results
+
+The following table outlines the testing results from SegNet.
+
+### Qualitative Results
+-->
+
+<!--
 ## [The One Hundred Layers Tiramisu][Jégou et al. (2016)]
 
 <table>
@@ -106,11 +132,23 @@ The following table outlines the testing results from SegNet.
 The following table outlines the testing results from 103 Layers Tiramisu.
 
 ### Qualitative Results
+-->
 
+<!--
+## [Bayesian Tiramisu][Kendall et al. (2017)]
+
+### Quantitative Results
+
+The following table outlines the testing results from SegNet.
+
+### Qualitative Results
+-->
 
 <!-- References -->
 
 [LeCun et al. (2009)]: http://yann.lecun.com/exdb/publis/pdf/jarrett-iccv-09.pdf
 [Eigen et al. (2014)]: https://arxiv.org/abs/1411.4734
-[Badrinarayanan et al. (2016)]: https://arxiv.org/pdf/1511.00561.pdf
+[Badrinarayanan et al. (2015)]: https://arxiv.org/pdf/1511.00561.pdf
+[Kendall et al. (2015)]: https://arxiv.org/abs/1511.02680
 [Jégou et al. (2016)]: https://arxiv.org/abs/1611.09326
+[Kendall et al. (2017)]: http://papers.nips.cc/paper/7141-what-uncertainties-do-we-need-in-bayesian-deep-learning-for-computer-vision
