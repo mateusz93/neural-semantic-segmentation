@@ -38,6 +38,9 @@ class MonteCarlo(object):
         # return the mean of each metric over the simulations
         return simulations
 
+    def summary(self):
+        return self.model.summary()
+
     @property
     def layers(self):
         return self.model.layers
@@ -84,24 +87,25 @@ class MonteCarlo(object):
         """Return the weights of the model."""
         return self.model.get_weights()
 
-    def set_weights(self, weights: list):
-        """
-        Set the weights of the model.
+    def set_weights(self, *args, **kwargs):
+        """Set the weights of the model."""
+        return self.model.set_weights(*args, **kwargs)
 
-        Args:
-            weights: Numpy arrays matching output of `get_weights`
+    def load_weights(self, *args, **kwargs):
+        """Load the weights of the model from disk."""
+        return self.model.load_weights(*args, **kwargs)
 
-        Returns:
-            None
-
-        """
-        return self.model.set_weights(weights)
+    def save_weights(self, *args, **kwargs):
+        """Save the weights of the model to disk."""
+        return self.model.save_weights(*args, **kwargs)
 
     @property
     def input_spec(self):
+        """Return the input spec of the model."""
         return self.model.input_spec
 
     def call(self, *args, **kwargs):
+        """Call the model as a layer"""
         raise ValueError('cannot call a Monte Carlo simulation Model.')
 
     def compile(self, *args, **kwargs):
