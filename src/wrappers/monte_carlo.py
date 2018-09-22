@@ -29,6 +29,15 @@ class MonteCarlo(object):
         except ValueError:
             raise TypeError('simulations must be an integer')
 
+    def _simulate(self, method, *args, **kwargs):
+        # create a list to store the output predictions in
+        simulations = [None] * self.simulations
+        # evaluate over the number of simulations
+        for idx in tqdm(range(self.simulations), unit='simulation'):
+            simulations[idx] = getattr(self.model, method)(*args, **kwargs)
+        # return the mean of each metric over the simulations
+        return simulations
+
     @property
     def layers(self):
         return self.model.layers
@@ -110,11 +119,8 @@ class MonteCarlo(object):
 
     def evaluate(self, *args, **kwargs) -> list:
         """Return the loss value & metrics values for the model in test mode."""
-        # create a list to store the output predictions in
-        metrics = [None] * self.simulations
-        # evaluate over the number of simulations
-        for idx in tqdm(range(self.simulations), unit='simulation'):
-            metrics[idx] = self.model.evaluate(*args, **kwargs)
+        # simulate the method
+        metrics = self._simulate('evaluate', *args, **kwargs)
         # return the mean of each metric over the simulations
         return np.mean(metrics, axis=0)
 
@@ -132,11 +138,8 @@ class MonteCarlo(object):
             - variance of predictions over self.simulations passes
 
         """
-        # create a list to store the output predictions in
-        y = [None] * self.simulations
-        # predict over the number of simulations
-        for idx in tqdm(range(self.simulations), unit='simulation'):
-            y[idx] = self.model.predict(*args, **kwargs)
+        # simulate the method
+        y = self._simulate('predict', *args, **kwargs)
         # return the mean and variance of the simulations
         return np.mean(y, axis=0), np.var(y, axis=0)
 
@@ -144,23 +147,17 @@ class MonteCarlo(object):
         """Runs a single gradient update on a single batch of data."""
         return self.model.train_on_batch(*args, **kwargs)
 
-     def test_on_batch(self, *args, **kwargs):
+    def test_on_batch(self, *args, **kwargs):
         """Test the model on a single batch of samples."""
-        # create a list to store the output predictions in
-        metrics = [None] * self.simulations
-        # predict over the number of simulations
-        for idx in tqdm(range(self.simulations), unit='simulation'):
-            metrics[idx] = self.model.test_on_batch(*args, **kwargs)
-        # return the mean and variance of the simulations
+        # simulate the method
+        metrics = self._simulate('test_on_batch', *args, **kwargs)
+        # return the mean of each metric over the simulations
         return np.mean(metrics, axis=0)
 
     def predict_on_batch(self, *args, **kwargs):
         """Returns predictions for a single batch of samples."""
-        # create a list to store the output predictions in
-        y = [None] * self.simulations
-        # predict over the number of simulations
-        for idx in tqdm(range(self.simulations), unit='simulation'):
-            y[idx] = self.model.predict_on_batch(*args, **kwargs)
+        # simulate the method
+        y = self._simulate('predict_on_batch', *args, **kwargs)
         # return the mean and variance of the simulations
         return np.mean(y, axis=0), np.var(y, axis=0)
 
@@ -180,21 +177,15 @@ class MonteCarlo(object):
             the mean evaluation metrics over self.simulations passes
 
         """
-        # create a list to store the output predictions in
-        metrics = [None] * self.simulations
-        # evaluate over the number of simulations
-        for idx in tqdm(range(self.simulations), unit='simulation'):
-            metrics[idx] = self.model.evaluate_generator(*args, **kwargs)
+        # simulate the method
+        metrics = self._simulate('evaluate_generator', *args, **kwargs)
         # return the mean of each metric over the simulations
         return np.mean(metrics, axis=0)
 
     def predict_generator(self, *args, **kwargs):
         """Generate predictions for the input samples from a data generator."""
-        # create a list to store the output predictions in
-        y = [None] * self.simulations
-        # predict over the number of simulations
-        for idx in tqdm(range(self.simulations), unit='simulation'):
-            y[idx] = self.model.predict_generator(*args, **kwargs)
+        # simulate the method
+        y = self._simulate('predict_generator', *args, **kwargs)
         # return the mean and variance of the simulations
         return np.mean(y, axis=0), np.var(y, axis=0)
 
