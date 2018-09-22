@@ -1,17 +1,17 @@
 """A layer to perform Monte Carlo simulation on a function."""
 from keras import backend as K
-from keras.layers import Layer
+from keras.layers import Wrapper
 
 
-class MonteCarlo(Layer):
+class MonteCarlo(Wrapper):
     """A layer to perform Monte Carlo simulation on a function."""
 
-    def __init__(self, function, simulations, **kwargs):
+    def __init__(self, layer, simulations, **kwargs):
         """
         Initialize a new repeat tensor layer.
 
         Args:
-            function: the layer or model to simulate using Monte Carlo
+            layer: the layer or model to simulate using Monte Carlo
             simulations: the number of times to call the function on inputs
             kwargs: keyword arguments for the super constructor
 
@@ -20,14 +20,13 @@ class MonteCarlo(Layer):
 
         """
         # initialize with the super constructor
-        super(MonteCarlo, self).__init__(**kwargs)
+        super(MonteCarlo, self).__init__(layer, **kwargs)
         # store the instance variables of this layer
-        self.function = function
         self.simulations = simulations
 
     def compute_output_shape(self, *args, **kwargs):
         """Return the output shape of this layer."""
-        return self.function.output_shape + (self.simulations, )
+        return self.layer.output_shape + (self.simulations, )
 
     def call(self, inputs, **kwargs):
         """
@@ -42,7 +41,7 @@ class MonteCarlo(Layer):
 
         """
         # collect outputs for each simulation
-        outputs = [self.function(inputs) for _ in range(self.simulations)]
+        outputs = [self.layer(inputs) for _ in range(self.simulations)]
         # return the average over all the outputs
         return K.stack(outputs, axis=-1)
 
