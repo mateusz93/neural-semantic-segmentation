@@ -226,7 +226,7 @@ def wrap_uncertainty(model: Model, num_samples: int=50) -> Model:
     samples = MonteCarlo(model, num_samples)(inputs)
     # calculate the mean and variance of the Monte Carlo samples (axis -1)
     mean = Mean(name='mc')(samples)
-    var = Mean(name='var')(Var()(samples))
+    var = Var(name='var')(samples)
     # build the epistemic uncertainty model
     mc_model = Model(inputs=inputs, outputs=[mean, var])
     # compile the model (optimizer is arbitrary, model is not trainable)
