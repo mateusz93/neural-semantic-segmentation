@@ -89,8 +89,10 @@ The following table outlines the testing results from SegNet.
 </table>
 
 
-<!--
+
 ## [Bayesian SegNet][Kendall et al. (2015)]
+
+![Bayesian SegNet](https://user-images.githubusercontent.com/2184469/45915765-7bcc0800-be20-11e8-87cf-4d778b1b3837.png)
 
 -   encoder transfer learning from VGG16 trained on ImageNet
 -   optimized using SGD with 𝛃=0.9, initial α=0.001
@@ -110,9 +112,9 @@ The following table outlines the testing results from SegNet.
 The following table outlines the testing results from SegNet.
 
 ### Qualitative Results
--->
 
-<!--
+
+
 ## [The One Hundred Layers Tiramisu][Jégou et al. (2016)]
 
 <table>
@@ -140,7 +142,7 @@ The following table outlines the testing results from SegNet.
 The following table outlines the testing results from 103 Layers Tiramisu.
 
 ### Qualitative Results
--->
+
 
 <!--
 ## [Bayesian Tiramisu][Kendall et al. (2017)]
@@ -150,7 +152,7 @@ The following table outlines the testing results from 103 Layers Tiramisu.
 The following table outlines the testing results from SegNet.
 
 ### Qualitative Results
--->
+ -->
 
 <!-- References -->
 
