@@ -30,47 +30,51 @@ dataset.
   </tr>
 </table>
 
--   [x] encoder transfer learning from VGG16 trained on ImageNet
--   [x] optimized using SGD with 𝛃=0.9, α=0.001 (constant)
--   [x] trained for 50 epochs with a batch size of 4 ([Badrinarayanan et al. (2016)][] used 12)
--   [x] best model in terms of training loss is kept as final model
--   [x] median frequency balancing of class labels ([Eigen et al. (2014)][])
+-   encoder transfer learning from VGG16 trained on ImageNet
+-   optimized using SGD with 𝛃=0.9, α=0.001 (constant)
+-   trained for for max of 200 epochs with batch size 8
+    -   training stopped early based on training loss with patience 10
+-   best model in terms of training loss is kept as final model
+-   median frequency balancing of class labels ([Eigen et al. (2014)][])
     -   weighted categorical cross-entropy loss function
--   [x] local contrast normalization of inputs ([LeCun et al. (2009)][])
--   [x] pooling indexes ([Badrinarayanan et al. (2016)][])
+-   local contrast normalization of inputs ([LeCun et al. (2009)][])
+-   pooling indexes ([Badrinarayanan et al. (2016)][])
 
 ### Quantitative Results
 
 The following table outlines the testing results from SegNet.
 
-| Metric          | Validation |
-|:----------------|:-----------|
-| Accuracy        | 0.840661
-| mean IoU        | 0.485506
-| Bicyclist       | 0.149914
-| Building        | 0.688313
-| Car             | 0.639180
-| Column_Pole     | 0.207784
-| Fence           | 0.162744
-| Pedestrian      | 0.262279
-| Road            | 0.828501
-| Sidewalk        | 0.696738
-| SignSymbol      | 0.161242
-| Sky             | 0.896308
-| Tree            | 0.647563
+| Metric      | Validation |
+|:------------|:-----------|
+| Accuracy    | 0.846443
+| mean IoU    | 0.447931
+| Bicyclist   | 0.093297
+| Building    | 0.658801
+| Car         | 0.473069
+| Column_Pole | 0.218206
+| Fence       | 0.131719
+| Pedestrian  | 0.230519
+| Road        | 0.825075
+| Sidewalk    | 0.715983
+| SignSymbol  | 0.149735
+| Sky         | 0.871027
+| Tree        | 0.559813
 
 ### Qualitative Results
 
 <table>
   <tr>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/45790933-f5ab9800-bc4c-11e8-92ec-d867022647a5.png" />
+      <img src="https://user-images.githubusercontent.com/2184469/45915621-8c2eb380-be1d-11e8-825e-764e9ebab4c5.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/45790934-f5ab9800-bc4c-11e8-9cf3-bd4d1a752a65.png" />
+      <img src="https://user-images.githubusercontent.com/2184469/45915622-8cc74a00-be1d-11e8-9366-0c4670fcc678.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/45790935-f5ab9800-bc4c-11e8-82d2-ce8f80e9c706.png" />
+      <img src="https://user-images.githubusercontent.com/2184469/45915623-8cc74a00-be1d-11e8-9fc0-e2d82e331a41.png" />
+    </td>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/45915624-8cc74a00-be1d-11e8-917b-44ef09082f6f.png" />
     </td>
   </tr>
 </table>
@@ -88,19 +92,20 @@ The following table outlines the testing results from SegNet.
   </tr>
 </table>
 
--   [x] trained on 224 x 224 for for 50 epochs with batch size 4 (patience 100)
+-   trained on 224 x 224 for for 50 epochs with batch size 4 (patience 100)
     -   optimized using RMSprop with learning rate 0.001, decay 0.995
--   [x] trained on 352 (360) x 480 for for 50 epochs with batch size 1 (patience 50)
+-   trained on 352 (360) x 480 for for 50 epochs with batch size 1 (patience 50)
     -   optimized using RMSprop with learning rate 0.001, decay 0.995
--   [x] median frequency balancing of class labels ([Eigen et al. (2014)][])
+-   median frequency balancing of class labels ([Eigen et al. (2014)][])
     -   weighted categorical cross-entropy loss function
--   [x] local contrast normalization of inputs ([LeCun et al. (2009)][])
--   [x] skip connections ([Jégou et al. (2016)][])
+-   local contrast normalization of inputs ([LeCun et al. (2009)][])
+-   skip connections ([Jégou et al. (2016)][])
 
 ### Quantitative Results
 
 The following table outlines the testing results from 103 Layers Tiramisu.
 
+### Qualitative Results
 
 
 <!-- References -->
