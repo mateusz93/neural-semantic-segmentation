@@ -105,7 +105,7 @@ The following table outlines the testing results from SegNet.
 -   local contrast normalization of inputs ([LeCun et al. (2009)][])
 -   pooling indexes ([Badrinarayanan et al. (2015)][])
 -   dropout rate of 50%
--   40 Monte Carlo samples to estimate mean class and variance
+-   50 Monte Carlo samples to estimate mean class and variance
 
 ### Quantitative Results
 
