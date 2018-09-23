@@ -13,8 +13,9 @@ from .layers import ContrastNormalization
 from .layers import MemorizedMaxPooling2D
 from .layers import MemorizedUpsampling2D
 from .losses import build_weighted_categorical_crossentropy
-from .metrics import mean_iou
 from .metrics import build_iou_for
+from .metrics import mean_iou
+from .metrics import mean_per_class_accuracy
 
 
 # static arguments used for all convolution layers in SegNet
@@ -194,6 +195,7 @@ def build_segnet(image_shape: tuple, num_classes: int,
         loss=build_weighted_categorical_crossentropy(class_weights),
         metrics=[
             'accuracy',
+            mean_per_class_accuracy,
             mean_iou,
             *build_iou_for(list(range(num_classes)), label_names),
         ],
