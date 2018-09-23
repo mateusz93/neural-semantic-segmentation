@@ -13,9 +13,7 @@ from keras.models import Model
 from keras.optimizers import RMSprop
 from keras.regularizers import l2
 from .layers import ContrastNormalization
-from .metrics import build_iou_for
-from .metrics import mean_iou
-from .metrics import mean_per_class_accuracy
+from .metrics import metrics_for_segmentation
 from .losses import build_weighted_categorical_crossentropy
 
 
@@ -194,12 +192,7 @@ def build_tiramisu(
     model.compile(
         optimizer=RMSprop(lr=learning_rate),
         loss=build_weighted_categorical_crossentropy(class_weights),
-        metrics=[
-            'accuracy',
-            mean_per_class_accuracy,
-            mean_iou,
-            *build_iou_for(list(range(num_classes)), label_names),
-        ],
+        metrics=metrics_for_segmentation(num_classes, label_names),
     )
 
     return model
