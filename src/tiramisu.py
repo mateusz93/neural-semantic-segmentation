@@ -17,10 +17,17 @@ from .metrics import metrics_for_segmentation
 from .losses import build_weighted_categorical_crossentropy
 
 
+# static arguments used for all convolution layers in Tiramisu models
+_CONV = dict(
+    kernel_initializer='he_uniform',
+    kernel_regularizer=l2(1e-4),
+)
+
+
 def _dense_block(inputs,
     num_layers: int,
     num_filters: int,
-    mode=None,
+    skip=None,
     dropout: float=0.2
 ):
     """
@@ -30,7 +37,7 @@ def _dense_block(inputs,
         inputs: the input tensor to append this dense block to
         num_layers: the number of layers in this dense block
         num_filters: the number of filters in the convolutional layer
-        mode: the mode of the dense block as a {str, None, Tensor}
+        skip: the skip mode of the dense block as a {str, None, Tensor}
             - 'downsample': the dense block is part of the down-sample side
             - None: the dense block is the bottleneck block bottleneck
             - a skip tensor: the dense block is part of the up-sample side
@@ -42,10 +49,10 @@ def _dense_block(inputs,
     """
     # create a placeholder list to store references to output tensors
     outputs = [None] * num_layers
-    # if mode is a tensor, we're in downstream mode
-    if K.is_tensor(mode):
-        # concatenate the mode (from skip connection) with the inputs
-        inputs = Concatenate()([inputs, mode])
+    # if skip is a tensor, concatenate with inputs (upstream mode)
+    if K.is_tensor(skip):
+        # concatenate the skip with the inputs
+        inputs = Concatenate()([inputs, skip])
     # copy a reference to the block inputs for later
     block_inputs = inputs
     # iterate over the number of layers in the block
@@ -54,12 +61,7 @@ def _dense_block(inputs,
         # i.e., during training, validation, and testing
         x = BatchNormalization()(inputs, training=True)
         x = Activation('relu')(x)
-        x = Conv2D(num_filters,
-            kernel_size=(3, 3),
-            padding='same',
-            kernel_initializer='he_uniform',
-            kernel_regularizer=l2(1e-4),
-        )(x)
+        x = Conv2D(num_filters, kernel_size=(3, 3), padding='same', **_CONV)(x)
         if dropout is not None:
             x = Dropout(dropout)(x)
         # store the output tensor of this block to concatenate at the end
@@ -70,9 +72,8 @@ def _dense_block(inputs,
 
     # concatenate outputs to produce num_layers * num_filters feature maps
     x = Concatenate()(outputs)
-    # if we're in downstream mode
-    if mode == 'downstream':
-        # concatenate the block inputs with the outputs
+    # if skip is 'downstream' concatenate inputs with outputs (downstream mode)
+    if skip == 'downstream':
         x = Concatenate()([block_inputs, x])
 
     return x
@@ -90,16 +91,13 @@ def _transition_down_layer(inputs, dropout: float=0.2):
         a tensor with a new transition down layer appended to it
 
     """
+    # get the number of filters from the input activation maps
+    num_filters = K.int_shape(inputs)[-1]
     # training=True to compute current batch statistics during inference
     # i.e., during training, validation, and testing
     x = BatchNormalization()(inputs, training=True)
     x = Activation('relu')(x)
-    x = Conv2D(K.int_shape(inputs)[-1],
-        kernel_size=(1, 1),
-        padding='same',
-        kernel_initializer='he_uniform',
-        kernel_regularizer=l2(1e-4),
-    )(x)
+    x = Conv2D(num_filters, kernel_size=(1, 1), padding='same', **_CONV)(x)
     if dropout is not None:
         x = Dropout(dropout)(x)
     x = MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(x)
@@ -118,12 +116,12 @@ def _transition_up_layer(inputs):
         a tensor with a new transition up layer appended to it
 
     """
+    # get the number of filters from the number of activation maps
     return Conv2DTranspose(K.int_shape(inputs)[-1],
         kernel_size=(3, 3),
         strides=(2, 2),
         padding='same',
-        kernel_initializer='he_uniform',
-        kernel_regularizer=l2(1e-4),
+        **_CONV
     )(inputs)
 
 
@@ -131,6 +129,7 @@ def build_tiramisu(
     image_shape: tuple,
     num_classes: int,
     label_names: dict=None,
+    initial_filters: int=48,
     growth_rate: int=16,
     layer_sizes: list=[4, 5, 7, 10, 12],
     bottleneck_size: int=15,
@@ -145,6 +144,7 @@ def build_tiramisu(
         image_shape: the image shape to create the model for
         num_classes: the number of classes to segment for (e.g. c)
         label_names: a dictionary mapping discrete labels to names for IoU
+        initial_filters: the number of filters in the first convolution layer
         growth_rate: the growth rate to use for the network (e.g. k)
         layer_sizes: a list with the size of each dense down-sample block.
                      reversed to determine the size of the up-sample blocks
@@ -158,38 +158,28 @@ def build_tiramisu(
 
     """
     # the input block of the network
-    inputs = Input(image_shape)
+    inputs = Input(image_shape, name='Tiramisu_input')
     # assume 8-bit inputs and convert to floats in [0,1]
-    x = Lambda(lambda x: x / 255.0)(inputs)
+    x = Lambda(lambda x: x / 255.0, name='pixel_norm')(inputs)
     # apply contrast normalization if set
     if contrast_norm is not None:
-        x = ContrastNormalization(method=contrast_norm)(x)
-    # start the Tiramisu network
-    x = Conv2D(48,
-        kernel_size=(3, 3),
-        padding='same',
-        kernel_initializer='he_uniform',
-        kernel_regularizer=l2(1e-4),
-    )(x)
-    # the down-sampling side of the network
+        x = ContrastNormalization(method=contrast_norm, name=contrast_norm)(x)
+    # the initial convolution layer
+    x = Conv2D(initial_filters, kernel_size=(3, 3), padding='same', **_CONV)(x)
+    # the down-sampling side of the network (keep outputs for skips)
     skips = [None] * len(layer_sizes)
     # iterate over the size for each down-sampling block
     for idx, size in enumerate(layer_sizes):
-        skips[idx] = _dense_block(x, size, growth_rate, mode='downstream')
+        skips[idx] = _dense_block(x, size, growth_rate, skip='downstream')
         x = _transition_down_layer(skips[idx])
     # the bottleneck of the network
     x = _dense_block(x, bottleneck_size, growth_rate)
-    # the up-sampling side of the network
+    # the up-sampling side of the network (using kept outputs for skips)
     for idx, size in reversed(list(enumerate(layer_sizes))):
         x = _transition_up_layer(x)
-        x = _dense_block(x, size, growth_rate, mode=skips[idx])
+        x = _dense_block(x, size, growth_rate, skip=skips[idx])
     # the classification block
-    x = Conv2D(num_classes,
-        kernel_size=(1, 1),
-        padding='valid',
-        kernel_initializer='he_uniform',
-        kernel_regularizer=l2(1e-4),
-    )(x)
+    x = Conv2D(num_classes, kernel_size=(1, 1), padding='valid', **_CONV)(x)
     x = Activation('softmax')(x)
     # compile the graph
     model = Model(inputs=[inputs], outputs=[x])
