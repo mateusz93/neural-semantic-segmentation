@@ -171,7 +171,41 @@ The following table describes training hyperparameters.
 
 The following table outlines the testing results from 103 Layers Tiramisu.
 
+| Metric                  | Test Score |
+|:------------------------|:-----------|
+| Accuracy                | 0.814069
+| mean per class Accuracy | 0.648450
+| mean I/U                | 0.443015
+| Bicyclist               | 0.080975
+| Building                | 0.627993
+| Car                     | 0.447337
+| Column_Pole             | 0.211398
+| Fence                   | 0.221945
+| Pedestrian              | 0.244067
+| Road                    | 0.806656
+| Sidewalk                | 0.705870
+| SignSymbol              | 0.126961
+| Sky                     | 0.878069
+| Tree                    | 0.521894
+
 ### Qualitative Results
+
+<table>
+  <tr>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/45962925-a2886b00-bfe7-11e8-8fc7-13c94a789568.png" />
+    </td>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/45962924-a1efd480-bfe7-11e8-9fd4-9c62d39e9e7b.png" />
+    </td>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/45962923-a1efd480-bfe7-11e8-96c0-a473a6c19383.png" />
+    </td>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/45962922-a1efd480-bfe7-11e8-8a8d-cfb85928fede.png" />
+    </td>
+  </tr>
+</table>
 
 
 
