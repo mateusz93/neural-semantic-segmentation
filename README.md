@@ -63,7 +63,7 @@ The following table describes training hyperparameters.
 
 The following table outlines the testing results from SegNet.
 
-| Metric      | Validation |
+| Metric      | Test Score |
 |:------------|:-----------|
 | Accuracy    | 0.846443
 | mean IoU    | 0.447931
