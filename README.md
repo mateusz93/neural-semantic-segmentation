@@ -181,8 +181,7 @@ The following table describes training hyperparameters.
 | 224 x 224 | 200    | 3          | 100      | RMSprop   | 1e-3 | 0.995   |
 | 352 x 480 | 200    | 1          | 50       | RMSprop   | 1e-4 | 1.000   |
 
--   random vertical flips of images for training, validation, and testing
-    -   TODO: disable this for validation and testing
+-   random vertical flips of images for training
 -   batch normalization statistics computed _per batch_ during training and
     inference
 -   median frequency balancing of class labels ([Eigen et al. (2014)][])
