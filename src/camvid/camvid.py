@@ -19,7 +19,7 @@ class CamVid(object):
         target_size: tuple=(720, 960),
         crop_size: tuple=(224, 224),
         horizontal_flip: bool=False,
-        vertical_flip: bool=True,
+        vertical_flip: bool=False,
         batch_size: int=3,
         shuffle: bool=True,
         seed: int=1,
