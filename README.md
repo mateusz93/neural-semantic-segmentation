@@ -49,11 +49,8 @@ The following table describes training hyperparameters.
     -   TODO: change to calculate static mean and variance over training data
         (i.e., calculate the rolling averages over 1 epoch of training data,
         then freeze the values for validation and testing)
--   random vertical flips of images for training, validation, and testing
-    -   TODO: disable this to follow paper
 -   encoder transfer learning from VGG16 trained on ImageNet
--   best model in terms of training loss is kept as final model
-    -   TODO: change to keep the best in terms of validation
+-   best model in terms of validation accuracy is kept as final model
 -   median frequency balancing of class labels ([Eigen et al. (2014)][])
     -   weighted categorical cross-entropy loss function
 -   local contrast normalization of inputs ([LeCun et al. (2009)][])
@@ -115,14 +112,7 @@ The following table describes training hyperparameters.
     -   TODO: change to calculate static mean and variance over training data
         (i.e., calculate the rolling averages over 1 epoch of training data,
         then freeze the values for validation and testing)
--   random vertical flips of images for training, validation, and testing
-    -   TODO: disable this to follow paper
--   encoder transfer learning from VGG16 trained on ImageNet
-    -   TODO: does this make sense given that VGG16 was _not_ trained with
-        dropout? they don't mention transfer learning in the paper. probably
-        best to disable this functionality
--   best model in terms of training loss is kept as final model
-    -   TODO: change to keep the best in terms of validation
+-   best model in terms of validation accuracy is kept as final model
 -   median frequency balancing of class labels ([Eigen et al. (2014)][])
     -   weighted categorical cross-entropy loss function
 -   local contrast normalization of inputs ([LeCun et al. (2009)][])
