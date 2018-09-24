@@ -66,7 +66,7 @@ The following table outlines the testing results from SegNet.
 | Metric      | Test Score |
 |:------------|:-----------|
 | Accuracy    | 0.846443
-| mean IoU    | 0.447931
+| mean I/U    | 0.447931
 | Bicyclist   | 0.093297
 | Building    | 0.658801
 | Car         | 0.473069
@@ -134,7 +134,40 @@ The following table describes training hyperparameters.
 
 The following table outlines the testing results from SegNet.
 
+| Metric      | Test Score |
+|:------------|:-----------|
+| Accuracy    | 0.785175
+| mean I/U    | 0.389309
+| Bicyclist   | 0.069309
+| Building    | 0.552303
+| Car         | 0.399653
+| Column_Pole | 0.117000
+| Fence       | 0.079420
+| Pedestrian  | 0.199412
+| Road        | 0.779842
+| Sidewalk    | 0.644177
+| SignSymbol  | 0.103987
+| Sky         | 0.822849
+| Tree        | 0.514446
+
 ### Qualitative Results
+
+<table>
+  <tr>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/45964351-2c860300-bfeb-11e8-83a8-2aae9b8ffc61.png" />
+    </td>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/45964349-2c860300-bfeb-11e8-8451-9c71c8249b33.png" />
+    </td>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/45964348-2c860300-bfeb-11e8-9dd2-05c3d3ac2552.png" />
+    </td>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/45964347-2c860300-bfeb-11e8-9d95-a7eb7b72fb3b.png" />
+    </td>
+  </tr>
+</table>
 
 
 
