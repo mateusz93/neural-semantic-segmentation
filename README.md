@@ -42,7 +42,7 @@ The following table describes training hyperparameters.
 
 | Crop Size | Epochs | Batch Size | Patience | Optimizer | α    | 𝛃    | α Decay |
 |:----------|:-------|:-----------|:---------|:----------|:-----|:-----|:--------|
-| 352 x 480 | 1000   | 8          | 50       | SGD       | 1e-3 | 0.9  | 0.95    |
+| 352 x 480 | 200    | 8          | 50       | SGD       | 1e-3 | 0.9  | 0.95    |
 
 -   batch normalization statistics computed per batch during training and
     using a rolling average for validation and testing
