@@ -129,12 +129,12 @@ def build_tiramisu(
     image_shape: tuple,
     num_classes: int,
     label_names: dict=None,
+    class_weights=None,
     initial_filters: int=48,
     growth_rate: int=16,
     layer_sizes: list=[4, 5, 7, 10, 12],
     bottleneck_size: int=15,
     learning_rate: float=1e-3,
-    class_weights=None,
     contrast_norm: str='lcn'
 ) -> Model:
     """
@@ -144,13 +144,13 @@ def build_tiramisu(
         image_shape: the image shape to create the model for
         num_classes: the number of classes to segment for (e.g. c)
         label_names: a dictionary mapping discrete labels to names for IoU
+        class_weights: the weights for each class
         initial_filters: the number of filters in the first convolution layer
         growth_rate: the growth rate to use for the network (e.g. k)
         layer_sizes: a list with the size of each dense down-sample block.
                      reversed to determine the size of the up-sample blocks
         bottleneck_size: the number of convolutional layers in the bottleneck
         learning_rate: the learning rate for the RMSprop optimizer
-        class_weights: the weights for each class
         contrast_norm: the method of contrast normalization for inputs
 
     Returns:
