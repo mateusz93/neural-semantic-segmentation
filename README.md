@@ -38,12 +38,22 @@ dataset.
   </tr>
 </table>
 
+The following table describes training hyperparameters.
+
+| Crop Size | Epochs | Batch Size | Patience | Optimizer | α    | 𝛃    | α Decay |
+|:----------|:-------|:-----------|:---------|:----------|:-----|:-----|:--------|
+| 352 x 480 | 1000   | 8          | 50       | SGD       | 1e-3 | 0.9  | 0.95    |
+
+-   batch normalization statistics computed per batch during training and
+    using a rolling average for validation and testing
+    -   TODO: change to calculate static mean and variance over training data
+        (i.e., calculate the rolling averages over 1 epoch of training data,
+        then freeze the values for validation and testing)
+-   random vertical flips of images for training, validation, and testing
+    -   TODO: disable this to follow paper
 -   encoder transfer learning from VGG16 trained on ImageNet
--   optimized using SGD with 𝛃=0.9, initial α=0.001
-    -   learning rate decay of 0.95 per epoch
--   trained for for max of 200 epochs with batch size 8
-    -   training stopped early based on training loss with patience 10
 -   best model in terms of training loss is kept as final model
+    -   TODO: change to keep the best in terms of validation
 -   median frequency balancing of class labels ([Eigen et al. (2014)][])
     -   weighted categorical cross-entropy loss function
 -   local contrast normalization of inputs ([LeCun et al. (2009)][])
@@ -94,17 +104,30 @@ The following table outlines the testing results from SegNet.
 
 ![Bayesian SegNet](https://user-images.githubusercontent.com/2184469/45915765-7bcc0800-be20-11e8-87cf-4d778b1b3837.png)
 
+The following table describes training hyperparameters.
+
+| Crop Size | Epochs | Batch Size | Patience | Optimizer | α    | 𝛃    |
+|:----------|:-------|:-----------|:---------|:----------|:-----|:-----|
+| 352 x 480 | 1000   | 8          | 50       | SGD       | 1e-3 | 0.9  |
+
+-   batch normalization statistics computed per batch during training and
+    using a rolling average for validation and testing
+    -   TODO: change to calculate static mean and variance over training data
+        (i.e., calculate the rolling averages over 1 epoch of training data,
+        then freeze the values for validation and testing)
+-   random vertical flips of images for training, validation, and testing
+    -   TODO: disable this to follow paper
 -   encoder transfer learning from VGG16 trained on ImageNet
--   optimized using SGD with 𝛃=0.9, initial α=0.001
-    -   learning rate decay of 0.95 per epoch
--   trained for for max of 200 epochs with batch size 8
-    -   training stopped early based on training loss with patience 10
+    -   TODO: does this make sense given that VGG16 was _not_ trained with
+        dropout? they don't mention transfer learning in the paper. probably
+        best to disable this functionality
 -   best model in terms of training loss is kept as final model
+    -   TODO: change to keep the best in terms of validation
 -   median frequency balancing of class labels ([Eigen et al. (2014)][])
     -   weighted categorical cross-entropy loss function
 -   local contrast normalization of inputs ([LeCun et al. (2009)][])
 -   pooling indexes ([Badrinarayanan et al. (2015)][])
--   dropout rate of 50%
+-   dropout rate of 50% during training and inference
 -   50 Monte Carlo samples to estimate mean class and variance
 
 ### Quantitative Results
@@ -128,10 +151,17 @@ The following table outlines the testing results from SegNet.
   </tr>
 </table>
 
--   trained on 224 x 224 for for 50 epochs with batch size 4 (patience 100)
-    -   optimized using RMSprop with learning rate 0.001, decay 0.995
--   trained on 352 (360) x 480 for for 50 epochs with batch size 1 (patience 50)
-    -   optimized using RMSprop with learning rate 0.001, decay 0.995
+The following table describes training hyperparameters.
+
+| Crop Size | Epochs | Batch Size | Patience | Optimizer | α    | α Decay |
+|:----------|:-------|:-----------|:---------|:----------|:-----|:--------|
+| 224 x 224 | 200    | 3          | 100      | RMSprop   | 1e-3 | 0.995   |
+| 352 x 480 | 200    | 1          | 50       | RMSprop   | 1e-4 | 1.000   |
+
+-   random vertical flips of images for training, validation, and testing
+    -   TODO: disable this for validation and testing
+-   batch normalization statistics computed _per batch_ during training and
+    inference
 -   median frequency balancing of class labels ([Eigen et al. (2014)][])
     -   weighted categorical cross-entropy loss function
 -   local contrast normalization of inputs ([LeCun et al. (2009)][])
@@ -144,7 +174,7 @@ The following table outlines the testing results from 103 Layers Tiramisu.
 ### Qualitative Results
 
 
-<!--
+
 ## [Bayesian Tiramisu][Kendall et al. (2017)]
 
 ### Quantitative Results
@@ -152,7 +182,7 @@ The following table outlines the testing results from 103 Layers Tiramisu.
 The following table outlines the testing results from SegNet.
 
 ### Qualitative Results
- -->
+
 
 <!-- References -->
 
