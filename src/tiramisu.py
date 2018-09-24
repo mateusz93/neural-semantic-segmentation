@@ -51,7 +51,9 @@ def _dense_block(inputs,
     block_inputs = inputs
     # iterate over the number of layers in the block
     for idx in range(num_layers):
-        x = BatchNormalization()(inputs)
+        # training=True to compute current batch statistics during inference
+        # i.e., during training, validation, and testing
+        x = BatchNormalization()(inputs, training=True)
         x = Activation('relu')(x)
         x = Conv2D(num_filters,
             kernel_size=(3, 3),
@@ -89,7 +91,9 @@ def _transition_down_layer(inputs, dropout: float=0.2):
         a tensor with a new transition down layer appended to it
 
     """
-    x = BatchNormalization()(inputs)
+    # training=True to compute current batch statistics during inference
+    # i.e., during training, validation, and testing
+    x = BatchNormalization()(inputs, training=True)
     x = Activation('relu')(x)
     x = Conv2D(K.int_shape(inputs)[-1],
         kernel_size=(1, 1),
