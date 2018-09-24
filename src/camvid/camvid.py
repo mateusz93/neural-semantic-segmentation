@@ -75,22 +75,52 @@ class CamVid(object):
         # calculate the weights as the median frequency divided by all freq
         return (freq.median() / freq).values
 
-    @property
-    def data_gen_args(self) -> dict:
-        """Return the keyword arguments for creating a new data generator."""
-        return dict(
-            horizontal_flip=self.horizontal_flip,
-            vertical_flip=self.vertical_flip,
-            image_size=self.crop_size
-        )
+    def data_gen_args(self, context: str) -> dict:
+        """
+        Return the keyword arguments for creating a new data generator.
 
-    @property
-    def flow_args(self) -> dict:
-        """Return the keyword arguments for flowing from a data generator."""
+        Args:
+            context: the context for the call (i.e., train for training)
+
+        Returns:
+            a dictionary of keyword arguments to pass to DataGenerator.__init__
+
+        """
+        # return for training
+        if context == 'train':
+            return dict(
+                horizontal_flip=self.horizontal_flip,
+                vertical_flip=self.vertical_flip,
+                image_size=self.crop_size
+            )
+        # return for validation / testing (i.e., inference)
+        return dict(image_size=self.crop_size)
+
+    def flow_args(self, context: str) -> dict:
+        """
+        Return the keyword arguments for flowing from a data generator.
+
+        Args:
+            context: the context for the call (i.e., train for training)
+
+        Returns:
+            a dictionary of keyword arguments to pass to flow_from_directory
+
+        """
+        # return for training
+        if context == 'train':
+            return dict(
+                batch_size=self.batch_size,
+                class_mode=None,
+                target_size=self.target_size,
+                shuffle=self.shuffle,
+                seed=self.seed
+            )
+        # return for validation / testing (i.e., inference)
         return dict(
+            batch_size=1,
             class_mode=None,
             target_size=self.target_size,
-            shuffle=self.shuffle,
             seed=self.seed
         )
 
@@ -139,21 +169,20 @@ class CamVid(object):
 
     def generators(self) -> dict:
         """Return a dictionary with both training and validation generators."""
-        # create generators to load images (X) and NumPy tensors (y)
-        x_g = CropImageDataGenerator(**self.data_gen_args)
-        y_g = CropNumpyDataGenerator(**self.data_gen_args)
         # the dictionary to hold generators by key value (training, validation)
         generators = dict()
         # iterate over the generator subsets
         for subset in ['train', 'val', 'test']:
-            # train has a custom batch size, val and test have a size of 1
-            batch_size = self.batch_size if subset == 'train' else 1
+            # create generators to load images (X) and NumPy tensors (y)
+            x_g = CropImageDataGenerator(**self.data_gen_args(subset))
+            y_g = CropNumpyDataGenerator(**self.data_gen_args(subset))
+            # get the path for the subset of data
             _x = os.path.join(self._x, subset)
             _y = os.path.join(self._y, subset)
             # combine X and y generators into a single generator with repeats
             generators[subset] = repeat_generator(
-                x_g.flow_from_directory(_x, **self.flow_args, batch_size=batch_size),
-                y_g.flow_from_directory(_y, **self.flow_args, batch_size=batch_size),
+                x_g.flow_from_directory(_x, **self.flow_args(subset)),
+                y_g.flow_from_directory(_y, **self.flow_args(subset)),
                 x_repeats=self.x_repeats,
                 y_repeats=self.y_repeats,
             )
