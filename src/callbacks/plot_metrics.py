@@ -1,4 +1,8 @@
-"""A Keras callback to plot metrics during fitting."""
+"""A Keras callback to plot metrics during fitting.
+
+Derived from: https://github.com/stared/livelossplot
+
+"""
 import matplotlib.pyplot as plt
 from IPython import display
 from keras.callbacks import Callback
