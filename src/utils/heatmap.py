@@ -1,7 +1,6 @@
 """A method to map vectors to color maps."""
 import numpy as np
 from matplotlib import pyplot as plt
-from matplotlib.colors import LinearSegmentedColormap
 
 
 def heatmap(arr: np.ndarray, color_map='cubehelix') -> np.ndarray:
@@ -23,20 +22,7 @@ def heatmap(arr: np.ndarray, color_map='cubehelix') -> np.ndarray:
     # normalize the input data
     arr = plt.Normalize()(arr)
     # unwrap the color map from matplotlib
-    if isinstance(color_map, LinearSegmentedColormap):
-        pass
-    elif isinstance(color_map, str):
-        color_map = getattr(plt.cm, color_map)
-    else:
-        # the expected input type
-        _type = LinearSegmentedColormap.__class__.__name__
-        # the reference for matplotlib color maps
-        _ref = 'https://matplotlib.org/examples/color/colormaps_reference.html'
-        raise TypeError(
-            'color_map must be an instance of {} or a string name '
-            'of a color map in matplotlib.pyplot.cm as defined '
-            'here: {}'.format(_type, _ref)
-        )
+    color_map = plt.cm.get_cmap(color_map)
     # get the heat-map from the color map in RGB (i.e., omit the alpha channel)
     _heatmap = color_map(arr)[..., :-1]
     # scale heat-map from [0,1] to [0, 255] as a vector of bytes
