@@ -60,37 +60,38 @@ The following table describes training hyperparameters.
 
 The following table outlines the testing results from SegNet.
 
-| Metric      | Test Score |
-|:------------|:-----------|
-| Accuracy    | 0.846443
-| mean I/U    | 0.447931
-| Bicyclist   | 0.093297
-| Building    | 0.658801
-| Car         | 0.473069
-| Column_Pole | 0.218206
-| Fence       | 0.131719
-| Pedestrian  | 0.230519
-| Road        | 0.825075
-| Sidewalk    | 0.715983
-| SignSymbol  | 0.149735
-| Sky         | 0.871027
-| Tree        | 0.559813
+| Metric                  | Test Score |
+|:------------------------|:-----------|
+| Accuracy                | 0.858503
+| mean per class accuracy | 0.596212
+| mean I/U                | 0.477470
+| Bicyclist               | 0.195386
+| Building                | 0.686192
+| Car                     | 0.509532
+| Column/Pole             | 0.234483
+| Fence                   | 0.149444
+| Pedestrian              | 0.316118
+| Road                    | 0.824710
+| Sidewalk                | 0.735486
+| SignSymbol              | 0.155891
+| Sky                     | 0.869758
+| Tree                    | 0.575167
 
 ### Qualitative Results
 
 <table>
   <tr>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/45915621-8c2eb380-be1d-11e8-825e-764e9ebab4c5.png" />
+      <img src="https://user-images.githubusercontent.com/2184469/46000452-3ac93300-c06e-11e8-93b3-b8321abdf8a7.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/45915622-8cc74a00-be1d-11e8-9366-0c4670fcc678.png" />
+      <img src="https://user-images.githubusercontent.com/2184469/46000453-3ac93300-c06e-11e8-8d52-13d9bec343e7.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/45915623-8cc74a00-be1d-11e8-9fc0-e2d82e331a41.png" />
+      <img src="https://user-images.githubusercontent.com/2184469/46000454-3ac93300-c06e-11e8-8141-6d81ca0d1dcb.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/45915624-8cc74a00-be1d-11e8-917b-44ef09082f6f.png" />
+      <img src="https://user-images.githubusercontent.com/2184469/46000455-3ac93300-c06e-11e8-85e0-d43f488e0de4.png" />
     </td>
   </tr>
 </table>
@@ -124,37 +125,38 @@ The following table describes training hyperparameters.
 
 The following table outlines the testing results from SegNet.
 
-| Metric      | Test Score |
-|:------------|:-----------|
-| Accuracy    | 0.785175
-| mean I/U    | 0.389309
-| Bicyclist   | 0.069309
-| Building    | 0.552303
-| Car         | 0.399653
-| Column_Pole | 0.117000
-| Fence       | 0.079420
-| Pedestrian  | 0.199412
-| Road        | 0.779842
-| Sidewalk    | 0.644177
-| SignSymbol  | 0.103987
-| Sky         | 0.822849
-| Tree        | 0.514446
+| Metric                  | Test Score |
+|:------------------------|:-----------|
+| Accuracy                | 0.812846
+| mean per class accuracy | 0.570537
+| mean I/U                | 0.410281
+| Bicyclist               | 0.117479
+| Building                | 0.612054
+| Car                     | 0.411208
+| Column/Pole             | 0.171368
+| Fence                   | 0.103415
+| Pedestrian              | 0.169263
+| Road                    | 0.798411
+| Sidewalk                | 0.661489
+| SignSymbol              | 0.091296
+| Sky                     | 0.861715
+| Tree                    | 0.515394
 
 ### Qualitative Results
 
 <table>
   <tr>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/45964351-2c860300-bfeb-11e8-83a8-2aae9b8ffc61.png" />
+      <img src="https://user-images.githubusercontent.com/2184469/46000464-43216e00-c06e-11e8-83bb-1d52000a6aaf.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/45964349-2c860300-bfeb-11e8-8451-9c71c8249b33.png" />
+      <img src="https://user-images.githubusercontent.com/2184469/46000465-43216e00-c06e-11e8-8365-332d7a464e30.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/45964348-2c860300-bfeb-11e8-9dd2-05c3d3ac2552.png" />
+      <img src="https://user-images.githubusercontent.com/2184469/46000466-43216e00-c06e-11e8-80be-1188a5c7d53b.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/45964347-2c860300-bfeb-11e8-9d95-a7eb7b72fb3b.png" />
+      <img src="https://user-images.githubusercontent.com/2184469/46000467-43ba0480-c06e-11e8-94b0-2920f15e7643.png" />
     </td>
   </tr>
 </table>
@@ -195,36 +197,36 @@ The following table outlines the testing results from 103 Layers Tiramisu.
 
 | Metric                  | Test Score |
 |:------------------------|:-----------|
-| Accuracy                | 0.814069
-| mean per class Accuracy | 0.648450
-| mean I/U                | 0.443015
-| Bicyclist               | 0.080975
-| Building                | 0.627993
-| Car                     | 0.447337
-| Column_Pole             | 0.211398
-| Fence                   | 0.221945
-| Pedestrian              | 0.244067
-| Road                    | 0.806656
-| Sidewalk                | 0.705870
-| SignSymbol              | 0.126961
-| Sky                     | 0.878069
-| Tree                    | 0.521894
+| Accuracy                | 0.826657
+| mean per class accuracy | 0.659619
+| mean I/U                | 0.448913
+| Bicyclist               | 0.076790
+| Building                | 0.624237
+| Car                     | 0.502403
+| Column/Pole             | 0.201589
+| Fence                   | 0.115558
+| Pedestrian              | 0.254075
+| Road                    | 0.828246
+| Sidewalk                | 0.745941
+| SignSymbol              | 0.153115
+| Sky                     | 0.879440
+| Tree                    | 0.556651
 
 ### Qualitative Results
 
 <table>
   <tr>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/45962925-a2886b00-bfe7-11e8-8fc7-13c94a789568.png" />
+      <img src="https://user-images.githubusercontent.com/2184469/46000488-52082080-c06e-11e8-9787-d35d1dec990a.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/45962924-a1efd480-bfe7-11e8-9fd4-9c62d39e9e7b.png" />
+      <img src="https://user-images.githubusercontent.com/2184469/46000489-52a0b700-c06e-11e8-8d5b-2f33aa1995a6.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/45962923-a1efd480-bfe7-11e8-96c0-a473a6c19383.png" />
+      <img src="https://user-images.githubusercontent.com/2184469/46000490-52a0b700-c06e-11e8-89dc-45e93cd6cbcf.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/45962922-a1efd480-bfe7-11e8-8a8d-cfb85928fede.png" />
+      <img src="https://user-images.githubusercontent.com/2184469/46000492-52a0b700-c06e-11e8-937e-95d4cb53b3ff.png" />
     </td>
   </tr>
 </table>
