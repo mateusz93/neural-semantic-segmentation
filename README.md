@@ -235,7 +235,8 @@ The following table outlines the testing results from 103 Layers Tiramisu.
 
 ### Quantitative Results
 
-The following table outlines the testing results from SegNet.
+The following table outlines the testing results from Bayesian Tiramisu. Only
+the hybrid model (aleatoric + epistemic uncertainty) is shown for brevity.
 
 ### Qualitative Results
 
