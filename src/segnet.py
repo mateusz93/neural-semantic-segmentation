@@ -1,86 +1,93 @@
-"""An implementation of SegNet auto-encoder for semantic segmentation."""
-from keras.models import Model
-from keras.layers import Input
+"""An implementation of SegNet (and Bayesian improvement)."""
+from keras.applications.vgg16 import VGG16
+from keras.layers import Activation
 from keras.layers import BatchNormalization
 from keras.layers import Conv2D
-from keras.layers import Activation
+from keras.layers import Dropout
+from keras.layers import Input
 from keras.layers import Lambda
+from keras.models import Model
 from keras.optimizers import SGD
 from keras.regularizers import l2
-from keras.applications.vgg16 import VGG16
+from .layers import ContrastNormalization
 from .layers import MemorizedMaxPooling2D
 from .layers import MemorizedUpsampling2D
-from .metrics import mean_iou
-from .metrics import build_iou_for
 from .losses import build_weighted_categorical_crossentropy
+from .metrics import metrics_for_segmentation
 
 
-def conv_bn_relu(x, num_filters: int, num_blocks: int=1):
+# static arguments used for all convolution layers in SegNet
+_CONV = dict(
+    kernel_initializer='he_uniform',
+    kernel_regularizer=l2(5e-4),
+)
+
+
+def _conv_bn_relu(x, num_filters: int):
     """
-    Append a conv + batch normalization + relu block to an input tensor.
+    Append a convolution + batch normalization + ReLu block to an input tensor.
 
     Args:
         x: the input tensor to append this dense block to
         num_filters: the number of filters in the convolutional layer
-        num_blocks: the number of blocks in the layer (repetitions)
 
     Returns:
-        an updated graph with conv + batch normalization + relu block added
+        a tensor with convolution + batch normalization + ReLu block added
 
     """
-    for _ in range(num_blocks):
-        x = Conv2D(num_filters,
-            kernel_size=(3, 3),
-            padding='same',
-            kernel_initializer='he_uniform',
-            kernel_regularizer=l2(1e-4),
-        )(x)
-        x = BatchNormalization()(x)
-        x = Activation('relu')(x)
+    x = Conv2D(num_filters, kernel_size=(3, 3), padding='same', **_CONV)(x)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
     return x
 
 
-def encode(x, num_conv: int, num_filters: int):
+def _encode(x, nums_filters: list):
     """
     Append a encoder block with a given size and number of filters.
 
     Args:
         x: the input tensor to append this encoder block to
-        num_conv: the number of convolutional blocks to use before pooling
-        num_filters: the number of filters in each convolutional layer
+        num_filters: a list of the number of filters for each block
 
     Returns:
         a tuple of:
-        - an updated graph with num_conv conv blocks followed by max pooling
+        - a tensor with convolution blocks followed by max pooling
         - the pooling layer to get indexes from for up-sampling
 
     """
-    x = conv_bn_relu(x, num_filters, num_conv)
+    # loop over the filters list to apply convolution + BN + ReLu blocks
+    for num_filters in nums_filters:
+        x = _conv_bn_relu(x, num_filters)
+    # create a max pooling layer to keep indexes from for up-sampling later
     pool = MemorizedMaxPooling2D(pool_size=(2, 2), strides=(2, 2))
+    # pass the block output through the special pooling layer
     x = pool(x)
+    # return the output tensor and reference to pooling layer to get indexes
     return x, pool
 
 
-def decode(x, pool: MemorizedMaxPooling2D, num_conv: int, num_filters: int):
+def _decode(x, pool: MemorizedMaxPooling2D, nums_filters: list):
     """
     Append a decoder block with a given size and number of filters.
 
     Args:
         x: the input tensor to append this decoder block to
         pool: the corresponding memorized pooling layer to reference indexes
-        num_conv: the number of convolutional blocks to use before pooling
-        num_filters: the number of filters in each convolutional layer
+        num_filters: a list of the number of filters for each block
 
     Returns:
-        an updated graph with up-sampling followed by num_conv conv blocks
+        a tensor with up-sampling followed by convolution blocks
 
     """
+    # up-sample using the max pooling indexes
     x = MemorizedUpsampling2D(pool=pool)(x)
-    x = conv_bn_relu(x, num_filters, num_conv)
+    # loop over the filters list to apply convolution + BN + ReLu blocks
+    for num_filters in nums_filters:
+        x = _conv_bn_relu(x, num_filters)
     return x
 
 
-def classify(x, num_classes: int):
+def _classify(x, num_classes: int):
     """
     Add a Softmax classification block to an input CNN.
 
@@ -89,27 +96,45 @@ def classify(x, num_classes: int):
         num_classes: the number of classes to predict with Softmax
 
     Returns:
-        an updated graph with dense convolution followed by Softmax activation
+        a tensor with dense convolution followed by Softmax activation
 
     """
-    x = Conv2D(num_classes,
-        kernel_size=(1, 1),
-        padding='same',
-        kernel_initializer='he_uniform',
-        kernel_regularizer=l2(1e-4),
-    )(x)
-    x = BatchNormalization()(x)
+    # dense convolution (1 x 1) to filter logits for each class
+    x = Conv2D(num_classes, kernel_size=(1, 1), padding='valid', **_CONV)(x)
+    # Softmax activation to convert the logits to probability vectors
     x = Activation('softmax')(x)
     return x
 
 
-def build_segnet(
-    image_shape: tuple,
-    num_classes: int,
+def _transfer_vgg16_encoder(model: Model) -> None:
+    """
+    Transfer trained VGG16 weights (ImageNet) to a SegNet encoder.
+
+    Args:
+        model: the SegNet model to transfer encoder weights to
+
+    Returns:
+        None
+
+    """
+    # load the trained VGG16 model using ImageNet weights
+    vgg16 = VGG16(include_top=False)
+    # extract all the convolutional layers (encoder layers) from VGG16
+    vgg16_conv = [layer for layer in vgg16.layers if isinstance(layer, Conv2D)]
+    # extract all convolutional layers from SegNet
+    model_conv = [layer for layer in model.layers if isinstance(layer, Conv2D)]
+    # iterate over the VGG16 layers to replace the SegNet encoder weights
+    for idx, layer in enumerate(vgg16_conv):
+        model_conv[idx].set_weights(layer.get_weights())
+
+
+def build_segnet(image_shape: tuple, num_classes: int,
     label_names: dict=None,
+    class_weights=None,
+    contrast_norm: str='lcn',
+    dropout_rate: float=None,
     optimizer=SGD(lr=0.1, momentum=0.9),
     pretrain_encoder: bool=True,
-    class_weights=None
 ) -> Model:
     """
     Build a SegNet model for the given image shape.
@@ -118,57 +143,59 @@ def build_segnet(
         image_shape: the image shape to create the model for
         num_classes: the number of classes to segment for (e.g. c)
         label_names: a dictionary mapping discrete labels to names for IoU
+        class_weights: the weights for each class
+        contrast_norm: the method of contrast normalization for inputs
+        dropout_rate: the dropout rate to use for permanent dropout
         optimizer: the optimizer for training the network
         pretrain_encoder: whether to initialize the encoder from VGG16
-        class_weights: the weights for each class
 
     Returns:
-        a Keras model of the 103 layer Tiramisu version of DenseNet
+        a compiled model of SegNet
 
     """
     # the input block of the network
-    inputs = Input(image_shape)
+    inputs = Input(image_shape, name='SegNet_input')
     # assume 8-bit inputs and convert to floats in [0,1]
-    x = Lambda(lambda x: x / 255.0)(inputs)
+    x = Lambda(lambda x: x / 255.0, name='pixel_norm')(inputs)
+    # apply contrast normalization if set
+    if contrast_norm is not None:
+        x = ContrastNormalization(method=contrast_norm, name=contrast_norm)(x)
+    # if no dropout rate, make the lambda return the input
+    if dropout_rate is None:
+        dropout = lambda x: x
+    # if there is a dropout rate, make lambda return the output from Dropout
+    else:
+        dropout = lambda x: Dropout(dropout_rate)(x, training=True)
     # encoder
-    x, p1 = encode(x, num_conv=2, num_filters=64)
-    x, p2 = encode(x, num_conv=2, num_filters=128)
-    x, p3 = encode(x, num_conv=3, num_filters=256)
-    x, p4 = encode(x, num_conv=3, num_filters=512)
-    x, p5 = encode(x, num_conv=3, num_filters=512)
+    x, pool_1 = _encode(x, 2 * [64])
+    x, pool_2 = _encode(x, 2 * [128])
+    x, pool_3 = _encode(x, 3 * [256])
+    x = dropout(x)
+    x, pool_4 = _encode(x, 3 * [512])
+    x = dropout(x)
+    x, pool_5 = _encode(x, 3 * [512])
+    x = dropout(x)
     # decoder
-    x = decode(x, p5, num_conv=3, num_filters=512)
-    x = decode(x, p4, num_conv=3, num_filters=256)
-    x = decode(x, p3, num_conv=3, num_filters=128)
-    x = decode(x, p2, num_conv=2, num_filters=64)
-    x = decode(x, p1, num_conv=2, num_filters=64)
+    x = _decode(x, pool_5, 3 * [512])
+    x = dropout(x)
+    x = _decode(x, pool_4, [512, 512, 256])
+    x = dropout(x)
+    x = _decode(x, pool_3, [256, 256, 128])
+    x = dropout(x)
+    x = _decode(x, pool_2, [128, 64])
+    x = _decode(x, pool_1, [64])
     # classifier
-    x = classify(x, num_classes)
-    # compile the graph
-    model = Model(inputs=[inputs], outputs=[x])
+    x = _classify(x, num_classes)
+    # compile the model
+    model = Model(inputs=[inputs], outputs=[x], name='SegNet')
     model.compile(
         optimizer=optimizer,
         loss=build_weighted_categorical_crossentropy(class_weights),
-        metrics=[
-            'accuracy',
-            mean_iou,
-            *build_iou_for(list(range(num_classes)), label_names),
-        ],
+        metrics=metrics_for_segmentation(num_classes, label_names),
     )
-    # if transfer learning from ImageNet is disabled, return the model as is
-    if not pretrain_encoder:
-        return model
-    # load the pre-trained VGG16 model using ImageNet weights
-    vgg16 = VGG16(weights='imagenet', include_top=False)
-    # extract all the convolutional layers (downsampling layers) from VGG16
-    vgg16_conv = [layer for layer in vgg16.layers if isinstance(layer, Conv2D)]
-    # extract all convolutional layers from SegNet, the first len(vgg16_conv)
-    # layers in this list are architecturally congruent with the layers in
-    # vgg16_conv by index
-    model_conv = [layer for layer in model.layers if isinstance(layer, Conv2D)]
-    # iterate over the VGG16 layers and replace the SegNet downsampling weights
-    for idx, layer in enumerate(vgg16_conv):
-        model_conv[idx].set_weights(layer.get_weights())
+    # transfer weights from VGG16
+    if pretrain_encoder:
+        _transfer_vgg16_encoder(model)
 
     return model
 

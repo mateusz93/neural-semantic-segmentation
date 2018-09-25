@@ -1,13 +1,7 @@
-# The 100 Layers Tiramisu (Implementation)
+# Neural Semantic Segmentation
 
-[![build-status][]][ci-server]
-
-[build-status]: https://travis-ci.com/Kautenja/the-100-layers-tiramisu.svg?branch=master
-[ci-server]: https://travis-ci.com/Kautenja/the-100-layers-tiramisu
-
-An Implementation of
-[The One Hundred Layers Tiramisu](https://arxiv.org/abs/1611.09326) using
-[Keras](https://keras.io/).
+Implementations of neural network papers for semantic segmentation using Keras
+and TensorFlow.
 
 ## Installation
 
@@ -17,111 +11,241 @@ To install requirements for the project:
 python -m pip install -r requirements.txt
 ```
 
-## Validation Results
+## Hardware Specification
 
 Results were generated using a machine equipped with  128GB RAM, nVidia P100
-GPU, and Intel Xeon CPU @ 2.10GHz.
+GPU, and Intel Xeon CPU @ 2.10GHz. All results shown are from the testing
+dataset.
 
-### SegNet
+## [CamVid][]
 
-The following table outlines the testing results from SegNet on CamVid 11.
+-   [32 classes][32-class] generalized to 11 classes using mapping in [11_class.txt](11_class.txt)
+-   960 x 720 scaled down by factor of 2 to 480 x 360
 
-| Metric          | Validation |
-|:----------------|:-----------|
-| Accuracy        | 0.840661
-| mean IoU        | 0.485506
-| Bicyclist       | 0.149914
-| Building        | 0.688313
-| Car             | 0.639180
-| Column_Pole     | 0.207784
-| Fence           | 0.162744
-| Pedestrian      | 0.262279
-| Road            | 0.828501
-| Sidewalk        | 0.696738
-| SignSymbol      | 0.161242
-| Sky             | 0.896308
-| Tree            | 0.647563
+[CamVid]: http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid/
+[32-class]: http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid/#ClassLabels
 
-<table style="width:100%">
+## [SegNet][Badrinarayanan et al. (2015)]
+
+<table>
   <tr>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/45790933-f5ab9800-bc4c-11e8-92ec-d867022647a5.png" />
+      <img alt="SegNet" src="https://user-images.githubusercontent.com/2184469/45845186-1118b080-bcea-11e8-967f-d1d0b9d93bb8.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/45790934-f5ab9800-bc4c-11e8-9cf3-bd4d1a752a65.png" />
-    </td>
-    <td>
-      <img src="https://user-images.githubusercontent.com/2184469/45790935-f5ab9800-bc4c-11e8-82d2-ce8f80e9c706.png" />
+      <img alt="Pooling Indexes" src="https://user-images.githubusercontent.com/2184469/45845185-1118b080-bcea-11e8-8fb3-82ebb3f15ea6.png" />
     </td>
   </tr>
 </table>
 
-<!-- ### 11 Class
+The following table describes training hyperparameters.
 
-[Train-Tiramisu103-CamVid11.ipynb](Train-Tiramisu103-CamVid11.ipynb) generates
-these results for the 11 class version of CamVid defined in the mapping file
-[11_class.txt](11_class.txt).
+| Crop Size | Epochs | Batch Size | Patience | Optimizer | α    | 𝛃    | α Decay |
+|:----------|:-------|:-----------|:---------|:----------|:-----|:-----|:--------|
+| 352 x 480 | 200    | 8          | 50       | SGD       | 1e-3 | 0.9  | 0.95    |
 
-#### Metrics
+-   batch normalization statistics computed per batch during training and
+    using a rolling average for validation and testing
+    -   TODO: change to calculate static mean and variance over training data
+        (i.e., calculate the rolling averages over 1 epoch of training data,
+        then freeze the values for validation and testing)
+-   encoder transfer learning from VGG16 trained on ImageNet
+-   best model in terms of validation accuracy is kept as final model
+-   median frequency balancing of class labels ([Eigen et al. (2014)][])
+    -   weighted categorical cross-entropy loss function
+-   local contrast normalization of inputs ([LeCun et al. (2009)][])
+-   pooling indexes ([Badrinarayanan et al. (2015)][])
 
-| Metric          | Validation |
-|:----------------|:-----------|
-| acc             | 0.669579
-| mean_iou        | 0.321581
-| Bicyclist   | 0.647619
-| Building    | 0.407584
-| Car         | 0.333378
-| Column_Pole | 0.098502
-| Fence       | 0.036177
-| Pedestrian  | 0.170564
-| Road        | 0.657058
-| Sidewalk    | 0.064504
-| SignSymbol  | 0.119745
-| Sky         | 0.497471
-| Tree        | 0.504785
+### Quantitative Results
 
-### 32 Class
+The following table outlines the testing results from SegNet.
 
-[Train-Tiramisu103-CamVid32.ipynb](Train-Tiramisu103-CamVid32.ipynb) generates
-these results for the full 32 class version of CamVid.
-
-#### Metrics
-
-| Metric                  | Validation |
+| Metric                  | Test Score |
 |:------------------------|:-----------|
-| acc                     | 0.574637
-| mean_iou                | 0.532636
-| Animal              | 0.995238
-| Archway             | 0.914286
-| Bicyclist           | 0.476190
-| Bridge              | 0.957143
-| Building            | 0.325219
-| Car                 | 0.221473
-| CartLuggagePram     | 0.619048
-| Child               | 0.971429
-| Column_Pole         | 0.129600
-| Fence               | 0.252261
-| LaneMkgsDriv        | 0.251791
-| LaneMkgsNonDriv     | 1.000000
-| Misc_Text           | 0.057317
-| MotorcycleScooter   | 0.971429
-| OtherMoving         | 0.355676
-| ParkingBlock        | 0.529081
-| Pedestrian          | 0.178085
-| Road                | 0.553283
-| RoadShoulder        | 0.900000
-| SUVPickupTruck      | 0.069617
-| Sidewalk            | 0.082412
-| SignSymbol          | 0.476190
-| Sky                 | 0.459560
-| TrafficCone         | 0.919048
-| TrafficLight        | 0.457983
-| Train               | 1.000000
-| Tree                | 0.476796
-| Truck_Bus           | 0.733333
-| Tunnel              | 1.000000
-| VegetationMisc      | 0.469454
-| Void                | 0.057503
-| Wall                | 0.183900
+| Accuracy                | 0.858503
+| mean per class accuracy | 0.596212
+| mean I/U                | 0.477470
+| Bicyclist               | 0.195386
+| Building                | 0.686192
+| Car                     | 0.509532
+| Column/Pole             | 0.234483
+| Fence                   | 0.149444
+| Pedestrian              | 0.316118
+| Road                    | 0.824710
+| Sidewalk                | 0.735486
+| SignSymbol              | 0.155891
+| Sky                     | 0.869758
+| Tree                    | 0.575167
 
--->
+### Qualitative Results
+
+<table>
+  <tr>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/46000452-3ac93300-c06e-11e8-93b3-b8321abdf8a7.png" />
+    </td>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/46000453-3ac93300-c06e-11e8-8d52-13d9bec343e7.png" />
+    </td>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/46000454-3ac93300-c06e-11e8-8141-6d81ca0d1dcb.png" />
+    </td>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/46000455-3ac93300-c06e-11e8-85e0-d43f488e0de4.png" />
+    </td>
+  </tr>
+</table>
+
+
+
+## [Bayesian SegNet][Kendall et al. (2015)]
+
+![Bayesian SegNet](https://user-images.githubusercontent.com/2184469/45915765-7bcc0800-be20-11e8-87cf-4d778b1b3837.png)
+
+The following table describes training hyperparameters.
+
+| Crop Size | Epochs | Batch Size | Patience | Optimizer | α    | 𝛃    | α Decay | Dropout | Samples |
+|:----------|:-------|:-----------|:---------|:----------|:-----|:-----|:--------|:--------|:--------|
+| 352 x 480 | 200    | 8          | 50       | SGD       | 1e-3 | 0.9  | 0.95    | 50%     | 40      |
+
+-   batch normalization statistics computed per batch during training and
+    using a rolling average for validation and testing
+    -   TODO: change to calculate static mean and variance over training data
+        (i.e., calculate the rolling averages over 1 epoch of training data,
+        then freeze the values for validation and testing)
+-   best model in terms of validation accuracy is kept as final model
+-   median frequency balancing of class labels ([Eigen et al. (2014)][])
+    -   weighted categorical cross-entropy loss function
+-   local contrast normalization of inputs ([LeCun et al. (2009)][])
+-   pooling indexes ([Badrinarayanan et al. (2015)][])
+
+### Quantitative Results
+
+The following table outlines the testing results from SegNet.
+
+| Metric                  | Test Score |
+|:------------------------|:-----------|
+| Accuracy                | 0.812846
+| mean per class accuracy | 0.570537
+| mean I/U                | 0.410281
+| Bicyclist               | 0.117479
+| Building                | 0.612054
+| Car                     | 0.411208
+| Column/Pole             | 0.171368
+| Fence                   | 0.103415
+| Pedestrian              | 0.169263
+| Road                    | 0.798411
+| Sidewalk                | 0.661489
+| SignSymbol              | 0.091296
+| Sky                     | 0.861715
+| Tree                    | 0.515394
+
+### Qualitative Results
+
+<table>
+  <tr>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/46000464-43216e00-c06e-11e8-83bb-1d52000a6aaf.png" />
+    </td>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/46000465-43216e00-c06e-11e8-8365-332d7a464e30.png" />
+    </td>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/46000466-43216e00-c06e-11e8-80be-1188a5c7d53b.png" />
+    </td>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/46000467-43ba0480-c06e-11e8-94b0-2920f15e7643.png" />
+    </td>
+  </tr>
+</table>
+
+
+
+## [The One Hundred Layers Tiramisu][Jégou et al. (2016)]
+
+<table>
+  <tr>
+    <td>
+        <img alt="103 Layers Tiramisu" src="https://user-images.githubusercontent.com/2184469/45852685-a88bfc80-bd06-11e8-9ea1-9044144b1442.png">
+    </td>
+    <td>
+        <img alt="Dense Blocks" src="https://user-images.githubusercontent.com/2184469/45852691-aa55c000-bd06-11e8-865b-b852485b40af.png">
+    </td>
+  </tr>
+</table>
+
+The following table describes training hyperparameters.
+
+| Crop Size | Epochs | Batch Size | Patience | Optimizer | α    | α Decay | Dropout |
+|:----------|:-------|:-----------|:---------|:----------|:-----|:--------|:--------|
+| 224 x 224 | 200    | 3          | 100      | RMSprop   | 1e-3 | 0.995   | 20%     |
+| 352 x 480 | 200    | 1          | 50       | RMSprop   | 1e-4 | 1.000   | 20%     |
+
+-   random vertical flips of images for training
+-   batch normalization statistics computed _per batch_ during training and
+    inference
+-   median frequency balancing of class labels ([Eigen et al. (2014)][])
+    -   weighted categorical cross-entropy loss function
+-   local contrast normalization of inputs ([LeCun et al. (2009)][])
+-   skip connections ([Jégou et al. (2016)][])
+
+### Quantitative Results
+
+The following table outlines the testing results from 103 Layers Tiramisu.
+
+| Metric                  | Test Score |
+|:------------------------|:-----------|
+| Accuracy                | 0.826657
+| mean per class accuracy | 0.659619
+| mean I/U                | 0.448913
+| Bicyclist               | 0.076790
+| Building                | 0.624237
+| Car                     | 0.502403
+| Column/Pole             | 0.201589
+| Fence                   | 0.115558
+| Pedestrian              | 0.254075
+| Road                    | 0.828246
+| Sidewalk                | 0.745941
+| SignSymbol              | 0.153115
+| Sky                     | 0.879440
+| Tree                    | 0.556651
+
+### Qualitative Results
+
+<table>
+  <tr>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/46000488-52082080-c06e-11e8-9787-d35d1dec990a.png" />
+    </td>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/46000489-52a0b700-c06e-11e8-8d5b-2f33aa1995a6.png" />
+    </td>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/46000490-52a0b700-c06e-11e8-89dc-45e93cd6cbcf.png" />
+    </td>
+    <td>
+      <img src="https://user-images.githubusercontent.com/2184469/46000492-52a0b700-c06e-11e8-937e-95d4cb53b3ff.png" />
+    </td>
+  </tr>
+</table>
+
+
+
+## [Bayesian Tiramisu][Kendall et al. (2017)]
+
+### Quantitative Results
+
+The following table outlines the testing results from Bayesian Tiramisu. Only
+the hybrid model (aleatoric + epistemic uncertainty) is shown for brevity.
+
+### Qualitative Results
+
+
+<!-- References -->
+
+[LeCun et al. (2009)]: http://yann.lecun.com/exdb/publis/pdf/jarrett-iccv-09.pdf
+[Eigen et al. (2014)]: https://arxiv.org/abs/1411.4734
+[Badrinarayanan et al. (2015)]: https://arxiv.org/pdf/1511.00561.pdf
+[Kendall et al. (2015)]: https://arxiv.org/abs/1511.02680
+[Jégou et al. (2016)]: https://arxiv.org/abs/1611.09326
+[Kendall et al. (2017)]: http://papers.nips.cc/paper/7141-what-uncertainties-do-we-need-in-bayesian-deep-learning-for-computer-vision

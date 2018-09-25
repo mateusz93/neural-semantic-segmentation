@@ -1,4 +1,5 @@
 """Methods to visualize data from the dataset."""
+import numpy as np
 from matplotlib import pyplot as plt
 
 
@@ -6,32 +7,58 @@ from matplotlib import pyplot as plt
 DPI = 72.0
 
 
-def plot(dpi: float=256.0, **kwargs: dict) -> None:
+def _plot(figure: plt.Figure, img: np.ndarray, title: str) -> None:
+    """
+    Plot the image on the given axis with a title.
+
+    Args:
+        figure: the figure to plot the image on
+        img: the image to plot on the axes
+        title: the title of the plot
+
+    Returns:
+        None
+
+    """
+    # plot the image
+    figure.imshow(img.astype(np.uint8) / 255)
+    # set the title for this subplot
+    figure.set_title(title)
+    # remove the ticks from the x and y axes
+    figure.xaxis.set_major_locator(plt.NullLocator())
+    figure.yaxis.set_major_locator(plt.NullLocator())
+
+
+def plot(dpi: float=256.0, order: list=None, **kwargs: dict) -> None:
     """
     Plot the original image, the true y, and an optional predicted y.
 
     Args:
         dpi: the DPI of the figure to render
+        order: the order to plot the values in as a list of kwarg names
         kwargs: images to plot
 
     Returns:
         None
 
     """
-    # determine the image shape for platting based on DPI
+    # determine the figsize for plotting based on image_shape and DPI
     image_shape = list(kwargs.values())[0].shape
     figsize = image_shape[0] / DPI, image_shape[1] / DPI
-    # create subplots for each image
-    _, axarr = plt.subplots(len(kwargs), 1, figsize=figsize, dpi=dpi)
-    # iterate over the images in the dictionary
-    for idx, (title, img) in enumerate(kwargs.items()):
-        # plot the image
-        axarr[idx].imshow(img.astype('uint8') / 255)
-        # set the title for this subplot
-        axarr[idx].set_title(title)
-        # remove the ticks from the x and y axes
-        axarr[idx].xaxis.set_major_locator(plt.NullLocator())
-        axarr[idx].yaxis.set_major_locator(plt.NullLocator())
+    # if there is no order, iterate over all keyword args
+    if order is None:
+        # create subplots for each image
+        _, axarr = plt.subplots(len(kwargs), 1, figsize=figsize, dpi=dpi)
+        # iterate over the images in the dictionary
+        for idx, (title, img) in enumerate(kwargs.items()):
+            _plot(axarr[idx], img, title)
+    # if there is an order, plot the images in order
+    else:
+        # create subplots for each image
+        _, axarr = plt.subplots(len(order), 1, figsize=figsize, dpi=dpi)
+        # iterate over the images in order
+        for idx, title in enumerate(order):
+            _plot(axarr[idx], kwargs[title], title)
 
 
 # explicitly define the outward facing API of this module
