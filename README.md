@@ -104,9 +104,9 @@ The following table outlines the testing results from SegNet.
 
 The following table describes training hyperparameters.
 
-| Crop Size | Epochs | Batch Size | Patience | Optimizer | α    | 𝛃    |
-|:----------|:-------|:-----------|:---------|:----------|:-----|:-----|
-| 352 x 480 | 1000   | 8          | 50       | SGD       | 1e-3 | 0.9  |
+| Crop Size | Epochs | Batch Size | Patience | Optimizer | α    | 𝛃    | α Decay | Dropout | Samples |
+|:----------|:-------|:-----------|:---------|:----------|:-----|:-----|:--------|:--------|:--------|
+| 352 x 480 | 200    | 8          | 50       | SGD       | 1e-3 | 0.9  | 0.95    | 50%     | 40      |
 
 -   batch normalization statistics computed per batch during training and
     using a rolling average for validation and testing
@@ -118,8 +118,6 @@ The following table describes training hyperparameters.
     -   weighted categorical cross-entropy loss function
 -   local contrast normalization of inputs ([LeCun et al. (2009)][])
 -   pooling indexes ([Badrinarayanan et al. (2015)][])
--   dropout rate of 50% during training and inference
--   50 Monte Carlo samples to estimate mean class and variance
 
 ### Quantitative Results
 
@@ -178,10 +176,10 @@ The following table outlines the testing results from SegNet.
 
 The following table describes training hyperparameters.
 
-| Crop Size | Epochs | Batch Size | Patience | Optimizer | α    | α Decay |
-|:----------|:-------|:-----------|:---------|:----------|:-----|:--------|
-| 224 x 224 | 200    | 3          | 100      | RMSprop   | 1e-3 | 0.995   |
-| 352 x 480 | 200    | 1          | 50       | RMSprop   | 1e-4 | 1.000   |
+| Crop Size | Epochs | Batch Size | Patience | Optimizer | α    | α Decay | Dropout |
+|:----------|:-------|:-----------|:---------|:----------|:-----|:--------|:--------|
+| 224 x 224 | 200    | 3          | 100      | RMSprop   | 1e-3 | 0.995   | 20%     |
+| 352 x 480 | 200    | 1          | 50       | RMSprop   | 1e-4 | 1.000   | 20%     |
 
 -   random vertical flips of images for training
 -   batch normalization statistics computed _per batch_ during training and
