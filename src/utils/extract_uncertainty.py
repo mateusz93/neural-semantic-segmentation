@@ -1,17 +1,17 @@
-"""A method to extract the Aleatoric uncertainty for predicted class labels."""
+"""A method to extract the uncertainty for predicted class labels."""
 import numpy as np
 
 
-def extract_aleatoric(sigma, y_pred):
+def extract_uncertainty(sigma: np.ndarray, y_pred: np.ndarray) -> np.ndarray:
     """
-    Extract the Aleatoric uncertainty from sigma and predicted y outputs.
+    Extract the uncertainty from sigma and predicted y outputs.
 
     Args:
         sigma: the standard deviation predicted by the loss network
         y_pred: the predicted values as either a one-hot or Softmax output
 
     Returns:
-        a 2D batch tensor of aleatoric uncertainties
+        a 2D batch tensor of uncertainties
 
     """
     # use ogrid to index sigma using the integer class labels
@@ -22,4 +22,4 @@ def extract_aleatoric(sigma, y_pred):
 
 
 # explicitly define the outward facing API of this module
-__all__ = [extract_aleatoric.__name__]
+__all__ = [extract_uncertainty.__name__]
