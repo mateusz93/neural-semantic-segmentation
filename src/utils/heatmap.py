@@ -19,8 +19,6 @@ def heatmap(arr: np.ndarray, color_map='cubehelix') -> np.ndarray:
         arr mapped to RGB using the given color map (vector of bytes)
 
     """
-    # normalize the input data
-    arr = plt.Normalize()(arr)
     # unwrap the color map from matplotlib
     color_map = plt.cm.get_cmap(color_map)
     # get the heat-map from the color map in RGB (i.e., omit the alpha channel)
