@@ -19,11 +19,12 @@ dataset.
 
 ## [CamVid][]
 
--   [32 classes][32-class] generalized to 11 classes using mapping in [11_class.txt](11_class.txt)
+-   [32 classes][CamVid-classes] generalized to 11 classes using mapping in
+    [11_class.txt](11_class.txt)
 -   960 x 720 scaled down by factor of 2 to 480 x 360
 
 [CamVid]: http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid/
-[32-class]: http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid/#ClassLabels
+[CamVid-classes]: http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid/#ClassLabels
 
 ## [SegNet][Badrinarayanan et al. (2015)]
 
@@ -45,10 +46,9 @@ The following table describes training hyperparameters.
 | 352 x 480 | 200    | 8          | 50       | SGD       | 1e-3 | 0.9  | 0.95    |
 
 -   batch normalization statistics computed per batch during training and
-    using a rolling average for validation and testing
-    -   TODO: change to calculate static mean and variance over training data
-        (i.e., calculate the rolling averages over 1 epoch of training data,
-        then freeze the values for validation and testing)
+    using a rolling average computed over input batches for validation and
+    testing
+    -   original paper uses a static statistics computed over the training data
 -   encoder transfer learning from VGG16 trained on ImageNet
 -   best model in terms of validation accuracy is kept as final model
 -   median frequency balancing of class labels ([Eigen et al. (2014)][])
@@ -109,10 +109,12 @@ The following table describes training hyperparameters.
 | 352 x 480 | 200    | 8          | 50       | SGD       | 1e-3 | 0.9  | 0.95    | 50%     | 40      |
 
 -   batch normalization statistics computed per batch during training and
-    using a rolling average for validation and testing
-    -   TODO: change to calculate static mean and variance over training data
-        (i.e., calculate the rolling averages over 1 epoch of training data,
-        then freeze the values for validation and testing)
+    using a rolling average computed over input batches for validation and
+    testing
+    -   original paper uses a static statistics computed over the training data
+-   encoder transfer learning from VGG16 trained on ImageNet
+    -   TODO: train the custom version of the VGG16 encoder using dropout for
+        better transfer of weights.
 -   best model in terms of validation accuracy is kept as final model
 -   median frequency balancing of class labels ([Eigen et al. (2014)][])
     -   weighted categorical cross-entropy loss function
@@ -121,40 +123,40 @@ The following table describes training hyperparameters.
 
 ### Quantitative Results
 
-The following table outlines the testing results from SegNet.
+The following table outlines the testing results from Bayesian SegNet.
 
 | Metric                  | Test Score |
 |:------------------------|:-----------|
-| Accuracy                | 0.812846
-| mean per class accuracy | 0.570537
-| mean I/U                | 0.410281
-| Bicyclist               | 0.117479
-| Building                | 0.612054
-| Car                     | 0.411208
-| Column/Pole             | 0.171368
-| Fence                   | 0.103415
-| Pedestrian              | 0.169263
-| Road                    | 0.798411
-| Sidewalk                | 0.661489
-| SignSymbol              | 0.091296
-| Sky                     | 0.861715
-| Tree                    | 0.515394
+| Accuracy                | 0.837571
+| mean per class accuracy | 0.602180
+| mean I/U                | 0.450497
+| Bicyclist               | 0.148188
+| Building                | 0.650249
+| Car                     | 0.439393
+| Column_Pole             | 0.169333
+| Fence                   | 0.165258
+| Pedestrian              | 0.274567
+| Road                    | 0.811342
+| Sidewalk                | 0.719864
+| SignSymbol              | 0.183497
+| Sky                     | 0.854170
+| Tree                    | 0.539600
 
 ### Qualitative Results
 
 <table>
   <tr>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/46000464-43216e00-c06e-11e8-83bb-1d52000a6aaf.png" />
+      <img src="https://user-images.githubusercontent.com/2184469/46114992-bb954580-c1ba-11e8-8786-4edfd1284d08.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/46000465-43216e00-c06e-11e8-8365-332d7a464e30.png" />
+      <img src="https://user-images.githubusercontent.com/2184469/46114994-bb954580-c1ba-11e8-805b-5d94b45a615a.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/46000466-43216e00-c06e-11e8-80be-1188a5c7d53b.png" />
+      <img src="https://user-images.githubusercontent.com/2184469/46114995-bc2ddc00-c1ba-11e8-9621-127b5b6a7122.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/46000467-43ba0480-c06e-11e8-94b0-2920f15e7643.png" />
+      <img src="https://user-images.githubusercontent.com/2184469/46114996-bc2ddc00-c1ba-11e8-8e74-ee741247102b.png" />
     </td>
   </tr>
 </table>
