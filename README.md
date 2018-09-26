@@ -21,6 +21,7 @@ dataset.
 
 -   [32 classes][CamVid-classes] generalized to 11 classes using mapping in
     [11_class.txt](11_class.txt)
+    -   TODO: use 12 labels and ignore the VOID class (i.e., 11 labels)
 -   960 x 720 scaled down by factor of 2 to 480 x 360
 
 [CamVid]: http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid/
@@ -183,9 +184,9 @@ The following table describes training hyperparameters.
 | 224 x 224 | 200    | 3          | 100      | RMSprop   | 1e-3 | 0.995   | 20%     |
 | 352 x 480 | 200    | 1          | 50       | RMSprop   | 1e-4 | 1.000   | 20%     |
 
--   random vertical flips of images for training
--   batch normalization statistics computed _per batch_ during training and
-    inference
+-   random vertical flips of images during training
+-   batch normalization statistics computed _per batch_ during training,
+    validation, and testing
 -   median frequency balancing of class labels ([Eigen et al. (2014)][])
     -   weighted categorical cross-entropy loss function
 -   local contrast normalization of inputs ([LeCun et al. (2009)][])
