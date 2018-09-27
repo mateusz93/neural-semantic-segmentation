@@ -1,24 +1,32 @@
-"""Extensions to the TensorFlow backend for Keras."""
+"""Extensions to the TensorFlow back-end for Keras."""
 from keras import backend as K
 from keras.backend.tensorflow_backend import tf
 from keras.backend.tensorflow_backend import _preprocess_conv2d_input
 from keras.backend.tensorflow_backend import _preprocess_padding
 
 
-def confusion_matrix(y_true, y_pred, num_classes=None):
+def confusion_matrix(y_true, y_pred, num_classes=None, weights=None):
     """
     Compute a confusion matrix from predictions and ground truths.
 
     Args:
         y_true: the ground truth labels
         y_pred: the predicted labels
-        num_classes: the optional number of classes
+        num_classes: the optional number of classes. if not provided, the
+                     labels are assumed to be in [0, max]
+        weights: Optional Tensor whose rank is either 0, or the same rank as
+                 labels, and must be broadcast-able to labels (i.e., all
+                 dimensions must be either 1, or the same as the corresponding
+                 labels dimension). Use weights of 0 to mask values.
 
     Returns:
         a confusion matrix computed based on y_true and y_pred
 
     """
-    return tf.confusion_matrix(y_true, y_pred, num_classes=num_classes)
+    return tf.confusion_matrix(y_true, y_pred,
+        num_classes=num_classes,
+        weights=weights
+    )
 
 
 def pool2d_argmax(x, pool_size,
@@ -27,7 +35,8 @@ def pool2d_argmax(x, pool_size,
     data_format=None,
     pool_mode='max'
 ) -> tuple:
-    """2D Pooling that returns indexes too.
+    """
+    2D Pooling that returns indexes too.
 
     Args:
         x: Tensor or variable.
