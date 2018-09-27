@@ -13,8 +13,8 @@ from keras.models import Model
 from keras.optimizers import RMSprop
 from keras.regularizers import l2
 from .layers import ContrastNormalization
+from .losses import build_categorical_crossentropy
 from .metrics import metrics_for_segmentation
-from .losses import build_weighted_categorical_crossentropy
 
 
 # static arguments used for all convolution layers in Tiramisu models
@@ -185,8 +185,8 @@ def build_tiramisu(
     model = Model(inputs=[inputs], outputs=[x])
     model.compile(
         optimizer=RMSprop(lr=learning_rate),
-        loss=build_weighted_categorical_crossentropy(class_weights),
-        metrics=metrics_for_segmentation(num_classes, label_names),
+        loss=build_categorical_crossentropy(class_weights),
+        metrics=metrics_for_segmentation(num_classes, label_names, class_weights),
     )
 
     return model
