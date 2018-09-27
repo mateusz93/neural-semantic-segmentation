@@ -26,24 +26,23 @@ def build_categorical_accuracy(weights=None):
             a tensor of the categorical accuracy between truth and predictions
 
         """
-        # extract the number of classes from the prediction tensor
-        num_classes = K.int_shape(y_pred)[-1]
+        # get number of labels to calculate IoU for
+        num_labels = K.int_shape(y_pred)[-1]
+        # set the weights to all 1 if there are none specified
+        _weights = np.ones(num_labels) if weights is None else weights
         # convert the one-hot tensors into discrete label tensors with ArgMax
         y_true = K.flatten(K.argmax(y_true, axis=-1))
         y_pred = K.flatten(K.argmax(y_pred, axis=-1))
         # calculate the confusion matrix of the ground truth and predictions
-        confusion = confusion_matrix(y_true, y_pred,
-            num_classes=num_classes,
-            weights=K.variable(weights)
-        )
+        confusion = confusion_matrix(y_true, y_pred, num_classes=num_classes)
         # confusion will return integers, but we need floats to multiply by eye
         confusion = K.cast(confusion, K.floatx())
         # extract the number of correct guesses from the diagonal
-        correct = K.sum(confusion * K.eye(num_classes))
+        correct = _weights * K.sum(confusion * K.eye(num_classes), axis=-1)
         # extract the number of total values per class from ground truth
-        total = K.sum(confusion)
+        total = _weights * K.sum(confusion, axis=-1)
         # calculate the total accuracy
-        return correct / total
+        return K.sum(correct) / K.sum(total)
 
     return categorical_accuracy
 

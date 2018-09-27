@@ -15,7 +15,7 @@ def metrics_for_segmentation(num_classes: int,
     Args:
         num_classes: the number of classes to segment for (e.g. c)
         label_names: a dictionary mapping discrete labels to names for IoU
-        weights: optional weights for the metrics
+        weights: optional weights for the metrics to determine labels to ignore
 
     Returns:
         a list of metrics:
@@ -25,6 +25,9 @@ def metrics_for_segmentation(num_classes: int,
         - num_classes IoU scores for each individual class label
 
     """
+    # convert weights to a binary vector (these metrics dont support weighting)
+    if weights is not None:
+        weights = weights > 0
     categorical_accuracy = build_categorical_accuracy(weights=weights)
     mean_per_class_accuracy = build_mean_per_class_accuracy(weights=weights)
     mean_iou = build_mean_iou(weights=weights)

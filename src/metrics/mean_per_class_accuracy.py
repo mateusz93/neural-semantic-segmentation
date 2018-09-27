@@ -26,16 +26,15 @@ def build_mean_per_class_accuracy(weights=None):
             the per class accuracy of y_pred in relation to y_true
 
         """
-        # extract the number of classes from the prediction tensor
-        num_classes = K.int_shape(y_pred)[-1]
+        # get number of labels to calculate IoU for
+        num_labels = K.int_shape(y_pred)[-1]
+        # set the weights to all 1 if there are none specified
+        _weights = np.ones(num_labels) if weights is None else weights
         # extract the label using ArgMax and flatten into a 1D vector
         y_true = K.flatten(K.argmax(y_true, axis=-1))
         y_pred = K.flatten(K.argmax(y_pred, axis=-1))
         # calculate the confusion matrix of the ground truth and predictions
-        confusion = confusion_matrix(y_true, y_pred,
-            num_classes=num_classes,
-            weights=K.variable(weights)
-        )
+        confusion = confusion_matrix(y_true, y_pred, num_classes=num_classes)
         # confusion will return integers, but we need floats to multiply by eye
         confusion = K.cast(confusion, K.floatx())
         # extract the number of correct guesses from the diagonal
@@ -44,9 +43,9 @@ def build_mean_per_class_accuracy(weights=None):
         total = K.sum(confusion, axis=-1)
         # get per class accuracy by dividing correct by total. use epsilon to
         # prevent divide by zero (when total is 0 for label, correct is 0 too)
-        per_class_acc = correct / (total + K.epsilon())
+        per_class_acc = _weights * correct / (total + K.epsilon())
         # calculate the mean per class accuracy
-        return K.mean(per_class_acc, axis=-1)
+        return K.sum(per_class_acc, axis=-1) / _weights.sum()
 
     return mean_per_class_accuracy
 
