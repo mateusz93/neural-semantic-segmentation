@@ -104,13 +104,13 @@ def build_mean_iou(weights=None):
 
         """
         # get number of labels to calculate IoU for
-        num_labels = K.int_shape(y_pred)[-1]
+        num_classes = K.int_shape(y_pred)[-1]
         # set the weights to all 1 if there are none specified
-        _weights = np.ones(num_labels) if weights is None else weights
+        _weights = np.ones(num_classes) if weights is None else weights
         # initialize a variable to store total IoU in
         total_iou = K.variable(0)
         # iterate over labels to calculate IoU for
-        for label in range(num_labels):
+        for label in range(num_classes):
             total_iou = total_iou + _weights[label] * iou(y_true, y_pred, label)
         # divide total IoU by number of labels to get mean IoU
         return total_iou / _weights.sum()

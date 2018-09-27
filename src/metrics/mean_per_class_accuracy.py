@@ -27,9 +27,9 @@ def build_mean_per_class_accuracy(weights=None):
 
         """
         # get number of labels to calculate IoU for
-        num_labels = K.int_shape(y_pred)[-1]
+        num_classes = K.int_shape(y_pred)[-1]
         # set the weights to all 1 if there are none specified
-        _weights = np.ones(num_labels) if weights is None else weights
+        _weights = np.ones(num_classes) if weights is None else weights
         # extract the label using ArgMax and flatten into a 1D vector
         y_true = K.flatten(K.argmax(y_true, axis=-1))
         y_pred = K.flatten(K.argmax(y_pred, axis=-1))
