@@ -5,7 +5,7 @@ from keras.backend.tensorflow_backend import _preprocess_conv2d_input
 from keras.backend.tensorflow_backend import _preprocess_padding
 
 
-def confusion_matrix(y_true, y_pred, num_classes=None, weights=None):
+def confusion_matrix(y_true, y_pred, num_classes=None):
     """
     Compute a confusion matrix from predictions and ground truths.
 
@@ -14,19 +14,12 @@ def confusion_matrix(y_true, y_pred, num_classes=None, weights=None):
         y_pred: the predicted labels
         num_classes: the optional number of classes. if not provided, the
                      labels are assumed to be in [0, max]
-        weights: Optional Tensor whose rank is either 0, or the same rank as
-                 labels, and must be broadcast-able to labels (i.e., all
-                 dimensions must be either 1, or the same as the corresponding
-                 labels dimension). Use weights of 0 to mask values.
 
     Returns:
         a confusion matrix computed based on y_true and y_pred
 
     """
-    return tf.confusion_matrix(y_true, y_pred,
-        num_classes=num_classes,
-        weights=weights
-    )
+    return tf.confusion_matrix(y_true, y_pred, num_classes=num_classes)
 
 
 def pool2d_argmax(x, pool_size,
