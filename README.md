@@ -32,10 +32,10 @@ dataset.
 <table>
   <tr>
     <td>
-      <img alt="SegNet" src="https://user-images.githubusercontent.com/2184469/45845186-1118b080-bcea-11e8-967f-d1d0b9d93bb8.png" />
+        <img alt="SegNet" src="img/segnet/model.png">
     </td>
     <td>
-      <img alt="Pooling Indexes" src="https://user-images.githubusercontent.com/2184469/45845185-1118b080-bcea-11e8-8fb3-82ebb3f15ea6.png" />
+        <img alt="Pooling Indexes" src="img/segnet/max-pooling.png">
     </td>
   </tr>
 </table>
@@ -63,36 +63,36 @@ The following table outlines the testing results from SegNet.
 
 | Metric                  | Test Score |
 |:------------------------|:-----------|
-| Accuracy                | 0.858503
-| mean per class accuracy | 0.596212
-| mean I/U                | 0.477470
-| Bicyclist               | 0.195386
-| Building                | 0.686192
-| Car                     | 0.509532
-| Column/Pole             | 0.234483
-| Fence                   | 0.149444
-| Pedestrian              | 0.316118
-| Road                    | 0.824710
-| Sidewalk                | 0.735486
-| SignSymbol              | 0.155891
-| Sky                     | 0.869758
-| Tree                    | 0.575167
+| Global Accuracy         | 0.888466
+| Mean Per Class Accuracy | 0.593288
+| Mean I/U                | 0.495996
+| Bicyclist               | 0.301233
+| Building                | 0.693133
+| Car                     | 0.503114
+| Column/Pole             | 0.218290
+| Fence                   | 0.152144
+| Pedestrian              | 0.332084
+| Road                    | 0.887113
+| Sidewalk                | 0.756714
+| Sign                    | 0.161815
+| Sky                     | 0.871147
+| Vegetation              | 0.579169
 
 ### Qualitative Results
 
 <table>
   <tr>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/46000452-3ac93300-c06e-11e8-93b3-b8321abdf8a7.png" />
+      <img src="img/segnet/0.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/46000453-3ac93300-c06e-11e8-8d52-13d9bec343e7.png" />
+      <img src="img/segnet/1.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/46000454-3ac93300-c06e-11e8-8141-6d81ca0d1dcb.png" />
+      <img src="img/segnet/2.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/46000455-3ac93300-c06e-11e8-85e0-d43f488e0de4.png" />
+      <img src="img/segnet/3.png" />
     </td>
   </tr>
 </table>
@@ -101,7 +101,7 @@ The following table outlines the testing results from SegNet.
 
 ## [Bayesian SegNet][Kendall et al. (2015)]
 
-![Bayesian SegNet](https://user-images.githubusercontent.com/2184469/45915765-7bcc0800-be20-11e8-87cf-4d778b1b3837.png)
+![Bayesian SegNet](img/bayesian-segnet/model.png)
 
 The following table describes training hyperparameters.
 
@@ -128,36 +128,36 @@ The following table outlines the testing results from Bayesian SegNet.
 
 | Metric                  | Test Score |
 |:------------------------|:-----------|
-| Accuracy                | 0.837571
-| mean per class accuracy | 0.602180
-| mean I/U                | 0.450497
-| Bicyclist               | 0.148188
-| Building                | 0.650249
-| Car                     | 0.439393
-| Column_Pole             | 0.169333
-| Fence                   | 0.165258
-| Pedestrian              | 0.274567
-| Road                    | 0.811342
-| Sidewalk                | 0.719864
-| SignSymbol              | 0.183497
-| Sky                     | 0.854170
-| Tree                    | 0.539600
+| Global Accuracy         | 0.854635
+| Mean Per Class Accuracy | 0.634437
+| Mean I/U                | 0.444531
+| Bicyclist               | 0.097716
+| Building                | 0.624091
+| Car                     | 0.470470
+| Column/Pole             | 0.180791
+| Fence                   | 0.117226
+| Pedestrian              | 0.252237
+| Road                    | 0.866110
+| Sidewalk                | 0.712532
+| Sign                    | 0.148314
+| Sky                     | 0.860612
+| Vegetation              | 0.559742
 
 ### Qualitative Results
 
 <table>
   <tr>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/46114992-bb954580-c1ba-11e8-8786-4edfd1284d08.png" />
+      <img src="img/bayesian-segnet/0.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/46114994-bb954580-c1ba-11e8-805b-5d94b45a615a.png" />
+      <img src="img/bayesian-segnet/1.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/46114995-bc2ddc00-c1ba-11e8-9621-127b5b6a7122.png" />
+      <img src="img/bayesian-segnet/2.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/46114996-bc2ddc00-c1ba-11e8-8e74-ee741247102b.png" />
+      <img src="img/bayesian-segnet/3.png" />
     </td>
   </tr>
 </table>
@@ -169,10 +169,10 @@ The following table outlines the testing results from Bayesian SegNet.
 <table>
   <tr>
     <td>
-        <img alt="103 Layers Tiramisu" src="https://user-images.githubusercontent.com/2184469/45852685-a88bfc80-bd06-11e8-9ea1-9044144b1442.png">
+        <img alt="103 Layers Tiramisu" src="img/tiramisu/model.png">
     </td>
     <td>
-        <img alt="Dense Blocks" src="https://user-images.githubusercontent.com/2184469/45852691-aa55c000-bd06-11e8-865b-b852485b40af.png">
+        <img alt="Layers" src="img/tiramisu/layers.png">
     </td>
   </tr>
 </table>
@@ -198,36 +198,36 @@ The following table outlines the testing results from 103 Layers Tiramisu.
 
 | Metric                  | Test Score |
 |:------------------------|:-----------|
-| Accuracy                | 0.826657
-| mean per class accuracy | 0.659619
-| mean I/U                | 0.448913
-| Bicyclist               | 0.076790
-| Building                | 0.624237
-| Car                     | 0.502403
-| Column/Pole             | 0.201589
-| Fence                   | 0.115558
-| Pedestrian              | 0.254075
-| Road                    | 0.828246
-| Sidewalk                | 0.745941
-| SignSymbol              | 0.153115
-| Sky                     | 0.879440
-| Tree                    | 0.556651
+| Global Accuracy         | 0.835221
+| Mean Per Class Accuracy | 0.652682
+| Mean I/U                | 0.443558
+| Bicyclist               | 0.098166
+| Building                | 0.596728
+| Car                     | 0.448302
+| Column/Pole             | 0.197154
+| Fence                   | 0.141940
+| Pedestrian              | 0.209208
+| Road                    | 0.879248
+| Sidewalk                | 0.723948
+| Sign                    | 0.138548
+| Sky                     | 0.892510
+| Vegetation              | 0.553382
 
 ### Qualitative Results
 
 <table>
   <tr>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/46000488-52082080-c06e-11e8-9787-d35d1dec990a.png" />
+      <img src="img/tiramisu/0.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/46000489-52a0b700-c06e-11e8-8d5b-2f33aa1995a6.png" />
+      <img src="img/tiramisu/1.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/46000490-52a0b700-c06e-11e8-89dc-45e93cd6cbcf.png" />
+      <img src="img/tiramisu/2.png" />
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/2184469/46000492-52a0b700-c06e-11e8-937e-95d4cb53b3ff.png" />
+      <img src="img/tiramisu/3.png" />
     </td>
   </tr>
 </table>
