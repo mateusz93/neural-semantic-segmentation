@@ -1,16 +1,17 @@
 """A method to convert Keras fit history to a pandas DataFrame of results."""
 import pandas as pd
+from keras.callbacks import History
 
 
-def history_to_results(history):
+def history_to_results(history: History) -> pd.DataFrame:
     """
-    Convert a Keras history object into results.
+    Convert a Keras History object into a DataFrame of results.
 
     Args:
-        history: the history object to extract training history from
+        history: the History returned by (Model).fit to extract data from
 
     Returns:
-        a data frame with the training and validation data
+        a DataFrame with the training and validation metrics
 
     """
     # make a data-frame from the fit history

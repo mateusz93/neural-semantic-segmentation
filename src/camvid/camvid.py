@@ -14,6 +14,7 @@ class CamVid(object):
 
     def __init__(self,
         mapping: dict=None,
+        ignored_labels: list=[],
         x_repeats: int=0,
         y_repeats: int=0,
         target_size: tuple=(720, 960),
@@ -28,7 +29,8 @@ class CamVid(object):
         Initialize a new CamVid dataset instance.
 
         Args:
-            y: the directory name with the y label data
+            mapping: mapping to use when generating the preprocessed targets
+            ignored_labels: a list of string label names to ignore (0 weight)
             x_repeats: the number of times to repeat the output of x generator
             y_repeats: the number of times to repeat the output of y generator
             target_size: the image size of the dataset
@@ -49,6 +51,7 @@ class CamVid(object):
         self._x = os.path.join(this_dir, 'X')
         self._y = create_segmented_y(mapping)
         # store remaining keyword arguments
+        self.ignored_labels = ignored_labels
         self.x_repeats = x_repeats
         self.y_repeats = y_repeats
         self.target_size = target_size
@@ -70,10 +73,16 @@ class CamVid(object):
     def class_weights(self) -> dict:
         """Return a dictionary of class weights keyed by discrete label."""
         weights = pd.read_csv(os.path.join(self._y, 'weights.csv'), index_col=0)
-        # calculate the frequency of each class
-        freq = weights['pixels'] / weights['pixels_total']
+        # calculate the frequency of each class (and swap to NumPy)
+        freq = (weights['pixels'] / weights['pixels_total']).values
+        # ignore the ignored values when calculating median
+        med = np.median(np.delete(freq, self.ignored_codes))
         # calculate the weights as the median frequency divided by all freq
-        return (freq.median() / freq).values
+        weights = (med / freq)
+        # set ignored weights to 0
+        weights[self.ignored_codes] = 0
+
+        return weights
 
     def data_gen_args(self, context: str) -> dict:
         """
@@ -153,6 +162,21 @@ class CamVid(object):
     def discrete_to_label_map(self) -> dict:
         """Return a dictionary mapping discrete codes to RGB pixels."""
         return self._discrete_dict('label_used')
+
+    @property
+    def label_to_discrete_map(self) -> dict:
+        """Return a dictionary mapping discrete codes to RGB pixels."""
+        return {v: k for (k, v) in self.discrete_to_label_map.items()}
+
+    @property
+    def ignored_codes(self) -> list:
+        """Return a list of the ignored discrete coded labels."""
+        # turn the label to discrete code map into a vectorized function
+        get = np.vectorize(self.label_to_discrete_map.get, otypes=['uint64'])
+        # unwrap the codes for each label in the ignored labels list
+        ignored = get(self.ignored_labels)
+        # return the ignored codes
+        return list(ignored)
 
     def unmap(self, y_discrete: np.ndarray) -> np.ndarray:
         """

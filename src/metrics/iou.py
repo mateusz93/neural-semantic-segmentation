@@ -1,4 +1,5 @@
 """An implementation of the Intersection over Union (IoU) metric for Keras."""
+import numpy as np
 from keras import backend as K
 
 
@@ -8,14 +9,17 @@ def iou(y_true, y_pred, label: int):
 
     Args:
         y_true: the expected y values as a one-hot
-        y_pred: the predicted y values as a one-hot or softmax output
+        y_pred: the predicted y values as a one-hot or probability tensor
         c: the label to return the IoU for
 
     Returns:
         the IoU for the given label
 
+    Reference:
+        https://en.wikipedia.org/wiki/Jaccard_index
+
     """
-    # extract the label values using the argmax operator then
+    # extract the label values using the ArgMax operator then
     # calculate equality of the predictions and truths to the label
     y_true = K.cast(K.equal(K.argmax(y_true), label), K.floatx())
     y_pred = K.cast(K.equal(K.argmax(y_pred), label), K.floatx())
@@ -37,7 +41,7 @@ def build_iou_for(label: int, name: str=None):
         name: an optional name for debugging the built method
 
     Returns:
-        a keras metric to evaluate IoU for the given label
+        a Keras metric to evaluate IoU for the given label
 
     Note:
         label and name support list inputs for multiple labels
@@ -56,7 +60,7 @@ def build_iou_for(label: int, name: str=None):
 
         Args:
             y_true: the expected y values as a one-hot
-            y_pred: the predicted y values as a one-hot or softmax output
+            y_pred: the predicted y values as a one-hot or probability tensor
 
         Returns:
             the scalar IoU value for the given label ({0})
@@ -73,31 +77,49 @@ def build_iou_for(label: int, name: str=None):
     return label_iou
 
 
-def mean_iou(y_true, y_pred):
+def build_mean_iou(weights=None):
     """
-    Return the Intersection over Union (IoU) score.
+    Build a mean intersection over union metric.
 
     Args:
-        y_true: the expected y values as a one-hot
-        y_pred: the predicted y values as a one-hot or softmax output
+        weights: the weights to use for the metric
 
     Returns:
-        the scalar IoU value (mean over all labels)
+        a callable mean intersection over union metric
 
     """
-    # get number of labels to calculate IoU for
-    num_labels = K.int_shape(y_pred)[-1]
-    # initialize a variable to store total IoU in
-    total_iou = K.variable(0)
-    # iterate over labels to calculate IoU for
-    for label in range(num_labels):
-        total_iou = total_iou + iou(y_true, y_pred, label)
-    # divide total IoU by number of labels to get mean IoU
-    return total_iou / num_labels
+    def mean_iou(y_true, y_pred):
+        """
+        Return the Intersection over Union (IoU) score.
+
+        Args:
+            y_true: the expected y values as a one-hot
+            y_pred: the predicted y values as a one-hot or probability tensor
+
+        Returns:
+            the scalar IoU value (mean over all labels)
+
+        Reference:
+            https://en.wikipedia.org/wiki/Weighted_arithmetic_mean
+
+        """
+        # get number of labels to calculate IoU for
+        num_classes = K.int_shape(y_pred)[-1]
+        # set the weights to all 1 if there are none specified
+        _weights = np.ones(num_classes) if weights is None else weights
+        # initialize a variable to store total IoU in
+        total_iou = K.variable(0)
+        # iterate over labels to calculate IoU for
+        for label in range(num_classes):
+            total_iou = total_iou + _weights[label] * iou(y_true, y_pred, label)
+        # divide total IoU by number of labels to get mean IoU
+        return total_iou / _weights.sum()
+
+    return mean_iou
 
 
 # explicitly define the outward facing API of this module
 __all__ = [
     build_iou_for.__name__,
-    mean_iou.__name__
+    build_mean_iou.__name__
 ]

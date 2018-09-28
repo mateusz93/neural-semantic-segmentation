@@ -12,7 +12,7 @@ from keras.regularizers import l2
 from .layers import ContrastNormalization
 from .layers import MemorizedMaxPooling2D
 from .layers import MemorizedUpsampling2D
-from .losses import build_weighted_categorical_crossentropy
+from .losses import build_categorical_crossentropy
 from .metrics import metrics_for_segmentation
 
 
@@ -190,8 +190,8 @@ def build_segnet(image_shape: tuple, num_classes: int,
     model = Model(inputs=[inputs], outputs=[x], name='SegNet')
     model.compile(
         optimizer=optimizer,
-        loss=build_weighted_categorical_crossentropy(class_weights),
-        metrics=metrics_for_segmentation(num_classes, label_names),
+        loss=build_categorical_crossentropy(class_weights),
+        metrics=metrics_for_segmentation(num_classes, label_names, class_weights),
     )
     # transfer weights from VGG16
     if pretrain_encoder:
