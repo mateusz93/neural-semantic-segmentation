@@ -21,7 +21,7 @@ dataset.
 
 -   [32 classes][CamVid-classes] generalized to 11 classes using mapping in
     [11_class.txt](11_class.txt)
-    -   TODO: use 12 labels and ignore the VOID class (i.e., 11 labels)
+    -   use 12 labels and ignore the Void class (i.e., 11 labels)
 -   960 x 720 scaled down by factor of 2 to 480 x 360
 
 [CamVid]: http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid/
@@ -114,8 +114,8 @@ The following table describes training hyperparameters.
     testing
     -   original paper uses a static statistics computed over the training data
 -   encoder transfer learning from VGG16 trained on ImageNet
-    -   TODO: train the custom version of the VGG16 encoder using dropout for
-        better transfer of weights.
+    -   note that VGG16 does not have any dropout by default; transfer from a
+        Bayesian VGG16 model could improve results
 -   best model in terms of validation accuracy is kept as final model
 -   median frequency balancing of class labels ([Eigen et al. (2014)][])
     -   weighted categorical cross-entropy loss function
@@ -233,7 +233,7 @@ The following table outlines the testing results from 103 Layers Tiramisu.
 </table>
 
 
-
+<!--
 ## [Bayesian Tiramisu][Kendall et al. (2017)]
 
 ### Quantitative Results
@@ -242,7 +242,7 @@ The following table outlines the testing results from Bayesian Tiramisu. Only
 the hybrid model (aleatoric + epistemic uncertainty) is shown for brevity.
 
 ### Qualitative Results
-
+-->
 
 <!-- References -->
 
