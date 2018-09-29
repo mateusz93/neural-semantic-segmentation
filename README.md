@@ -236,13 +236,34 @@ The following table outlines the testing results from 103 Layers Tiramisu.
 
 ## [Bayesian Tiramisu][Kendall et al. (2017)]
 
+![Bayesian Tiramisu](img/bayesian-tiramisu/model.png)
+
 ### Quantitative Results
 
 The following table outlines the testing results from Bayesian Tiramisu. Only
 the hybrid model (aleatoric + epistemic uncertainty) is shown for brevity.
 
+| Metric                  | Test Score |
+|:------------------------|:-----------|
+
 ### Qualitative Results
 
+<!-- <table>
+  <tr>
+    <td>
+      <img src="img/bayesian-tiramisu/0.png" />
+    </td>
+    <td>
+      <img src="img/bayesian-tiramisu/1.png" />
+    </td>
+    <td>
+      <img src="img/bayesian-tiramisu/2.png" />
+    </td>
+    <td>
+      <img src="img/bayesian-tiramisu/3.png" />
+    </td>
+  </tr>
+</table> -->
 
 # References
 
