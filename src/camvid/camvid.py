@@ -84,6 +84,16 @@ class CamVid(object):
 
         return weights
 
+    @property
+    def class_mask(self) -> dict:
+        """Return a dictionary of class weights keyed by discrete label."""
+        # get the class mask as a boolean vector
+        class_mask = self.class_weights > 0
+        # cast the boolean vector to integers for math
+        class_mask = class_mask.astype(int)
+
+        return class_mask
+
     def data_gen_args(self, context: str) -> dict:
         """
         Return the keyword arguments for creating a new data generator.
