@@ -54,7 +54,7 @@ The following table describes training hyperparameters.
 -   best model in terms of validation accuracy is kept as final model
 -   median frequency balancing of class labels ([Eigen et al. (2014)][])
     -   weighted categorical cross-entropy loss function
--   local contrast normalization of inputs ([LeCun et al. (2009)][])
+-   local contrast normalization of inputs ([Jarrett et al. (2009)][])
 -   pooling indexes ([Badrinarayanan et al. (2015)][])
 
 ### Quantitative Results
@@ -119,7 +119,7 @@ The following table describes training hyperparameters.
 -   best model in terms of validation accuracy is kept as final model
 -   median frequency balancing of class labels ([Eigen et al. (2014)][])
     -   weighted categorical cross-entropy loss function
--   local contrast normalization of inputs ([LeCun et al. (2009)][])
+-   local contrast normalization of inputs ([Jarrett et al. (2009)][])
 -   pooling indexes ([Badrinarayanan et al. (2015)][])
 
 ### Quantitative Results
@@ -184,13 +184,13 @@ The following table describes training hyperparameters.
 | 224 x 224 | 200    | 3          | 100      | RMSprop   | 1e-3 | 0.995   | 20%     |
 | 352 x 480 | 200    | 1          | 50       | RMSprop   | 1e-4 | 1.000   | 20%     |
 
--   random vertical flips of images during training
+-   random _horizontal_ flips of images during training
+    -   the paper says vertical, but their implementation clearly shows
+        horizontal flips (likely a typo). Horizontal make more sense than
+        vertical anyway and produces empirically better test results
 -   batch normalization statistics computed _per batch_ during training,
     validation, and testing
--   median frequency balancing of class labels ([Eigen et al. (2014)][])
-    -   weighted categorical cross-entropy loss function
--   local contrast normalization of inputs ([LeCun et al. (2009)][])
--   skip connections ([Jégou et al. (2016)][])
+-   skip connections between encoder and decoder ([Jégou et al. (2016)][])
 
 ### Quantitative Results
 
@@ -198,20 +198,20 @@ The following table outlines the testing results from 103 Layers Tiramisu.
 
 | Metric                  | Test Score |
 |:------------------------|:-----------|
-| Global Accuracy         | 0.835221
-| Mean Per Class Accuracy | 0.652682
-| Mean I/U                | 0.443558
-| Bicyclist               | 0.098166
-| Building                | 0.596728
-| Car                     | 0.448302
-| Column/Pole             | 0.197154
-| Fence                   | 0.141940
-| Pedestrian              | 0.209208
-| Road                    | 0.879248
-| Sidewalk                | 0.723948
-| Sign                    | 0.138548
-| Sky                     | 0.892510
-| Vegetation              | 0.553382
+| Global Accuracy         | 0.893243
+| Mean Per Class Accuracy | 0.645533
+| Mean I/U                | 0.499167
+| Bicyclist               | 0.098403
+| Building                | 0.709252
+| Car                     | 0.548525
+| Column/Pole             | 0.294447
+| Fence                   | 0.098811
+| Pedestrian              | 0.342050
+| Road                    | 0.900283
+| Sidewalk                | 0.787167
+| Sign                    | 0.209551
+| Sky                     | 0.907727
+| Vegetation              | 0.594623
 
 ### Qualitative Results
 
@@ -233,7 +233,7 @@ The following table outlines the testing results from 103 Layers Tiramisu.
 </table>
 
 
-<!--
+
 ## [Bayesian Tiramisu][Kendall et al. (2017)]
 
 ### Quantitative Results
@@ -242,13 +242,25 @@ The following table outlines the testing results from Bayesian Tiramisu. Only
 the hybrid model (aleatoric + epistemic uncertainty) is shown for brevity.
 
 ### Qualitative Results
--->
 
-<!-- References -->
 
-[LeCun et al. (2009)]: http://yann.lecun.com/exdb/publis/pdf/jarrett-iccv-09.pdf
+# References
+
+[Badrinarayanan V, Kendall A, Cipolla R (2015) SegNet: A Deep Convolutional Encoder-Decoder Architec- ture for Image Segmentation. ArXiv e-prints.][Badrinarayanan et al. (2015)]
+
+[Eigen D, Fergus R (2014) Predicting Depth, Surface Normals and Semantic Labels with a Common Multi- Scale Convolutional Architecture. ArXiv e-prints.][Eigen et al. (2014)]
+
+[Jarrett K, Kavukcuoglu K, Ranzato M, LeCun Y (2009) What is the best multi-stage architecture for object recognition? 2009 IEEE 12th International Conference on Computer Vision, 2146–2153.][Jarrett et al. (2009)]
+
+[Jégou S, Drozdzal M, Vazquez D, Romero A, Bengio Y (2016) The One Hundred Layers Tiramisu: Fully Convolutional DenseNets for Semantic Segmentation. ArXiv e-prints.][Jégou et al. (2016)]
+
+[Kendall A, Badrinarayanan V, Cipolla R (2015) Bayesian SegNet: Model Uncertainty in Deep Convolutional Encoder-Decoder Architectures for Scene Understanding. ArXiv e-prints.][Kendall et al. (2015)]
+
+[Kendall A, Gal Y (2017) What Uncertainties Do We Need in Bayesian Deep Learning for Computer Vision? ArXiv e-prints.][Kendall et al. (2017)]
+
+[Badrinarayanan et al. (2015)]: https://arxiv.org/abs/1511.00561
 [Eigen et al. (2014)]: https://arxiv.org/abs/1411.4734
-[Badrinarayanan et al. (2015)]: https://arxiv.org/pdf/1511.00561.pdf
-[Kendall et al. (2015)]: https://arxiv.org/abs/1511.02680
+[Jarrett et al. (2009)]: https://ieeexplore.ieee.org/document/5459469
 [Jégou et al. (2016)]: https://arxiv.org/abs/1611.09326
-[Kendall et al. (2017)]: http://papers.nips.cc/paper/7141-what-uncertainties-do-we-need-in-bayesian-deep-learning-for-computer-vision
+[Kendall et al. (2015)]: https://arxiv.org/abs/1511.02680
+[Kendall et al. (2017)]: https://arxiv.org/abs/1703.04977
