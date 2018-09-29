@@ -184,13 +184,13 @@ The following table describes training hyperparameters.
 | 224 x 224 | 200    | 3          | 100      | RMSprop   | 1e-3 | 0.995   | 20%     |
 | 352 x 480 | 200    | 1          | 50       | RMSprop   | 1e-4 | 1.000   | 20%     |
 
--   random vertical flips of images during training
+-   random _horizontal_ flips of images during training
+    -   the paper says vertical, but their implementation clearly shows
+        horizontal flips (likely a typo). Horizontal make more sense than
+        vertical anyway and produces empirically better test results
 -   batch normalization statistics computed _per batch_ during training,
     validation, and testing
--   median frequency balancing of class labels ([Eigen et al. (2014)][])
-    -   weighted categorical cross-entropy loss function
--   local contrast normalization of inputs ([LeCun et al. (2009)][])
--   skip connections ([Jégou et al. (2016)][])
+-   skip connections between encoder and decoder ([Jégou et al. (2016)][])
 
 ### Quantitative Results
 
@@ -198,20 +198,20 @@ The following table outlines the testing results from 103 Layers Tiramisu.
 
 | Metric                  | Test Score |
 |:------------------------|:-----------|
-| Global Accuracy         | 0.835221
-| Mean Per Class Accuracy | 0.652682
-| Mean I/U                | 0.443558
-| Bicyclist               | 0.098166
-| Building                | 0.596728
-| Car                     | 0.448302
-| Column/Pole             | 0.197154
-| Fence                   | 0.141940
-| Pedestrian              | 0.209208
-| Road                    | 0.879248
-| Sidewalk                | 0.723948
-| Sign                    | 0.138548
-| Sky                     | 0.892510
-| Vegetation              | 0.553382
+| Global Accuracy         | 0.893243
+| Mean Per Class Accuracy | 0.645533
+| Mean I/U                | 0.499167
+| Bicyclist               | 0.098403
+| Building                | 0.709252
+| Car                     | 0.548525
+| Column/Pole             | 0.294447
+| Fence                   | 0.098811
+| Pedestrian              | 0.342050
+| Road                    | 0.900283
+| Sidewalk                | 0.787167
+| Sign                    | 0.209551
+| Sky                     | 0.907727
+| Vegetation              | 0.594623
 
 ### Qualitative Results
 
