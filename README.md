@@ -236,8 +236,6 @@ The following table outlines the testing results from 103 Layers Tiramisu.
 
 ## [Bayesian Tiramisu][Kendall et al. (2017)]
 
-![Bayesian Tiramisu](img/bayesian-tiramisu/model.png)
-
 ### Epistemic Uncertainty
 
 -   pre-trained with fine weights from original Tiramisu
@@ -285,6 +283,14 @@ The following table outlines the testing results from Epistemic Tiramisu.
 
 <!-- ### Aleatoric Uncertainty
 
+![Aleatoric Tiramisu](img/bayesian-tiramisu/model.png)
+
+-   network split to predict targets and loss attenuation
+    -   masked categorical cross entropy to train the target head of the
+        network
+    -   custom loss function to train the second head of the network
+        ([Kendall et al. (2017)][])
+
 #### Quantitative Results
 
 The following table outlines the testing results from Aleatoric Tiramisu.
@@ -297,21 +303,25 @@ The following table outlines the testing results from Aleatoric Tiramisu.
 <table>
   <tr>
     <td>
-      <img src="img/bayesian-tiramisu/0.png" />
+      <img src="img/bayesian-tiramisu/aleatoric/0.png" />
     </td>
     <td>
-      <img src="img/bayesian-tiramisu/1.png" />
+      <img src="img/bayesian-tiramisu/aleatoric/1.png" />
     </td>
     <td>
-      <img src="img/bayesian-tiramisu/2.png" />
+      <img src="img/bayesian-tiramisu/aleatoric/2.png" />
     </td>
     <td>
-      <img src="img/bayesian-tiramisu/3.png" />
+      <img src="img/bayesian-tiramisu/aleatoric/3.png" />
     </td>
   </tr>
 </table> -->
 
 <!-- ### Hybrid Bayesian Tiramisu
+
+-   pre-trained with fine weights from Aleatoric Tiramisu
+-   50 samples for Monte Carlo Dropout sampling at test time
+    -   aleatoric uncertainty averaged the same as targets
 
 #### Quantitative Results
 
@@ -326,16 +336,16 @@ The following table outlines the testing results from Hybrid Tiramisu
 <table>
   <tr>
     <td>
-      <img src="img/bayesian-tiramisu/0.png" />
+      <img src="img/bayesian-tiramisu/hybrid/0.png" />
     </td>
     <td>
-      <img src="img/bayesian-tiramisu/1.png" />
+      <img src="img/bayesian-tiramisu/hybrid/1.png" />
     </td>
     <td>
-      <img src="img/bayesian-tiramisu/2.png" />
+      <img src="img/bayesian-tiramisu/hybrid/2.png" />
     </td>
     <td>
-      <img src="img/bayesian-tiramisu/3.png" />
+      <img src="img/bayesian-tiramisu/hybrid/3.png" />
     </td>
   </tr>
 </table> -->
