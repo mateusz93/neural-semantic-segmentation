@@ -1,4 +1,5 @@
 """A metric to calculate categorical accuracy."""
+import numpy as np
 from keras import backend as K
 from ..backend.tensorflow_backend import confusion_matrix
 
