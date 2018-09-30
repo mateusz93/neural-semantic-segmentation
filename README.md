@@ -240,6 +240,9 @@ The following table outlines the testing results from 103 Layers Tiramisu.
 
 ### Epistemic Uncertainty
 
+-   pre-trained with fine weights from original Tiramisu
+-   50 samples for Monte Carlo Dropout sampling at test time
+
 #### Quantitative Results
 
 The following table outlines the testing results from Epistemic Tiramisu.
