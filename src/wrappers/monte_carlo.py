@@ -7,13 +7,16 @@ from tqdm import tqdm
 class MonteCarlo(object):
     """A model wrapper to perform Monte Carlo simulations."""
 
-    def __init__(self, model: Model, simulations: int) -> None:
+    def __init__(self, model: Model, simulations: int,
+        progress_bar: bool=True
+    ) -> None:
         """
         Initialize a new Monte Carlo model wrapper.
 
         Args:
             model: the Bayesian model to estimate mean output using Monte Carlo
             simulations: the number of simulations to estimate mean
+            progress_bar: whether to use the progress bar during prediction
 
         Returns:
             None
@@ -28,12 +31,22 @@ class MonteCarlo(object):
             self.simulations = int(simulations)
         except ValueError:
             raise TypeError('simulations must be an integer')
+        # type check progress_bar parameter and store
+        try:
+            self.progress_bar = bool(progress_bar)
+        except ValueError:
+            raise TypeError('progress_bar must be a boolean')
 
     def _simulate(self, method, *args, **kwargs):
         # create a list to store the output predictions in
         simulations = [None] * self.simulations
+        # create an iterator over the number of simulations
+        iterator = range(self.simulations)
+        # if the progress bar is enabled, wrap the iterator with TQDM
+        if self.progress_bar:
+            iterator = tqdm(iterator, unit='simulation')
         # evaluate over the number of simulations
-        for idx in tqdm(range(self.simulations), unit='simulation'):
+        for idx in iterator:
             simulations[idx] = getattr(self.model, method)(*args, **kwargs)
         # return the mean of each metric over the simulations
         return simulations
