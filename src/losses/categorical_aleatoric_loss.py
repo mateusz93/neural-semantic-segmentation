@@ -1,4 +1,4 @@
-"""A loss function for learned loss attenuation (aleatoric uncertainty)."""
+"""Losses for the Bayesian Neural Network (BNN)."""
 from keras import backend as K
 from keras import activations
 
@@ -19,8 +19,8 @@ def build_categorical_aleatoric_loss(samples):
         Return the categorical aleatoric loss for true values and predictions.
 
         Args:
-            y_true:
-            y_pred:
+            y_true: the ground truth values as a onehot Tensor
+            y_pred: the predicted values as a onehot/probability Tensor
 
         Returns:
             categorical aleatoric loss
@@ -34,9 +34,9 @@ def build_categorical_aleatoric_loss(samples):
         # perform the Monte Carlo simulation over the number of samples
         for sample in range(samples):
             # initialize a Gaussian random variable to sample from logit space
-            noise = K.random_normal(shape=K.shape(sigma), mean=0, stddev=sigma)
+            epsilon_t = K.random_normal(K.shape(sigma))
             # sample the logits through the Softmax function
-            x = activations.softmax(logits + noise)
+            x = logits + sigma * epsilon_t
             # mask logits sample using ground truth and extract using max
             x_c = K.max(x * y_true, axis=-1)
             # subtract the log-sum-exp of the sample from the observed label's
@@ -50,7 +50,7 @@ def build_categorical_aleatoric_loss(samples):
         # something like `K.log(K.sum(K.exp(...)) / T)`
         loss = K.logsumexp(simulations, axis=-1) - K.log(float(samples))
         # return the sum over the loss for each pixel i
-        return K.mean(loss)
+        return K.sum(loss)
 
     return categorical_aleatoric_loss
 
