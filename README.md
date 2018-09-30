@@ -236,6 +236,42 @@ The following table outlines the testing results from 103 Layers Tiramisu.
 
 ## [Bayesian Tiramisu][Kendall et al. (2017)]
 
+<!-- ### Aleatoric Uncertainty
+
+![Aleatoric Tiramisu](img/bayesian-tiramisu/model.png)
+
+-   network split to predict targets and loss attenuation
+    -   masked categorical cross entropy to train the target head of the
+        network
+    -   custom loss function to train the second head of the network
+        ([Kendall et al. (2017)][])
+
+#### Quantitative Results
+
+The following table outlines the testing results from Aleatoric Tiramisu.
+
+| Metric                  | Test Score |
+|:------------------------|:-----------|
+
+#### Qualitative Results
+
+<table>
+  <tr>
+    <td>
+      <img src="img/bayesian-tiramisu/aleatoric/0.png" />
+    </td>
+    <td>
+      <img src="img/bayesian-tiramisu/aleatoric/1.png" />
+    </td>
+    <td>
+      <img src="img/bayesian-tiramisu/aleatoric/2.png" />
+    </td>
+    <td>
+      <img src="img/bayesian-tiramisu/aleatoric/3.png" />
+    </td>
+  </tr>
+</table> -->
+
 ### Epistemic Uncertainty
 
 -   pre-trained with fine weights from original Tiramisu
@@ -281,43 +317,7 @@ The following table outlines the testing results from Epistemic Tiramisu.
   </tr>
 </table>
 
-<!-- ### Aleatoric Uncertainty
-
-![Aleatoric Tiramisu](img/bayesian-tiramisu/model.png)
-
--   network split to predict targets and loss attenuation
-    -   masked categorical cross entropy to train the target head of the
-        network
-    -   custom loss function to train the second head of the network
-        ([Kendall et al. (2017)][])
-
-#### Quantitative Results
-
-The following table outlines the testing results from Aleatoric Tiramisu.
-
-| Metric                  | Test Score |
-|:------------------------|:-----------|
-
-#### Qualitative Results
-
-<table>
-  <tr>
-    <td>
-      <img src="img/bayesian-tiramisu/aleatoric/0.png" />
-    </td>
-    <td>
-      <img src="img/bayesian-tiramisu/aleatoric/1.png" />
-    </td>
-    <td>
-      <img src="img/bayesian-tiramisu/aleatoric/2.png" />
-    </td>
-    <td>
-      <img src="img/bayesian-tiramisu/aleatoric/3.png" />
-    </td>
-  </tr>
-</table> -->
-
-<!-- ### Hybrid Bayesian Tiramisu
+<!-- ### Hybrid Uncertainty (Aleatoric + Epistemic)
 
 -   pre-trained with fine weights from Aleatoric Tiramisu
 -   50 samples for Monte Carlo Dropout sampling at test time
