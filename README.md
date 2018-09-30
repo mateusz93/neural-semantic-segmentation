@@ -265,6 +265,14 @@ the hybrid model (aleatoric + epistemic uncertainty) is shown for brevity.
   </tr>
 </table> -->
 
+# Wall Clock Inference Times
+
+The following box plot describes the mean and standard deviation in wall clock
+time execution of different segmentation models performing inference on images
+of size 352 x 480 pixels.
+
+![Wall Clock Inference Times](img/inference-time.png)
+
 # References
 
 [Badrinarayanan V, Kendall A, Cipolla R (2015) SegNet: A Deep Convolutional Encoder-Decoder Architec- ture for Image Segmentation. ArXiv e-prints.][Badrinarayanan et al. (2015)]
