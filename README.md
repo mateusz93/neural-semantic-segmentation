@@ -236,31 +236,116 @@ The following table outlines the testing results from 103 Layers Tiramisu.
 
 ## [Bayesian Tiramisu][Kendall et al. (2017)]
 
-![Bayesian Tiramisu](img/bayesian-tiramisu/model.png)
+<!-- ### Aleatoric Uncertainty
 
-### Quantitative Results
+![Aleatoric Tiramisu](img/bayesian-tiramisu/model.png)
 
-The following table outlines the testing results from Bayesian Tiramisu. Only
-the hybrid model (aleatoric + epistemic uncertainty) is shown for brevity.
+-   network split to predict targets and loss attenuation
+    -   masked categorical cross entropy to train the target head of the
+        network
+    -   custom loss function to train the second head of the network
+        ([Kendall et al. (2017)][])
+
+#### Quantitative Results
+
+The following table outlines the testing results from Aleatoric Tiramisu.
 
 | Metric                  | Test Score |
 |:------------------------|:-----------|
 
-### Qualitative Results
+#### Qualitative Results
 
-<!-- <table>
+<table>
   <tr>
     <td>
-      <img src="img/bayesian-tiramisu/0.png" />
+      <img src="img/bayesian-tiramisu/aleatoric/0.png" />
     </td>
     <td>
-      <img src="img/bayesian-tiramisu/1.png" />
+      <img src="img/bayesian-tiramisu/aleatoric/1.png" />
     </td>
     <td>
-      <img src="img/bayesian-tiramisu/2.png" />
+      <img src="img/bayesian-tiramisu/aleatoric/2.png" />
     </td>
     <td>
-      <img src="img/bayesian-tiramisu/3.png" />
+      <img src="img/bayesian-tiramisu/aleatoric/3.png" />
+    </td>
+  </tr>
+</table> -->
+
+### Epistemic Uncertainty
+
+-   pre-trained with fine weights from original Tiramisu
+-   50 samples for Monte Carlo Dropout sampling at test time
+
+#### Quantitative Results
+
+The following table outlines the testing results from Epistemic Tiramisu.
+
+| Metric                  | Test Score |
+|:------------------------|:-----------|
+| Global Accuracy         | 0.900153
+| Per Class Accuracy      | 0.623793
+| Mean I/U                | 0.498584
+| Bicyclist               | 0.111818
+| Building                | 0.723211
+| Car                     | 0.541242
+| Column/Pole             | 0.270681
+| Fence                   | 0.076327
+| Pedestrian              | 0.353104
+| Road                    | 0.899739
+| Sidewalk                | 0.788833
+| Sign                    | 0.197824
+| Sky                     | 0.909898
+| Vegetation              | 0.611748
+
+#### Qualitative Results
+
+<table>
+  <tr>
+    <td>
+      <img src="img/bayesian-tiramisu/epistemic/0.png" />
+    </td>
+    <td>
+      <img src="img/bayesian-tiramisu/epistemic/1.png" />
+    </td>
+    <td>
+      <img src="img/bayesian-tiramisu/epistemic/2.png" />
+    </td>
+    <td>
+      <img src="img/bayesian-tiramisu/epistemic/3.png" />
+    </td>
+  </tr>
+</table>
+
+<!-- ### Hybrid Uncertainty (Aleatoric + Epistemic)
+
+-   pre-trained with fine weights from Aleatoric Tiramisu
+-   50 samples for Monte Carlo Dropout sampling at test time
+    -   aleatoric uncertainty averaged the same as targets
+
+#### Quantitative Results
+
+The following table outlines the testing results from Hybrid Tiramisu
+(Aleatoric + Epistemic).
+
+| Metric                  | Test Score |
+|:------------------------|:-----------|
+
+#### Qualitative Results
+
+<table>
+  <tr>
+    <td>
+      <img src="img/bayesian-tiramisu/hybrid/0.png" />
+    </td>
+    <td>
+      <img src="img/bayesian-tiramisu/hybrid/1.png" />
+    </td>
+    <td>
+      <img src="img/bayesian-tiramisu/hybrid/2.png" />
+    </td>
+    <td>
+      <img src="img/bayesian-tiramisu/hybrid/3.png" />
     </td>
   </tr>
 </table> -->
