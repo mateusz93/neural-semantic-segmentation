@@ -5,6 +5,7 @@ and TensorFlow.
 
 <!-- https://ezgif.com/video-to-gif/ -->
 <p align="center">
+  <b>Figure 1:</b> Predictions from Epistemic Tiramisu on CamVid video stream.
   <img alt="Segmentation Demonstration" src="camvid/01TP_extract_pred.gif" width="100%" />
 </p>
 
