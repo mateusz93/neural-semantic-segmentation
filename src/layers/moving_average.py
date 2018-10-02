@@ -39,13 +39,13 @@ class MovingAverage(Layer):
         if training in {0, False}:
             return inputs
         # create a variable to keep the moving average in
-        self.average = K.zeros_like(inputs)
+        self.average = K.zeros(K.int_shape(inputs)[1:])
         # create an update operation for the moving average from inputs
-        update = K.moving_average_update(self.average, inputs, self.momentum)
+        update = K.moving_average_update(self.average, inputs[0], self.momentum)
         # add the moving average update (conditional on the inputs)
         self.add_update(update, inputs)
         # return the inputs if training, moving average if testing
-        return K.in_train_phase(inputs, self.average, training=training)
+        return K.in_train_phase(inputs, K.expand_dims(self.average, axis=0), training=training)
 
 
 # explicitly define the outward facing API of this module
