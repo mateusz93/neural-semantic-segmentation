@@ -27,6 +27,8 @@ dataset.
 [CamVid]: http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid/
 [CamVid-classes]: http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid/#ClassLabels
 
+# Models
+
 <details>
 <summary>SegNet</summary>
 
@@ -372,13 +374,20 @@ The following table outlines the testing results from Hybrid Tiramisu
 
 
 
-# Wall Clock Inference Times
+<details>
+<summary>Wall Clock Inference Time Metrics</summary>
+
+## Wall Clock Inference Time Metrics
 
 The following box plot describes the mean and standard deviation in wall clock
 time execution of different segmentation models performing inference on images
 of size 352 x 480 pixels.
 
 ![Wall Clock Inference Times](img/inference-time.png)
+
+</details>
+
+
 
 # References
 
