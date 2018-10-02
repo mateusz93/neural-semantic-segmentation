@@ -23,10 +23,6 @@ class MovingAverage(Layer):
         # store the instance variables of this layer
         self.momentum = momentum
 
-    # def compute_output_shape(self, input_shape):
-    #     """Return the output shape of this layer."""
-    #     return input_shape
-
     def call(self, inputs, training=None):
         """
         Forward pass through the layer.
