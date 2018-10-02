@@ -3,6 +3,11 @@
 Implementations of neural network papers for semantic segmentation using Keras
 and TensorFlow.
 
+<!-- https://ezgif.com/video-to-gif/ -->
+<p align="center">
+  <img alt="Segmentation Demonstration" src="camvid/01TP_extract_pred.gif" />
+</p>
+
 ## Installation
 
 To install requirements for the project:
