@@ -1,5 +1,6 @@
 """A method to extract the Aleatoric uncertainty for predicted class labels."""
 import numpy as np
+from matplotlib import pyplot as plt
 
 
 def extract_aleatoric(sigma, y_pred):
