@@ -4,6 +4,7 @@ import cv2
 from keras_preprocessing.image import *
 from keras_preprocessing.image import _count_valid_files_in_directory
 from keras_preprocessing.image import _list_valid_filenames_in_directory
+from skimage.transform import resize
 
 
 class DirectoryIterator(Iterator):
@@ -150,16 +151,12 @@ class DirectoryIterator(Iterator):
         for i, j in enumerate(index_array):
             fname = self.filenames[j]
             x = np.load(os.path.join(self.directory, fname))
-            from skimage.transform import resize
             x = resize(x, self.target_size,
                 anti_aliasing=False,
                 mode='symmetric',
                 clip=False,
                 preserve_range=True,
             )
-            # target_size = (self.target_size[1], self.target_size[0])
-            # x = cv2.resize(x, target_size, interpolation=cv2.INTER_NEAREST)
-            # x = np.resize(x, self.target_size + (x.shape[-1],))
             params = self.image_data_generator.get_random_transform(x.shape)
             x = self.image_data_generator.apply_transform(x, params)
             x = self.image_data_generator.standardize(x)
