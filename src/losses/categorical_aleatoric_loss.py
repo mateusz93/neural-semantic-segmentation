@@ -36,7 +36,7 @@ def build_categorical_aleatoric_loss(samples):
             # initialize a Gaussian random variable to sample from logit space
             epsilon_t = K.random_normal(K.shape(sigma))
             # sample the logits through the Softmax function
-            x = logits + sigma * epsilon_t
+            x = activations.softmax(logits + sigma * epsilon_t)
             # mask logits sample using ground truth and extract using max
             x_c = K.max(x * y_true, axis=-1)
             # subtract the log-sum-exp of the sample from the observed label's
@@ -50,7 +50,7 @@ def build_categorical_aleatoric_loss(samples):
         # something like `K.log(K.sum(K.exp(...)) / T)`
         loss = K.logsumexp(simulations, axis=-1) - K.log(float(samples))
         # return the sum over the loss for each pixel i
-        return K.sum(loss)
+        return K.mean(loss)
 
     return categorical_aleatoric_loss
 
