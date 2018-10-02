@@ -129,7 +129,7 @@ def _transfer_vgg16_encoder(model: Model) -> None:
 
 
 def build_segnet(image_shape: tuple, num_classes: int,
-    label_names: dict=None,
+    label_names: dict=dict(),
     class_weights=None,
     contrast_norm: str='lcn',
     dropout_rate: float=None,

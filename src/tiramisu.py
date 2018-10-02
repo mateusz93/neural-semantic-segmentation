@@ -212,7 +212,7 @@ def _build_tiramisu(image_shape: tuple, num_classes: int,
 
 
 def build_tiramisu(image_shape: tuple, num_classes: int,
-    label_names: dict=None,
+    label_names: dict=dict(),
     class_weights=None,
     initial_filters: int=48,
     growth_rate: int=16,
@@ -264,7 +264,7 @@ def build_tiramisu(image_shape: tuple, num_classes: int,
 
 
 def build_epistemic_tiramisu(image_shape: tuple, num_classes: int,
-    label_names: dict=None,
+    label_names: dict=dict(),
     class_weights=None,
     initial_filters: int=48,
     growth_rate: int=16,
@@ -331,7 +331,7 @@ def build_epistemic_tiramisu(image_shape: tuple, num_classes: int,
 
 
 def build_aleatoric_tiramisu(image_shape: tuple, num_classes: int,
-    label_names: dict=None,
+    label_names: dict=dict(),
     class_weights=None,
     initial_filters: int=48,
     growth_rate: int=16,
@@ -394,7 +394,7 @@ def build_aleatoric_tiramisu(image_shape: tuple, num_classes: int,
 
 
 def build_hybrid_tiramisu(image_shape: tuple, num_classes: int,
-    label_names: dict=None,
+    label_names: dict=dict(),
     class_weights=None,
     initial_filters: int=48,
     growth_rate: int=16,
