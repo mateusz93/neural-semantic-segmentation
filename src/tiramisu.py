@@ -18,7 +18,7 @@ from .layers import MovingAverage
 from .layers import Stack
 from .losses import build_categorical_crossentropy
 from .losses import build_categorical_aleatoric_loss
-from .metrics import metrics_for_segmentation
+from .metrics import build_categorical_accuracy
 
 
 # static arguments used for all convolution layers in Tiramisu models
@@ -213,7 +213,6 @@ def _build_tiramisu(image_shape: tuple, num_classes: int,
 
 
 def build_tiramisu(image_shape: tuple, num_classes: int,
-    label_names: dict=dict(),
     class_weights=None,
     initial_filters: int=48,
     growth_rate: int=16,
@@ -228,7 +227,6 @@ def build_tiramisu(image_shape: tuple, num_classes: int,
     Args:
         image_shape: the image shape to create the model for
         num_classes: the number of classes to segment for (e.g. c)
-        label_names: a dictionary mapping discrete labels to names for IoU
         class_weights: the weights for each class
         initial_filters: the number of filters in the first convolution layer
         growth_rate: the growth rate to use for the network (e.g. k)
@@ -258,14 +256,13 @@ def build_tiramisu(image_shape: tuple, num_classes: int,
     model.compile(
         optimizer=RMSprop(lr=learning_rate),
         loss=build_categorical_crossentropy(class_weights),
-        metrics=metrics_for_segmentation(num_classes, label_names, class_weights),
+        metrics=[build_categorical_accuracy(weights=class_weights)],
     )
 
     return model
 
 
 def build_epistemic_tiramisu(image_shape: tuple, num_classes: int,
-    label_names: dict=dict(),
     class_weights=None,
     initial_filters: int=48,
     growth_rate: int=16,
@@ -281,7 +278,6 @@ def build_epistemic_tiramisu(image_shape: tuple, num_classes: int,
     Args:
         image_shape: the image shape to create the model for
         num_classes: the number of classes to segment for (e.g. c)
-        label_names: a dictionary mapping discrete labels to names for IoU
         class_weights: the weights for each class
         initial_filters: the number of filters in the first convolution layer
         growth_rate: the growth rate to use for the network (e.g. k)
@@ -323,16 +319,13 @@ def build_epistemic_tiramisu(image_shape: tuple, num_classes: int,
     model.compile(
         optimizer=RMSprop(lr=learning_rate),
         loss={'mean': build_categorical_crossentropy(class_weights)},
-        metrics={
-            'mean': metrics_for_segmentation(num_classes, label_names, class_weights)
-        },
+        metrics={'mean': [build_categorical_accuracy(weights=class_weights)]},
     )
 
     return model
 
 
 def build_epi_approx_tiramisu(image_shape: tuple, num_classes: int,
-    label_names: dict=dict(),
     class_weights=None,
     initial_filters: int=48,
     growth_rate: int=16,
@@ -348,7 +341,6 @@ def build_epi_approx_tiramisu(image_shape: tuple, num_classes: int,
     Args:
         image_shape: the image shape to create the model for
         num_classes: the number of classes to segment for (e.g. c)
-        label_names: a dictionary mapping discrete labels to names for IoU
         class_weights: the weights for each class
         initial_filters: the number of filters in the first convolution layer
         growth_rate: the growth rate to use for the network (e.g. k)
@@ -392,16 +384,13 @@ def build_epi_approx_tiramisu(image_shape: tuple, num_classes: int,
     model.compile(
         optimizer=RMSprop(lr=learning_rate),
         loss={'tiramisu': build_categorical_crossentropy(class_weights)},
-        metrics={
-            'tiramisu': metrics_for_segmentation(num_classes, label_names, class_weights)
-        },
+        metrics={'tiramisu': [build_categorical_accuracy(weights=class_weights)]},
     )
 
     return model
 
 
 def build_aleatoric_tiramisu(image_shape: tuple, num_classes: int,
-    label_names: dict=dict(),
     class_weights=None,
     initial_filters: int=48,
     growth_rate: int=16,
@@ -417,7 +406,6 @@ def build_aleatoric_tiramisu(image_shape: tuple, num_classes: int,
     Args:
         image_shape: the image shape to create the model for
         num_classes: the number of classes to segment for (e.g. c)
-        label_names: a dictionary mapping discrete labels to names for IoU
         class_weights: the weights for each class
         initial_filters: the number of filters in the first convolution layer
         growth_rate: the growth rate to use for the network (e.g. k)
@@ -455,16 +443,13 @@ def build_aleatoric_tiramisu(image_shape: tuple, num_classes: int,
             'softmax': build_categorical_crossentropy(class_weights),
             'aleatoric': build_categorical_aleatoric_loss(samples)
         },
-        metrics={
-            'softmax': metrics_for_segmentation(num_classes, label_names, class_weights)
-        },
+        metrics={'softmax': [build_categorical_accuracy(weights=class_weights)]},
     )
 
     return tiramisu
 
 
 def build_hybrid_tiramisu(image_shape: tuple, num_classes: int,
-    label_names: dict=dict(),
     class_weights=None,
     initial_filters: int=48,
     growth_rate: int=16,
@@ -481,7 +466,6 @@ def build_hybrid_tiramisu(image_shape: tuple, num_classes: int,
     Args:
         image_shape: the image shape to create the model for
         num_classes: the number of classes to segment for (e.g. c)
-        label_names: a dictionary mapping discrete labels to names for IoU
         class_weights: the weights for each class
         initial_filters: the number of filters in the first convolution layer
         growth_rate: the growth rate to use for the network (e.g. k)
@@ -531,7 +515,7 @@ def build_hybrid_tiramisu(image_shape: tuple, num_classes: int,
     #         'aleatoric': build_categorical_aleatoric_loss(samples),
     #     },
     #     metrics={
-    #         'mean': metrics_for_segmentation(num_classes, label_names, class_weights)
+    #         'mean': [build_categorical_accuracy(weights=class_weights)]
     #     },
     # )
 

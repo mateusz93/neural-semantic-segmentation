@@ -9,11 +9,11 @@ from keras.layers import Lambda
 from keras.models import Model
 from keras.optimizers import SGD
 from keras.regularizers import l2
-from .layers import ContrastNormalization
+from .layers import LocalContrastNormalization
 from .layers import MemorizedMaxPooling2D
 from .layers import MemorizedUpsampling2D
 from .losses import build_categorical_crossentropy
-from .metrics import metrics_for_segmentation
+from .metrics import build_categorical_accuracy
 
 
 # static arguments used for all convolution layers in SegNet
@@ -129,9 +129,8 @@ def _transfer_vgg16_encoder(model: Model) -> None:
 
 
 def build_segnet(image_shape: tuple, num_classes: int,
-    label_names: dict=dict(),
     class_weights=None,
-    contrast_norm: str='lcn',
+    lcn: bool=True,
     dropout_rate: float=None,
     optimizer=SGD(lr=0.1, momentum=0.9),
     pretrain_encoder: bool=True,
@@ -142,9 +141,8 @@ def build_segnet(image_shape: tuple, num_classes: int,
     Args:
         image_shape: the image shape to create the model for
         num_classes: the number of classes to segment for (e.g. c)
-        label_names: a dictionary mapping discrete labels to names for IoU
         class_weights: the weights for each class
-        contrast_norm: the method of contrast normalization for inputs
+        lcn: whether to use local contrast normalization on inputs
         dropout_rate: the dropout rate to use for permanent dropout
         optimizer: the optimizer for training the network
         pretrain_encoder: whether to initialize the encoder from VGG16
@@ -158,8 +156,8 @@ def build_segnet(image_shape: tuple, num_classes: int,
     # assume 8-bit inputs and convert to floats in [0,1]
     x = Lambda(lambda x: x / 255.0, name='pixel_norm')(inputs)
     # apply contrast normalization if set
-    if contrast_norm is not None:
-        x = ContrastNormalization(method=contrast_norm, name=contrast_norm)(x)
+    if lcn:
+        x = LocalContrastNormalization()(x)
     # if no dropout rate, make the lambda return the input
     if dropout_rate is None:
         dropout = lambda x: x
@@ -191,7 +189,7 @@ def build_segnet(image_shape: tuple, num_classes: int,
     model.compile(
         optimizer=optimizer,
         loss=build_categorical_crossentropy(class_weights),
-        metrics=metrics_for_segmentation(num_classes, label_names, class_weights),
+        metrics=[build_categorical_accuracy(weights=class_weights)],
     )
     # transfer weights from VGG16
     if pretrain_encoder:
