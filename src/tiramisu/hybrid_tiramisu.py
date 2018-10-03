@@ -93,17 +93,17 @@ def predict(model, generator, camvid) -> tuple:
     Return post-processed predictions for the given generator.
 
     Args:
-        model: the tiramisu model to use to predict with
+        model: the Tiramisu model to use to predict with
         generator: the generator to get data from
-        camvid: the camvid instance for unmapping target values
+        camvid: the CamVid instance for un-mapping target values
 
     Returns:
         a tuple of for NumPy tensors with RGB data:
         - the batch of RGB X values
         - the unmapped RGB batch of y values
         - the unmapped RGB predicted mean values from the model
-        - the heatmap RGB values of the epistemic uncertainty
-        - the heatmap RGB values of the aleatoric uncertainty
+        - the heat-map RGB values of the epistemic uncertainty
+        - the heat-map RGB values of the aleatoric uncertainty
 
     """
     # get the batch of data

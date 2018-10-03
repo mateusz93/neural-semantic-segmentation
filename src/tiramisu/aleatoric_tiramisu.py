@@ -74,9 +74,9 @@ def predict(model, generator, camvid) -> tuple:
     Return post-processed predictions for the given generator.
 
     Args:
-        model: the tiramisu model to use to predict with
+        model: the Tiramisu model to use to predict with
         generator: the generator to get data from
-        camvid: the camvid instance for unmapping target values
+        camvid: the CamVid instance for un-mapping target values
 
     Returns:
         a tuple of for NumPy tensors with RGB data:
