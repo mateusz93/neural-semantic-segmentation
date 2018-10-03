@@ -6,7 +6,7 @@ from .mean_per_class_accuracy import build_mean_per_class_accuracy
 
 
 def metrics_for_segmentation(num_classes: int,
-    label_names: dict=None,
+    label_names: dict=dict(),
     weights=None,
 ) -> list:
     """
@@ -38,7 +38,7 @@ def metrics_for_segmentation(num_classes: int,
         if weights is not None and weights[label] <= 0:
             continue
         # build an I/U metric and add it to the list
-        ious += [build_iou_for(label, label_names[label])]
+        ious += [build_iou_for(label, label_names.get(label))]
     # return the cumulative list of metrics
     return [categorical_accuracy, mean_per_class_accuracy, mean_iou, *ious]
 
