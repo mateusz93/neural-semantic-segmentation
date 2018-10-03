@@ -1,16 +1,18 @@
+"""A Tiramisu model that estimates epistemic uncertainty using Monte Carlo."""
 from keras.layers import Activation
+from keras.layers import Input
 from keras.models import Model
 from keras.optimizers import RMSprop
-from ..layers import Stack
+from matplotlib import pyplot as plt
+from ..layers import Entropy
+from ..layers import MonteCarloSimulation
 from ..losses import build_categorical_crossentropy
-from ..losses import build_categorical_aleatoric_loss
 from ..metrics import build_categorical_accuracy
-from ..utils import extract_aleatoric
 from ..utils import heatmap
 from ._core import build_tiramisu
 
 
-def aleatoric_tiramisu(image_shape: tuple, num_classes: int,
+def epistemic_tiramisu(image_shape: tuple, num_classes: int,
     class_weights=None,
     initial_filters: int=48,
     growth_rate: int=16,
@@ -21,7 +23,7 @@ def aleatoric_tiramisu(image_shape: tuple, num_classes: int,
     samples: int=50,
 ):
     """
-    Build a Tiramisu model that computes Aleatoric uncertainty.
+    Build a Tiramisu model that computes Epistemic uncertainty.
 
     Args:
         image_shape: the image shape to create the model for
@@ -34,39 +36,43 @@ def aleatoric_tiramisu(image_shape: tuple, num_classes: int,
         bottleneck_size: the number of convolutional layers in the bottleneck
         dropout: the dropout rate to use in dropout layers
         learning_rate: the learning rate for the RMSprop optimizer
-        samples: the number of samples for Monte Carlo loss estimation
+        samples: the number of samples for Monte Carlo integration
 
     Returns:
-        a compiled model of the Tiramisu architecture + Aleatoric
+        a compiled model of the Tiramisu architecture + Epistemic
 
     """
     # build the base of the network
-    inputs, logits, sigma = build_tiramisu(image_shape, num_classes,
+    inputs, logits = build_tiramisu(image_shape, num_classes,
         initial_filters=initial_filters,
         growth_rate=growth_rate,
         layer_sizes=layer_sizes,
         bottleneck_size=bottleneck_size,
         dropout=dropout,
-        split_head=True,
+        mc_dropout=True,
     )
-    # stack the logits and sigma for aleatoric loss
-    aleatoric = Stack(name='aleatoric')([logits, sigma])
     # pass the logits through the Softmax activation to get probabilities
-    softmax = Activation('softmax', name='softmax')(logits)
+    softmax = Activation('softmax')(logits)
     # build the Tiramisu model
-    tiramisu = Model(inputs=[inputs], outputs=[softmax, sigma, aleatoric])
+    tiramisu = Model(inputs=[inputs], outputs=[softmax], name='tiramisu')
+
+    # the inputs for the Monte Carlo model
+    inputs = Input(image_shape)
+    # take the mean of Tiramisu output over the number of simulations
+    mean = MonteCarloSimulation(tiramisu, samples, name='mean')(inputs)
+    # calculate the variance as the entropy of the means
+    entropy = Entropy(name='entropy')(mean)
+    # build the epistemic uncertainty model
+    model = Model(inputs=[inputs], outputs=[mean, entropy])
 
     # compile the model
-    tiramisu.compile(
+    model.compile(
         optimizer=RMSprop(lr=learning_rate),
-        loss={
-            'softmax': build_categorical_crossentropy(class_weights),
-            'aleatoric': build_categorical_aleatoric_loss(samples)
-        },
-        metrics={'softmax': [build_categorical_accuracy(weights=class_weights)]},
+        loss={'mean': build_categorical_crossentropy(class_weights)},
+        metrics={'mean': [build_categorical_accuracy(weights=class_weights)]},
     )
 
-    return tiramisu
+    return model
 
 
 def predict(model, generator, camvid) -> tuple:
@@ -82,24 +88,24 @@ def predict(model, generator, camvid) -> tuple:
         a tuple of for NumPy tensors with RGB data:
         - the batch of RGB X values
         - the unmapped RGB batch of y values
-        - the unmapped RGB predicted values from the model
-        - the heatmap RGB values of the aleatoric uncertainty
+        - the unmapped RGB predicted mean values from the model
+        - the heatmap RGB values of the epistemic uncertainty
 
     """
     # get the batch of data
     imgs, y_true = next(generator)
     # predict mean values and variance
-    y_pred, sigma2, _ = model.predict(imgs)
-    # extract the aleatoric uncertainty from the tensor
-    sigma2 = extract_aleatoric(sigma2, y_pred)
-    # return X values, unmapped y and u values, and heatmap of s2
+    y_pred, sigma2 = model.predict(imgs)
+    # calculate the mean variance over the labels
+    sigma2 = plt.Normalize()(sigma2)
+    # return X values, unmapped y and u values, and heat-map of sigma**2
     return (
         imgs,
-        camvid.unmap(y_true[0]),
+        camvid.unmap(y_true),
         camvid.unmap(y_pred),
         heatmap(sigma2, 'afmhot'),
     )
 
 
 # explicitly define the outward facing API of this module
-__all__ = [aleatoric_tiramisu.__name__, predict.__name__]
+__all__ = [epistemic_tiramisu.__name__, predict.__name__]
