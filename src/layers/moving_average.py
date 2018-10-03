@@ -1,10 +1,10 @@
-"""A layer to calculate a moving average with momentum."""
+"""A layer to calculate an Exponential Moving Average (EMA)."""
 from keras import backend as K
 from keras.layers import Layer
 
 
 class MovingAverage(Layer):
-    """A layer to calculate a moving average with momentum."""
+    """A layer to calculate an Exponential Moving Average (EMA)."""
 
     def __init__(self, momentum=0.9, **kwargs):
         """
@@ -23,7 +23,19 @@ class MovingAverage(Layer):
         # store the instance variables of this layer
         self.momentum = momentum
 
-    def call(self, inputs, training=None):
+    def build(self, input_shape):
+        """Build the layer with given input shape."""
+        # create a variable to keep the moving average in
+        self.average = self.add_weight(
+            shape=(1, ) + input_shape[1:],
+            name='average',
+            initializer='zeros',
+            trainable=False
+        )
+        # mark the layer as built
+        self.built = True
+
+    def call(self, inputs):
         """
         Forward pass through the layer.
 
@@ -35,17 +47,9 @@ class MovingAverage(Layer):
             the input tensor stacked self.n times along axis 1
 
         """
-        # no moving average if training
-        if training in {0, False}:
-            return inputs
-        # create a variable to keep the moving average in
-        self.average = K.zeros(K.int_shape(inputs)[1:])
-        # create an update operation for the moving average from inputs
-        update = K.moving_average_update(self.average, inputs[0], self.momentum)
-        # add the moving average update (conditional on the inputs)
-        self.add_update(update, inputs)
-        # return the inputs if training, moving average if testing
-        return K.in_train_phase(inputs, K.expand_dims(self.average, axis=0), training=training)
+        # update the moving average
+        self.average = self.momentum * inputs + (1 - self.momentum) * self.average
+        return self.average
 
 
 # explicitly define the outward facing API of this module
