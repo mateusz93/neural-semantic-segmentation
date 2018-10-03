@@ -29,7 +29,7 @@ if __name__ == '__main__':
     # the shape to resize frames to
     image_shape = (352, 480, 3)
     # build the model for the image shape and number of labels
-    model = tiramisu.build_epi_approx_tiramisu(image_shape, camvid11.n)
+    model = tiramisu.build_epi_approx_tiramisu(image_shape, camvid11.n, momentum=1.0)
     model.layers[1].load_weights('models/Tiramisu103-CamVid11-fine.h5')
 
 
