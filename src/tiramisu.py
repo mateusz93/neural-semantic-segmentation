@@ -163,6 +163,13 @@ def _build_tiramisu(image_shape: tuple, num_classes: int,
         - the sigma output if split_head is True
 
     """
+    # ensure the image shape is legal for the architecture
+    div = int(2**len(layer_sizes))
+    for dim in image_shape[:-1]:
+        # raise error if the dimension doesn't evenly divide
+        if dim % div:
+            msg = 'dimension ({}) must be divisible by {}'.format(dim, div)
+            raise ValueError(msg)
     # the input block of the network
     inputs = Input(image_shape, name='Tiramisu_input')
     # assume 8-bit inputs and convert to floats in [0,1]
