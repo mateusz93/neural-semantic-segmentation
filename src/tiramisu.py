@@ -382,7 +382,7 @@ def build_epi_approx_tiramisu(image_shape: tuple, num_classes: int,
     tiramisu_out = tiramisu(inputs)
     # create an exponential moving average of softmax to estimate a
     # Monte Carlo simulation and provide epistemic uncertainty
-    mean = MovingAverage()(tiramisu_out)
+    mean = MovingAverage(momentum=momentum)(tiramisu_out)
     # calculate the epistemic uncertainty as the entropy of the means
     entropy = Entropy(name='entropy')(mean)
     # build the epistemic uncertainty model
