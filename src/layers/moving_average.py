@@ -35,7 +35,7 @@ class MovingAverage(Layer):
             the input tensor stacked self.n times along axis 1
 
         """
-        # initlaize the average with zeros
+        # initialize the average with zeros
         average = K.zeros((1, ) + K.int_shape(inputs)[1:])
         # update the average using an exponential update
         average = self.momentum * inputs + (1 - self.momentum) * average
