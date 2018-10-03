@@ -23,18 +23,6 @@ class MovingAverage(Layer):
         # store the instance variables of this layer
         self.momentum = momentum
 
-    def build(self, input_shape):
-        """Build the layer with given input shape."""
-        # create a variable to keep the moving average in
-        self.average = self.add_weight(
-            shape=(1, ) + input_shape[1:],
-            name='average',
-            initializer='zeros',
-            trainable=False
-        )
-        # mark the layer as built
-        self.built = True
-
     def call(self, inputs):
         """
         Forward pass through the layer.
@@ -47,9 +35,12 @@ class MovingAverage(Layer):
             the input tensor stacked self.n times along axis 1
 
         """
-        # update the moving average
-        self.average = self.momentum * inputs + (1 - self.momentum) * self.average
-        return self.average
+        # initlaize the average with zeros
+        average = K.zeros((1, ) + K.int_shape(inputs)[1:])
+        # update the average using an exponential update
+        average = self.momentum * inputs + (1 - self.momentum) * average
+
+        return average
 
 
 # explicitly define the outward facing API of this module
