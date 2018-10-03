@@ -373,9 +373,9 @@ def build_epi_approx_tiramisu(image_shape: tuple, num_classes: int,
         mc_dropout=True,
     )
     # pass the logits through the Softmax activation to get probabilities
-    softmax = Activation('softmax', name='softmax')(logits)
+    softmax = Activation('softmax')(logits)
     # build the Tiramisu model
-    tiramisu = Model(inputs=[inputs], outputs=[softmax, entropy])
+    tiramisu = Model(inputs=[inputs], outputs=[softmax], name='tiramisu')
 
     # the inputs for the Monte Carlo model
     inputs = Input(image_shape)
@@ -392,9 +392,9 @@ def build_epi_approx_tiramisu(image_shape: tuple, num_classes: int,
     # compile the model
     model.compile(
         optimizer=RMSprop(lr=learning_rate),
-        loss={'softmax': build_categorical_crossentropy(class_weights)},
+        loss={'tiramisu': build_categorical_crossentropy(class_weights)},
         metrics={
-            'softmax': metrics_for_segmentation(num_classes, label_names, class_weights)
+            'tiramisu': metrics_for_segmentation(num_classes, label_names, class_weights)
         },
     )
 
