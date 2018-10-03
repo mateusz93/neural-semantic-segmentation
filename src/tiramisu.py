@@ -370,7 +370,6 @@ def build_epi_approx_tiramisu(image_shape: tuple, num_classes: int,
         layer_sizes=layer_sizes,
         bottleneck_size=bottleneck_size,
         dropout=dropout,
-        mc_dropout=True,
     )
     # pass the logits through the Softmax activation to get probabilities
     softmax = Activation('softmax')(logits)
