@@ -151,6 +151,13 @@ def build_segnet(image_shape: tuple, num_classes: int,
         a compiled model of SegNet
 
     """
+    # ensure the image shape is legal for the architecture
+    div = int(2**5)
+    for dim in image_shape[:-1]:
+        # raise error if the dimension doesn't evenly divide
+        if dim % div:
+            msg = 'dimension ({}) must be divisible by {}'.format(dim, div)
+            raise ValueError(msg)
     # the input block of the network
     inputs = Input(image_shape, name='SegNet_input')
     # assume 8-bit inputs and convert to floats in [0,1]
