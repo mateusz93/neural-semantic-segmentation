@@ -3,17 +3,13 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-def heatmap(arr: np.ndarray, color_map='cubehelix') -> np.ndarray:
+def heatmap(arr: np.ndarray, color_map='afmhot') -> np.ndarray:
     """
     Use the given color map to convert the input vector to a heat-map.
 
     Args:
         arr: the vector to convert to an RGB heat-map
-        color_map: the color map to use (defaults to 'cubehelix')
-        -   cubehelix is like jet, but with a better luminosity gradient to
-            illustrate the scale to the human eye, as well as support black
-            and white printing (i.e., black and white cube helix will resemble
-            plt.cm.binary or plt.cm.Greys)
+        color_map: the color map to use
 
     Returns:
         arr mapped to RGB using the given color map (vector of bytes)
