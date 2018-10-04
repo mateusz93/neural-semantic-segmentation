@@ -4,7 +4,6 @@ from keras.layers import Input
 from keras.models import Model
 from keras.optimizers import RMSprop
 from ..layers import Entropy
-from ..layers import MonteCarloSimulation
 from ..layers import Stack
 from ..losses import build_categorical_crossentropy
 from ..losses import build_categorical_aleatoric_loss
@@ -45,44 +44,44 @@ def hybrid_tiramisu(image_shape: tuple, num_classes: int,
 
     """
     raise NotImplementedError
-    # build the base of the network
-    inputs, logits, sigma = build_tiramisu(image_shape, num_classes,
-        initial_filters=initial_filters,
-        growth_rate=growth_rate,
-        layer_sizes=layer_sizes,
-        bottleneck_size=bottleneck_size,
-        dropout=dropout,
-        split_head=True,
-    )
-    # stack the logits and sigma for aleatoric loss
-    aleatoric = Stack(name='aleatoric')([logits, sigma])
-    # pass the logits through the Softmax activation to get probabilities
-    softmax = Activation('softmax', name='softmax')(logits)
-    # build the Tiramisu model
-    tiramisu = Model(inputs=[inputs], outputs=[softmax, sigma, aleatoric])
+    # # build the base of the network
+    # inputs, logits, sigma = build_tiramisu(image_shape, num_classes,
+    #     initial_filters=initial_filters,
+    #     growth_rate=growth_rate,
+    #     layer_sizes=layer_sizes,
+    #     bottleneck_size=bottleneck_size,
+    #     dropout=dropout,
+    #     split_head=True,
+    # )
+    # # stack the logits and sigma for aleatoric loss
+    # aleatoric = Stack(name='aleatoric')([logits, sigma])
+    # # pass the logits through the Softmax activation to get probabilities
+    # softmax = Activation('softmax', name='softmax')(logits)
+    # # build the Tiramisu model
+    # tiramisu = Model(inputs=[inputs], outputs=[softmax, sigma, aleatoric])
 
-    # the inputs for the Monte Carlo integration model
-    inputs = Input(image_shape)
-    # take the mean of Tiramisu output over the number of simulations
-    mean = MonteCarloSimulation(tiramisu, epistemic_samples, name='mean')(inputs)
-    # calculate the variance as the entropy of the means
-    vari = Entropy(name='entropy')(mean)
-    # build the epistemic uncertainty model
-    model = Model(inputs=[inputs], outputs=[mean, vari])
+    # # the inputs for the Monte Carlo integration model
+    # inputs = Input(image_shape)
+    # # take the mean of Tiramisu output over the number of simulations
+    # mean = MonteCarloSimulation(tiramisu, epistemic_samples, name='mean')(inputs)
+    # # calculate the variance as the entropy of the means
+    # vari = Entropy(name='entropy')(mean)
+    # # build the epistemic uncertainty model
+    # model = Model(inputs=[inputs], outputs=[mean, vari])
 
-    # compile the model
-    model.compile(
-        optimizer=RMSprop(lr=learning_rate),
-        loss={
-            'mean': build_categorical_crossentropy(class_weights),
-            'aleatoric': build_categorical_aleatoric_loss(aleatoric_samples),
-        },
-        metrics={
-            'mean': [build_categorical_accuracy(weights=class_weights)]
-        },
-    )
+    # # compile the model
+    # model.compile(
+    #     optimizer=RMSprop(lr=learning_rate),
+    #     loss={
+    #         'mean': build_categorical_crossentropy(class_weights),
+    #         'aleatoric': build_categorical_aleatoric_loss(aleatoric_samples),
+    #     },
+    #     metrics={
+    #         'mean': [build_categorical_accuracy(weights=class_weights)]
+    #     },
+    # )
 
-    return model
+    # return model
 
 
 # explicitly define the outward facing API of this module
