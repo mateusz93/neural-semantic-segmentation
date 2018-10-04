@@ -1,6 +1,5 @@
 """Methods to get unwrapped predictions from different architectures."""
 import numpy as np
-from matplotlib import pyplot as plt
 from .utils import extract_aleatoric
 from .utils import heatmap
 
@@ -90,8 +89,6 @@ def predict_epistemic(model, generator, camvid) -> tuple:
     if isinstance(generator, np.ndarray):
         # predict mean values and variance
         y_pred, sigma2 = model.predict(generator)
-        # calculate the mean variance over the labels
-        sigma2 = plt.Normalize()(sigma2)
         # return X values, unmapped y and u values, and heat-map of sigma**2
         return generator, camvid.unmap(y_pred), heatmap(sigma2)
 
@@ -99,8 +96,6 @@ def predict_epistemic(model, generator, camvid) -> tuple:
     imgs, y_true = next(generator)
     # predict mean values and variance
     y_pred, sigma2 = model.predict(imgs)
-    # calculate the mean variance over the labels
-    sigma2 = plt.Normalize()(sigma2)
     # return X values, unmapped y and u values, and heat-map of sigma**2
     return imgs, camvid.unmap(y_true), camvid.unmap(y_pred), heatmap(sigma2)
 
@@ -126,8 +121,6 @@ def predict_hyrbid(model, generator, camvid) -> tuple:
     if isinstance(generator, np.ndarray):
         # predict mean values and variance
         y_pred, aleatoric, epistemic = model.predict(generator)
-        # calculate the mean variance over the labels
-        epistemic = plt.Normalize()(epistemic)
         # extract the aleatoric uncertainty from the tensor
         aleatoric = extract_aleatoric(aleatoric, y_pred)
         # return X values, unmapped y and u values, and heat-map of sigma**2
@@ -142,8 +135,6 @@ def predict_hyrbid(model, generator, camvid) -> tuple:
     imgs, y_true = next(generator)
     # predict mean values and variance
     y_pred, aleatoric, epistemic = model.predict(imgs)
-    # calculate the mean variance over the labels
-    epistemic = plt.Normalize()(epistemic)
     # extract the aleatoric uncertainty from the tensor
     aleatoric = extract_aleatoric(aleatoric, y_pred)
     # return X values, unmapped y and u values, and heat-map of sigma**2

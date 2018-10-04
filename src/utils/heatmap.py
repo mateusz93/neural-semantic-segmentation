@@ -3,18 +3,25 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-def heatmap(arr: np.ndarray, color_map='afmhot') -> np.ndarray:
+def heatmap(arr: np.ndarray,
+    color_map: str='afmhot',
+    normalize: bool=True,
+) -> np.ndarray:
     """
     Use the given color map to convert the input vector to a heat-map.
 
     Args:
         arr: the vector to convert to an RGB heat-map
         color_map: the color map to use
+        normalize: whether to normalize the values before using them
 
     Returns:
         arr mapped to RGB using the given color map (vector of bytes)
 
     """
+    # normalize the values if the flag is on
+    if normalize:
+        arr = plt.Normalize()(arr)
     # unwrap the color map from matplotlib
     color_map = plt.cm.get_cmap(color_map)
     # get the heat-map from the color map in RGB (i.e., omit the alpha channel)

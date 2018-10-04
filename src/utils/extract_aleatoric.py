@@ -1,9 +1,8 @@
 """A method to extract the Aleatoric uncertainty for predicted class labels."""
 import numpy as np
-from matplotlib import pyplot as plt
 
 
-def extract_aleatoric(sigma, y_pred):
+def extract_aleatoric(sigma: np.ndarray, y_pred: np.ndarray) -> np.ndarray:
     """
     Extract the Aleatoric uncertainty from sigma and predicted y outputs.
 
@@ -21,7 +20,6 @@ def extract_aleatoric(sigma, y_pred):
     # use fancy indexing to extract the value at the index of each class label
     sigma2 = np.square(sigma)
     aleatoric = sigma2[batch, height, width, np.argmax(y_pred, axis=-1)]
-    aleatoric = plt.Normalize()(aleatoric)
 
     return aleatoric
 
