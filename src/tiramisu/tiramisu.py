@@ -15,6 +15,7 @@ def tiramisu(image_shape: tuple, num_classes: int,
     bottleneck_size: int=15,
     dropout: float=0.2,
     learning_rate: float=1e-3,
+    mc_dropout=False,
 ) -> Model:
     """
     Build a Tiramisu model for the given image shape.
@@ -30,6 +31,7 @@ def tiramisu(image_shape: tuple, num_classes: int,
         bottleneck_size: the number of convolutional layers in the bottleneck
         dropout: the dropout rate to use in dropout layers
         learning_rate: the learning rate for the RMSprop optimizer
+        mc_dropout: whether to use Monte Carlo dropout at test time
 
     Returns:
         a compiled model of the Tiramisu architecture
@@ -42,6 +44,7 @@ def tiramisu(image_shape: tuple, num_classes: int,
         layer_sizes=layer_sizes,
         bottleneck_size=bottleneck_size,
         dropout=dropout,
+        mc_dropout=mc_dropout,
     )
     # pass the logits through the Softmax activation to get probabilities
     softmax = Activation('softmax', name='softmax')(logits)
