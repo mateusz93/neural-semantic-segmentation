@@ -18,7 +18,7 @@ def epi_approx_tiramisu(image_shape: tuple, num_classes: int,
     bottleneck_size: int=15,
     dropout: float=0.2,
     learning_rate: float=1e-3,
-    momentum: float=0.9,
+    momentum: float=0.75,
 ):
     """
     Build a Tiramisu model that estimates Epistemic uncertainty.
