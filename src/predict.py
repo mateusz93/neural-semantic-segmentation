@@ -1,4 +1,5 @@
 """Methods to get unwrapped predictions from different architectures."""
+import numpy as np
 from matplotlib import pyplot as plt
 from .utils import extract_aleatoric
 from .utils import heatmap
@@ -20,6 +21,12 @@ def predict(model, generator, camvid):
         - the unmapped RGB predicted values from the model
 
     """
+    if isinstance(generator, np.ndarray):
+        # get predictions from the model
+        y_pred = model.predict(generator)
+        # return a tuple of RGB pixel data
+        return imgs, camvid.unmap(y_pred)
+
     # generate a batch of data from the generator
     imgs, y_true = next(generator)
     # get predictions from the model
@@ -45,6 +52,14 @@ def predict_aleatoric(model, generator, camvid) -> tuple:
         - the heatmap RGB values of the aleatoric uncertainty
 
     """
+    if isinstance(generator, np.ndarray):
+        # predict mean values and variance
+        y_pred, sigma2, _ = model.predict(generator)
+        # extract the aleatoric uncertainty from the tensor
+        sigma2 = extract_aleatoric(sigma2, y_pred)
+        # return X values, unmapped y and u values, and heatmap of s2
+        return imgs, camvid.unmap(y_pred), heatmap(sigma2)
+
     # get the batch of data
     imgs, y_true = next(generator)
     # predict mean values and variance
@@ -52,12 +67,7 @@ def predict_aleatoric(model, generator, camvid) -> tuple:
     # extract the aleatoric uncertainty from the tensor
     sigma2 = extract_aleatoric(sigma2, y_pred)
     # return X values, unmapped y and u values, and heatmap of s2
-    return (
-        imgs,
-        camvid.unmap(y_true[0]),
-        camvid.unmap(y_pred),
-        heatmap(sigma2, 'afmhot'),
-    )
+    return imgs, camvid.unmap(y_true[0]), camvid.unmap(y_pred), heatmap(sigma2)
 
 
 def predict_epistemic(model, generator, camvid) -> tuple:
@@ -77,6 +87,14 @@ def predict_epistemic(model, generator, camvid) -> tuple:
         - the heatmap RGB values of the epistemic uncertainty
 
     """
+    if isinstance(generator, np.ndarray):
+        # predict mean values and variance
+        y_pred, sigma2 = model.predict(generator)
+        # calculate the mean variance over the labels
+        sigma2 = plt.Normalize()(sigma2)
+        # return X values, unmapped y and u values, and heat-map of sigma**2
+        return imgs, camvid.unmap(y_pred), heatmap(sigma2)
+
     # get the batch of data
     imgs, y_true = next(generator)
     # predict mean values and variance
@@ -84,12 +102,7 @@ def predict_epistemic(model, generator, camvid) -> tuple:
     # calculate the mean variance over the labels
     sigma2 = plt.Normalize()(sigma2)
     # return X values, unmapped y and u values, and heat-map of sigma**2
-    return (
-        imgs,
-        camvid.unmap(y_true),
-        camvid.unmap(y_pred),
-        heatmap(sigma2, 'afmhot'),
-    )
+    return imgs, camvid.unmap(y_true), camvid.unmap(y_pred), heatmap(sigma2)
 
 
 def predict_hyrbid(model, generator, camvid) -> tuple:
@@ -110,6 +123,21 @@ def predict_hyrbid(model, generator, camvid) -> tuple:
         - the heat-map RGB values of the aleatoric uncertainty
 
     """
+    if isinstance(generator, np.ndarray):
+        # predict mean values and variance
+        y_pred, aleatoric, epistemic = model.predict(generator)
+        # calculate the mean variance over the labels
+        epistemic = plt.Normalize()(epistemic)
+        # extract the aleatoric uncertainty from the tensor
+        aleatoric = extract_aleatoric(aleatoric, y_pred)
+        # return X values, unmapped y and u values, and heat-map of sigma**2
+        return (
+            imgs,
+            camvid.unmap(y_pred),
+            heatmap(epistemic),
+            heatmap(aleatoric),
+        )
+
     # get the batch of data
     imgs, y_true = next(generator)
     # predict mean values and variance
@@ -123,8 +151,8 @@ def predict_hyrbid(model, generator, camvid) -> tuple:
         imgs,
         camvid.unmap(y_true),
         camvid.unmap(y_pred),
-        heatmap(epistemic, 'afmhot'),
-        heatmap(aleatoric, 'afmhot'),
+        heatmap(epistemic),
+        heatmap(aleatoric),
     )
 
 
