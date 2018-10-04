@@ -57,29 +57,5 @@ def tiramisu(image_shape: tuple, num_classes: int,
     return model
 
 
-def predict(model, generator, camvid):
-    """
-    Return post-processed predictions for the given generator.
-
-    Args:
-        model: the Tiramisu model to use to predict with
-        generator: the generator to get data from
-        camvid: the CamVid instance for un-mapping target values
-
-    Returns:
-        a tuple of for NumPy tensors with RGB data:
-        - the batch of RGB X values
-        - the unmapped RGB batch of y values
-        - the unmapped RGB predicted values from the model
-
-    """
-    # generate a batch of data from the generator
-    imgs, y_true = next(generator)
-    # get predictions from the model
-    y_pred = model.predict(imgs)
-    # return a tuple of RGB pixel data
-    return imgs, camvid.unmap(y_true), camvid.unmap(y_pred)
-
-
 # explicitly define the outward facing API of this module
-__all__ = [tiramisu.__name__, predict.__name__]
+__all__ = [tiramisu.__name__]

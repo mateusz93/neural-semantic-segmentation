@@ -8,7 +8,6 @@ from ..layers import MovingAverage
 from ..losses import build_categorical_crossentropy
 from ..metrics import build_categorical_accuracy
 from ._core import build_tiramisu
-from .epistemic_tiramisu import predict
 
 
 def epi_approx_tiramisu(image_shape: tuple, num_classes: int,
@@ -77,4 +76,4 @@ def epi_approx_tiramisu(image_shape: tuple, num_classes: int,
 
 
 # explicitly define the outward facing API of this module
-__all__ = [epi_approx_tiramisu.__name__, predict.__name__]
+__all__ = [epi_approx_tiramisu.__name__]
