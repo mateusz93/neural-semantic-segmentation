@@ -19,7 +19,7 @@ def extract_aleatoric(sigma, y_pred):
     ogrid = np.ogrid[0:y_pred.shape[0], 0:y_pred.shape[1], 0:y_pred.shape[2]]
     batch, height, width = ogrid
     # use fancy indexing to extract the value at the index of each class label
-    aleatoric = sigma[batch, height, width, np.argmax(y_pred, axis=-1)]
+    aleatoric = sigma[batch, height, width, np.argmax(y_pred, axis=-1)]**2
     aleatoric = plt.Normalize()(aleatoric)
 
     return aleatoric
