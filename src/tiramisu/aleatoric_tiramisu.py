@@ -18,6 +18,8 @@ def aleatoric_tiramisu(image_shape: tuple, num_classes: int,
     dropout: float=0.2,
     learning_rate: float=1e-3,
     samples: int=50,
+    weights_file: str=None,
+    freeze_weights: bool=True,
 ):
     """
     Build a Tiramisu model that computes Aleatoric uncertainty.
@@ -53,10 +55,34 @@ def aleatoric_tiramisu(image_shape: tuple, num_classes: int,
     # pass the logits through the Softmax activation to get probabilities
     softmax = Activation('softmax', name='softmax')(logits)
     # build the Tiramisu model
-    tiramisu = Model(inputs=[inputs], outputs=[softmax, sigma, aleatoric])
+    model = Model(inputs=[inputs], outputs=[softmax, sigma, aleatoric])
+
+    # if the weights file is not none, load the weights and transfer
+    if weights_file is not None:
+        from .tiramisu import tiramisu
+        # load the Tiramisu model to load from
+        transfer = tiramisu(image_shape, num_classes
+            initial_filters=initial_filters,
+            growth_rate=growth_rate,
+            layer_sizes=layer_sizes,
+            bottleneck_size=bottleneck_size,
+            dropout=dropout,
+            learning_rate=learning_rate
+        )
+        transfer.load_weights(weights_file)
+        # the layers that have weights
+        is_weighted = lambda x: x.__class__.__name__ in {'Conv2D', 'BatchNormalization'}
+        # get the layers in the model
+        layers = [l for l in model.layers if is_weighted(l)]
+        # get the layers in the transfer mode
+        transfer_layers = [l for l in transfer.layers if is_weighted(l)]
+        # iterate over the layers in the original tiramisu network to transfer
+        for idx, layer in enumerate(transfer_layers):
+            layers[idx].set_weights(layer.get_weights())
+            layers[idx].trainable = not freeze_weights
 
     # compile the model
-    tiramisu.compile(
+    model.compile(
         optimizer=RMSprop(lr=learning_rate),
         loss={
             'softmax': build_categorical_crossentropy(class_weights),
@@ -65,7 +91,7 @@ def aleatoric_tiramisu(image_shape: tuple, num_classes: int,
         metrics={'softmax': [build_categorical_accuracy(weights=class_weights)]},
     )
 
-    return tiramisu
+    return model
 
 
 # explicitly define the outward facing API of this module
