@@ -25,7 +25,7 @@ def predict(model, generator, camvid):
         # get predictions from the model
         y_pred = model.predict(generator)
         # return a tuple of RGB pixel data
-        return imgs, camvid.unmap(y_pred)
+        return generator, camvid.unmap(y_pred)
 
     # generate a batch of data from the generator
     imgs, y_true = next(generator)
@@ -49,7 +49,7 @@ def predict_aleatoric(model, generator, camvid) -> tuple:
         - the batch of RGB X values
         - the unmapped RGB batch of y values
         - the unmapped RGB predicted values from the model
-        - the heatmap RGB values of the aleatoric uncertainty
+        - the heat-map RGB values of the aleatoric uncertainty
 
     """
     if isinstance(generator, np.ndarray):
@@ -57,8 +57,8 @@ def predict_aleatoric(model, generator, camvid) -> tuple:
         y_pred, sigma2, _ = model.predict(generator)
         # extract the aleatoric uncertainty from the tensor
         sigma2 = extract_aleatoric(sigma2, y_pred)
-        # return X values, unmapped y and u values, and heatmap of s2
-        return imgs, camvid.unmap(y_pred), heatmap(sigma2)
+        # return X values, unmapped y and u values, and heat-map of s2
+        return generator, camvid.unmap(y_pred), heatmap(sigma2)
 
     # get the batch of data
     imgs, y_true = next(generator)
@@ -66,7 +66,7 @@ def predict_aleatoric(model, generator, camvid) -> tuple:
     y_pred, sigma2, _ = model.predict(imgs)
     # extract the aleatoric uncertainty from the tensor
     sigma2 = extract_aleatoric(sigma2, y_pred)
-    # return X values, unmapped y and u values, and heatmap of s2
+    # return X values, unmapped y and u values, and heat-map of s2
     return imgs, camvid.unmap(y_true[0]), camvid.unmap(y_pred), heatmap(sigma2)
 
 
@@ -84,7 +84,7 @@ def predict_epistemic(model, generator, camvid) -> tuple:
         - the batch of RGB X values
         - the unmapped RGB batch of y values
         - the unmapped RGB predicted mean values from the model
-        - the heatmap RGB values of the epistemic uncertainty
+        - the heat-map RGB values of the epistemic uncertainty
 
     """
     if isinstance(generator, np.ndarray):
@@ -93,7 +93,7 @@ def predict_epistemic(model, generator, camvid) -> tuple:
         # calculate the mean variance over the labels
         sigma2 = plt.Normalize()(sigma2)
         # return X values, unmapped y and u values, and heat-map of sigma**2
-        return imgs, camvid.unmap(y_pred), heatmap(sigma2)
+        return generator, camvid.unmap(y_pred), heatmap(sigma2)
 
     # get the batch of data
     imgs, y_true = next(generator)
@@ -132,7 +132,7 @@ def predict_hyrbid(model, generator, camvid) -> tuple:
         aleatoric = extract_aleatoric(aleatoric, y_pred)
         # return X values, unmapped y and u values, and heat-map of sigma**2
         return (
-            imgs,
+            generator,
             camvid.unmap(y_pred),
             heatmap(epistemic),
             heatmap(aleatoric),
