@@ -128,7 +128,7 @@ def _transfer_vgg16_encoder(model: Model) -> None:
         model_conv[idx].set_weights(layer.get_weights())
 
 
-def build_segnet(image_shape: tuple, num_classes: int,
+def segnet(image_shape: tuple, num_classes: int,
     class_weights=None,
     lcn: bool=True,
     dropout_rate: float=None,
@@ -206,4 +206,4 @@ def build_segnet(image_shape: tuple, num_classes: int,
 
 
 # explicitly define the outward facing API of this module
-__all__ = [build_segnet.__name__]
+__all__ = [segnet.__name__]
