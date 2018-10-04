@@ -31,14 +31,13 @@ def evaluate(model, generator, steps: int,
     # iterate over the number of steps to generate data
     for step in tqdm(range(steps), unit='step'):
         # get the batch of data from the generator
-        imgs, y_true[step] = next(generator)
+        imgs, true = next(generator)
+        # if true is a tuple or list, take the first target value
+        y_true[step] = true[0] if isinstance(true, (tuple, list)) else true
         # get predictions from the network
         pred = model.predict(imgs)
-        # if pred is a tuple, take the first network output
-        if isinstance(pred, tuple):
-            pred = pred[0]
-        # store the prediction
-        y_pred[step] = pred
+        # if pred is a tuple or list, take the first network output
+        y_pred[step] = pred[0] if isinstance(pred, (tuple, list)) else pred
     # convert the batch of targets to a NumPy tensor
     y_true = np.array(y_true)
     y_pred = np.array(y_pred)
