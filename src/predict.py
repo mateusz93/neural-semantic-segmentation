@@ -54,18 +54,18 @@ def predict_aleatoric(model, generator, camvid) -> tuple:
     """
     if isinstance(generator, np.ndarray):
         # predict mean values and variance
-        y_pred, sigma2, _ = model.predict(generator)
+        y_pred, sigma, _ = model.predict(generator)
         # extract the aleatoric uncertainty from the tensor
-        sigma2 = extract_aleatoric(sigma2, y_pred)
+        sigma2 = extract_aleatoric(sigma, y_pred)
         # return X values, unmapped y and u values, and heat-map of s2
         return generator, camvid.unmap(y_pred), heatmap(sigma2)
 
     # get the batch of data
     imgs, y_true = next(generator)
     # predict mean values and variance
-    y_pred, sigma2, _ = model.predict(imgs)
+    y_pred, sigma, _ = model.predict(imgs)
     # extract the aleatoric uncertainty from the tensor
-    sigma2 = extract_aleatoric(sigma2, y_pred)
+    sigma2 = extract_aleatoric(sigma, y_pred)
     # return X values, unmapped y and u values, and heat-map of s2
     return imgs, camvid.unmap(y_true[0]), camvid.unmap(y_pred), heatmap(sigma2)
 
