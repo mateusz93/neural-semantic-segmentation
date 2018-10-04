@@ -61,7 +61,7 @@ def aleatoric_tiramisu(image_shape: tuple, num_classes: int,
     if weights_file is not None:
         from .tiramisu import tiramisu
         # load the Tiramisu model to load from
-        transfer = tiramisu(image_shape, num_classes
+        transfer = tiramisu(image_shape, num_classes,
             initial_filters=initial_filters,
             growth_rate=growth_rate,
             layer_sizes=layer_sizes,
