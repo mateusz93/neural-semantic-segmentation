@@ -4,8 +4,8 @@ Implementations of neural network papers for semantic segmentation using Keras
 and TensorFlow.
 
 <p align="center">
-  <b>Figure 1:</b> Predictions from Epistemic Tiramisu on CamVid video stream.
-  <img alt="Segmentation Demonstration" src="camvid/01TP_extract_pred.gif" width="100%" />
+  Predictions from Tiramisu on CamVid video stream.
+  <img alt="Segmentation Demonstration" src="img/tiramisu/0005VD.gif" width="100%" />
 </p>
 
 ## Installation
