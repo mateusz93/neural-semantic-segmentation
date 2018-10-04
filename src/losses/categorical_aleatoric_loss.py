@@ -50,7 +50,7 @@ def build_categorical_aleatoric_loss(samples):
         # something like `K.log(K.sum(K.exp(...)) / T)`
         loss = K.logsumexp(simulations, axis=-1) - K.log(float(samples))
         # return the sum over the loss for each pixel i
-        return K.mean(loss)
+        return K.sum(loss)
 
     return categorical_aleatoric_loss
 
