@@ -37,6 +37,11 @@ class MonteCarlo(object):
         if self.uncertainty not in {'var', 'entropy'}:
             raise ValueError('uncertainty must be either "var" or "entropy"')
 
+    @property
+    def input_shape(self):
+        """Return the input shape of the model for this Monte Carlo."""
+        return self.model.input_shape
+
     def predict(self, X: np.ndarray) -> np.ndarray:
         """
         Return mean target and output variance for given inputs.
