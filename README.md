@@ -73,20 +73,20 @@ The following table outlines the testing results from SegNet.
 
 | Metric                  |    Value |
 |:------------------------|---------:|
-| Accuracy                | 0.889125 |
-| Mean Per Class Accuracy | 0.681254 |
-| Mean I/U                | 0.565375 |
-| Bicyclist               | 0.404283 |
-| Building                | 0.741864 |
-| Car                     | 0.65399  |
-| Column/Pole             | 0.228868 |
-| Fence                   | 0.353242 |
-| Pedestrian              | 0.414915 |
-| Road                    | 0.899917 |
-| Sidewalk                | 0.761276 |
-| Sign                    | 0.181454 |
-| Sky                     | 0.886353 |
-| Vegetation              | 0.692969 |
+| Accuracy                | 0.885892 |
+| Mean Per Class Accuracy | 0.725983 |
+| Mean I/U                | 0.565462 |
+| Bicyclist               | 0.424479 |
+| Building                | 0.735429 |
+| Car                     | 0.685271 |
+| Column_Pole             | 0.253229 |
+| Fence                   | 0.317258 |
+| Pedestrian              | 0.372688 |
+| Road                    | 0.905312 |
+| Sidewalk                | 0.772007 |
+| SignSymbol              | 0.180342 |
+| Sky                     | 0.889403 |
+| VegetationMisc          | 0.684661 |
 
 ### Qualitative Results
 
@@ -143,20 +143,20 @@ The following table outlines the testing results from Bayesian SegNet.
 
 | Metric                  |    Value |
 |:------------------------|---------:|
-| Accuracy                | 0.868504 |
-| Mean Per Class Accuracy | 0.768151 |
-| Mean I/U                | 0.552435 |
-| Bicyclist               | 0.373514 |
-| Building                | 0.704571 |
-| Car                     | 0.673924 |
-| Column/Pole             | 0.215869 |
-| Fence                   | 0.380968 |
-| Pedestrian              | 0.342802 |
-| Road                    | 0.887177 |
-| Sidewalk                | 0.726655 |
-| Sign                    | 0.188998 |
-| Sky                     | 0.888031 |
-| Vegetation              | 0.694272 |
+| Accuracy                | 0.868758 |
+| Mean Per Class Accuracy | 0.767013 |
+| Mean I/U                | 0.550385 |
+| Bicyclist               | 0.369756 |
+| Building                | 0.709912 |
+| Car                     | 0.675461 |
+| Column_Pole             | 0.20731  |
+| Fence                   | 0.394083 |
+| Pedestrian              | 0.326561 |
+| Road                    | 0.885637 |
+| Sidewalk                | 0.72415  |
+| SignSymbol              | 0.174897 |
+| Sky                     | 0.886314 |
+| VegetationMisc          | 0.700158 |
 
 ### Qualitative Results
 
@@ -218,20 +218,20 @@ The following table outlines the testing results from 103 Layers Tiramisu.
 
 | Metric                  |    Value |
 |:------------------------|---------:|
-| Accuracy                | 0.893861 |
-| Mean Per Class Accuracy | 0.711902 |
-| Mean I/U                | 0.551638 |
-| Bicyclist               | 0.283309 |
-| Building                | 0.750968 |
-| Car                     | 0.628742 |
-| Column/Pole             | 0.298966 |
-| Fence                   | 0.179862 |
-| Pedestrian              | 0.390952 |
-| Road                    | 0.912307 |
-| Sidewalk                | 0.797389 |
-| Sign                    | 0.209731 |
-| Sky                     | 0.916814 |
-| Vegetation              | 0.698974 |
+| Accuracy                | 0.901727 |
+| Mean Per Class Accuracy | 0.685065 |
+| Mean I/U                | 0.567453 |
+| Bicyclist               | 0.332004 |
+| Building                | 0.770349 |
+| Car                     | 0.668687 |
+| Column_Pole             | 0.257645 |
+| Fence                   | 0.247566 |
+| Pedestrian              | 0.429406 |
+| Road                    | 0.901876 |
+| Sidewalk                | 0.769319 |
+| SignSymbol              | 0.22198  |
+| Sky                     | 0.921203 |
+| VegetationMisc          | 0.721953 |
 
 ### Qualitative Results
 
@@ -311,6 +311,8 @@ The quantitative results are the same as the standard Tiramisu model.
 #### Quantitative Results
 
 The following table outlines the testing results from Epistemic Tiramisu.
+
+<!-- TODO: update with new values -->
 
 | Metric                  |    Value |
 |:------------------------|---------:|
