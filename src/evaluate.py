@@ -1,4 +1,4 @@
-"""Methods to evaluate models using NumPy metrics."""
+"""A Method to evaluate segmentation models using NumPy metrics."""
 import numpy as np
 import pandas as pd
 from tqdm import tqdm

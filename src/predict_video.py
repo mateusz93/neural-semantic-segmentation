@@ -1,4 +1,4 @@
-"""A script to predict a video of frames using Epistemic Tiramisu."""
+"""A method to predict a video of frames using segmentation models."""
 import imageio
 import numpy as np
 from tqdm import tqdm

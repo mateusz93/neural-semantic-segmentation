@@ -14,7 +14,6 @@ def confusion_matrix(y_true, y_pred, num_classes=None):
         y_pred: the predicted labels
         num_classes: the optional number of classes. if not provided, the
                      labels are assumed to be in [0, max]
-
     Returns:
         a confusion matrix computed based on y_true and y_pred
 

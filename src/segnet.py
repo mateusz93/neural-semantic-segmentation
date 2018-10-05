@@ -1,4 +1,4 @@
-"""An implementation of SegNet (and Bayesian improvement)."""
+"""An implementation of SegNet (and Bayesian alternative)."""
 from keras.applications.vgg16 import VGG16
 from keras.layers import Activation
 from keras.layers import BatchNormalization

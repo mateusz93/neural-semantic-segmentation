@@ -37,7 +37,7 @@ dataset.
 <details>
 <summary>SegNet</summary>
 
-## [SegNet][Badrinarayanan et al. (2015)]
+## [SegNet][Badrinarayanan et al. 2015]
 
 <table>
   <tr>
@@ -62,10 +62,10 @@ The following table describes training hyperparameters.
     -   original paper uses a static statistics computed over the training data
 -   encoder transfer learning from VGG16 trained on ImageNet
 -   best model in terms of validation accuracy is kept as final model
--   median frequency balancing of class labels ([Eigen et al. (2014)][])
+-   median frequency balancing of class labels ([Eigen et al. 2014][])
     -   weighted categorical cross-entropy loss function
--   local contrast normalization of inputs ([Jarrett et al. (2009)][])
--   pooling indexes ([Badrinarayanan et al. (2015)][])
+-   local contrast normalization of inputs ([Jarrett et al. 2009][])
+-   pooling indexes ([Badrinarayanan et al. 2015][])
 
 ### Quantitative Results
 
@@ -73,20 +73,20 @@ The following table outlines the testing results from SegNet.
 
 | Metric                  |    Value |
 |:------------------------|---------:|
-| Accuracy                | 0.889125 |
-| Mean Per Class Accuracy | 0.681254 |
-| Mean I/U                | 0.565375 |
-| Bicyclist               | 0.404283 |
-| Building                | 0.741864 |
-| Car                     | 0.65399  |
-| Column/Pole             | 0.228868 |
-| Fence                   | 0.353242 |
-| Pedestrian              | 0.414915 |
-| Road                    | 0.899917 |
-| Sidewalk                | 0.761276 |
-| Sign                    | 0.181454 |
-| Sky                     | 0.886353 |
-| Vegetation              | 0.692969 |
+| Accuracy                | 0.885892 |
+| Mean Per Class Accuracy | 0.725983 |
+| Mean I/U                | 0.565462 |
+| Bicyclist               | 0.424479 |
+| Building                | 0.735429 |
+| Car                     | 0.685271 |
+| Column/Pole             | 0.253229 |
+| Fence                   | 0.317258 |
+| Pedestrian              | 0.372688 |
+| Road                    | 0.905312 |
+| Sidewalk                | 0.772007 |
+| Sign                    | 0.180342 |
+| Sky                     | 0.889403 |
+| Vegetation              | 0.684661 |
 
 ### Qualitative Results
 
@@ -114,7 +114,7 @@ The following table outlines the testing results from SegNet.
 <details>
 <summary>Bayesian SegNet</summary>
 
-## [Bayesian SegNet][Kendall et al. (2015)]
+## [Bayesian SegNet][Kendall et al. 2015]
 
 ![Bayesian SegNet](img/bayesian-segnet/model.png)
 
@@ -132,10 +132,10 @@ The following table describes training hyperparameters.
     -   note that VGG16 does not have any dropout by default; transfer from a
         Bayesian VGG16 model could improve results
 -   best model in terms of validation accuracy is kept as final model
--   median frequency balancing of class labels ([Eigen et al. (2014)][])
+-   median frequency balancing of class labels ([Eigen et al. 2014][])
     -   weighted categorical cross-entropy loss function
--   local contrast normalization of inputs ([Jarrett et al. (2009)][])
--   pooling indexes ([Badrinarayanan et al. (2015)][])
+-   local contrast normalization of inputs ([Jarrett et al. 2009][])
+-   pooling indexes ([Badrinarayanan et al. 2015][])
 
 ### Quantitative Results
 
@@ -143,20 +143,20 @@ The following table outlines the testing results from Bayesian SegNet.
 
 | Metric                  |    Value |
 |:------------------------|---------:|
-| Accuracy                | 0.868504 |
-| Mean Per Class Accuracy | 0.768151 |
-| Mean I/U                | 0.552435 |
-| Bicyclist               | 0.373514 |
-| Building                | 0.704571 |
-| Car                     | 0.673924 |
-| Column/Pole             | 0.215869 |
-| Fence                   | 0.380968 |
-| Pedestrian              | 0.342802 |
-| Road                    | 0.887177 |
-| Sidewalk                | 0.726655 |
-| Sign                    | 0.188998 |
-| Sky                     | 0.888031 |
-| Vegetation              | 0.694272 |
+| Accuracy                | 0.868758 |
+| Mean Per Class Accuracy | 0.767013 |
+| Mean I/U                | 0.550385 |
+| Bicyclist               | 0.369756 |
+| Building                | 0.709912 |
+| Car                     | 0.675461 |
+| Column/Pole             | 0.20731  |
+| Fence                   | 0.394083 |
+| Pedestrian              | 0.326561 |
+| Road                    | 0.885637 |
+| Sidewalk                | 0.72415  |
+| Sign                    | 0.174897 |
+| Sky                     | 0.886314 |
+| Vegetation              | 0.700158 |
 
 ### Qualitative Results
 
@@ -184,7 +184,7 @@ The following table outlines the testing results from Bayesian SegNet.
 <details>
 <summary>The One Hundred Layers Tiramisu</summary>
 
-## [The One Hundred Layers Tiramisu][Jégou et al. (2016)]
+## [The One Hundred Layers Tiramisu][Jégou et al. 2016]
 
 <table>
   <tr>
@@ -210,7 +210,7 @@ The following table describes training hyperparameters.
         vertical anyway and produces empirically better test results
 -   batch normalization statistics computed _per batch_ during training,
     validation, and testing
--   skip connections between encoder and decoder ([Jégou et al. (2016)][])
+-   skip connections between encoder and decoder ([Jégou et al. 2016][])
 
 ### Quantitative Results
 
@@ -218,20 +218,20 @@ The following table outlines the testing results from 103 Layers Tiramisu.
 
 | Metric                  |    Value |
 |:------------------------|---------:|
-| Accuracy                | 0.893861 |
-| Mean Per Class Accuracy | 0.711902 |
-| Mean I/U                | 0.551638 |
-| Bicyclist               | 0.283309 |
-| Building                | 0.750968 |
-| Car                     | 0.628742 |
-| Column/Pole             | 0.298966 |
-| Fence                   | 0.179862 |
-| Pedestrian              | 0.390952 |
-| Road                    | 0.912307 |
-| Sidewalk                | 0.797389 |
-| Sign                    | 0.209731 |
-| Sky                     | 0.916814 |
-| Vegetation              | 0.698974 |
+| Accuracy                | 0.901727 |
+| Mean Per Class Accuracy | 0.685065 |
+| Mean I/U                | 0.567453 |
+| Bicyclist               | 0.332004 |
+| Building                | 0.770349 |
+| Car                     | 0.668687 |
+| Column/Pole             | 0.257645 |
+| Fence                   | 0.247566 |
+| Pedestrian              | 0.429406 |
+| Road                    | 0.901876 |
+| Sidewalk                | 0.769319 |
+| Sign                    | 0.22198  |
+| Sky                     | 0.921203 |
+| Vegetation              | 0.721953 |
 
 ### Qualitative Results
 
@@ -259,11 +259,11 @@ The following table outlines the testing results from 103 Layers Tiramisu.
 <details>
 <summary>Bayesian The One Hundred Layers Tiramisu</summary>
 
-## [Bayesian Tiramisu][Kendall et al. (2017)]
+## [Bayesian Tiramisu][Kendall et al. 2017]
 
 ### Aleatoric Uncertainty
 
-![Aleatoric Tiramisu](img/bayesian-tiramisu/model.png)
+![Aleatoric Tiramisu](img/bayesian-tiramisu/aleatoric/arch.png)
 
 The following table describes training hyperparameters.
 
@@ -273,7 +273,7 @@ The following table describes training hyperparameters.
 
 -   network split to predict targets and loss attenuation
     -   custom loss function to train the second head of the network
-        ([Kendall et al. (2017)][])
+        ([Kendall et al. 2017][])
     -   our loss function samples _through the Softmax function_ like their
         paper says (but contrary to the mathematics they present?). without
         applying the Softmax function, the loss is unstable and goes negative
@@ -312,22 +312,22 @@ The quantitative results are the same as the standard Tiramisu model.
 
 The following table outlines the testing results from Epistemic Tiramisu.
 
-| Metric                  |    Value |
-|:------------------------|---------:|
-| Accuracy                | 0.906531 |
-| Mean Per Class Accuracy | 0.696133 |
-| Mean I/U                | 0.573954 |
-| Bicyclist               | 0.361406 |
-| Building                | 0.773772 |
-| Car                     | 0.660941 |
-| Column/Pole             | 0.288474 |
-| Fence                   | 0.188135 |
-| Pedestrian              | 0.444522 |
-| Road                    | 0.914459 |
-| Sidewalk                | 0.804674 |
-| Sign                    | 0.226198 |
-| Sky                     | 0.923827 |
-| Vegetation              | 0.727091 |
+| Metric                  |     Value |
+|:------------------------|----------:|
+| Accuracy                | 0.873417  |
+| Mean Per Class Accuracy | 0.544427  |
+| Mean I/U                | 0.466235  |
+| Bicyclist               | 0.196561  |
+| Building                | 0.732981  |
+| Car                     | 0.529297  |
+| Column/Pole             | 0.0714451 |
+| Fence                   | 0.121101  |
+| Pedestrian              | 0.290276  |
+| Road                    | 0.866332  |
+| Sidewalk                | 0.668693  |
+| Sign                    | 0.0658379 |
+| Sky                     | 0.90435   |
+| Vegetation              | 0.68171   |
 
 #### Qualitative Results
 
@@ -361,7 +361,15 @@ The following box plot describes the mean and standard deviation in wall clock
 time execution of different segmentation models performing inference on images
 of size 352 x 480 pixels.
 
-![Wall Clock Inference Times](img/inference-time.png)
+![Wall Clock Inference Times (Deterministic Inference)](img/inference-time.png)
+
+The following box plot describes the mean and standard deviation in wall clock
+time execution of different Bayesian segmentation models performing inference
+on images of size 352 x 480 pixels. Note that in this case, inference is
+probabilistic due to the test time dropout and Monte Carlo simulation over 50
+network samples.
+
+![Wall Clock Inference Times (Monte Carlo Dropout)](img/inference-time-mc-dropout.png)
 
 </details>
 
@@ -369,21 +377,21 @@ of size 352 x 480 pixels.
 
 # References
 
-[Badrinarayanan V, Kendall A, Cipolla R (2015) SegNet: A Deep Convolutional Encoder-Decoder Architec- ture for Image Segmentation. ArXiv e-prints.][Badrinarayanan et al. (2015)]
+[Badrinarayanan V, Kendall A, Cipolla R (2015) SegNet: A Deep Convolutional Encoder-Decoder Architec- ture for Image Segmentation. ArXiv e-prints.][Badrinarayanan et al. 2015]
 
-[Eigen D, Fergus R (2014) Predicting Depth, Surface Normals and Semantic Labels with a Common Multi- Scale Convolutional Architecture. ArXiv e-prints.][Eigen et al. (2014)]
+[Eigen D, Fergus R (2014) Predicting Depth, Surface Normals and Semantic Labels with a Common Multi- Scale Convolutional Architecture. ArXiv e-prints.][Eigen et al. 2014]
 
-[Jarrett K, Kavukcuoglu K, Ranzato M, LeCun Y (2009) What is the best multi-stage architecture for object recognition? 2009 IEEE 12th International Conference on Computer Vision, 2146–2153.][Jarrett et al. (2009)]
+[Jarrett K, Kavukcuoglu K, Ranzato M, LeCun Y (2009) What is the best multi-stage architecture for object recognition? 2009 IEEE 12th International Conference on Computer Vision, 2146–2153.][Jarrett et al. 2009]
 
-[Jégou S, Drozdzal M, Vazquez D, Romero A, Bengio Y (2016) The One Hundred Layers Tiramisu: Fully Convolutional DenseNets for Semantic Segmentation. ArXiv e-prints.][Jégou et al. (2016)]
+[Jégou S, Drozdzal M, Vazquez D, Romero A, Bengio Y (2016) The One Hundred Layers Tiramisu: Fully Convolutional DenseNets for Semantic Segmentation. ArXiv e-prints.][Jégou et al. 2016]
 
-[Kendall A, Badrinarayanan V, Cipolla R (2015) Bayesian SegNet: Model Uncertainty in Deep Convolutional Encoder-Decoder Architectures for Scene Understanding. ArXiv e-prints.][Kendall et al. (2015)]
+[Kendall A, Badrinarayanan V, Cipolla R (2015) Bayesian SegNet: Model Uncertainty in Deep Convolutional Encoder-Decoder Architectures for Scene Understanding. ArXiv e-prints.][Kendall et al. 2015]
 
-[Kendall A, Gal Y (2017) What Uncertainties Do We Need in Bayesian Deep Learning for Computer Vision? ArXiv e-prints.][Kendall et al. (2017)]
+[Kendall A, Gal Y (2017) What Uncertainties Do We Need in Bayesian Deep Learning for Computer Vision? ArXiv e-prints.][Kendall et al. 2017]
 
-[Badrinarayanan et al. (2015)]: https://arxiv.org/abs/1511.00561
-[Eigen et al. (2014)]: https://arxiv.org/abs/1411.4734
-[Jarrett et al. (2009)]: https://ieeexplore.ieee.org/document/5459469
-[Jégou et al. (2016)]: https://arxiv.org/abs/1611.09326
-[Kendall et al. (2015)]: https://arxiv.org/abs/1511.02680
-[Kendall et al. (2017)]: https://arxiv.org/abs/1703.04977
+[Badrinarayanan et al. 2015]: https://arxiv.org/abs/1511.00561
+[Eigen et al. 2014]: https://arxiv.org/abs/1411.4734
+[Jarrett et al. 2009]: https://ieeexplore.ieee.org/document/5459469
+[Jégou et al. 2016]: https://arxiv.org/abs/1611.09326
+[Kendall et al. 2015]: https://arxiv.org/abs/1511.02680
+[Kendall et al. 2017]: https://arxiv.org/abs/1703.04977
