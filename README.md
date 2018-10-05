@@ -312,24 +312,22 @@ The quantitative results are the same as the standard Tiramisu model.
 
 The following table outlines the testing results from Epistemic Tiramisu.
 
-<!-- TODO: update with new values -->
-
-| Metric                  |    Value |
-|:------------------------|---------:|
-| Accuracy                | 0.906531 |
-| Mean Per Class Accuracy | 0.696133 |
-| Mean I/U                | 0.573954 |
-| Bicyclist               | 0.361406 |
-| Building                | 0.773772 |
-| Car                     | 0.660941 |
-| Column/Pole             | 0.288474 |
-| Fence                   | 0.188135 |
-| Pedestrian              | 0.444522 |
-| Road                    | 0.914459 |
-| Sidewalk                | 0.804674 |
-| Sign                    | 0.226198 |
-| Sky                     | 0.923827 |
-| Vegetation              | 0.727091 |
+| Metric                  |     Value |
+|:------------------------|----------:|
+| Accuracy                | 0.873417  |
+| Mean Per Class Accuracy | 0.544427  |
+| Mean I/U                | 0.466235  |
+| Bicyclist               | 0.196561  |
+| Building                | 0.732981  |
+| Car                     | 0.529297  |
+| Column_Pole             | 0.0714451 |
+| Fence                   | 0.121101  |
+| Pedestrian              | 0.290276  |
+| Road                    | 0.866332  |
+| Sidewalk                | 0.668693  |
+| SignSymbol              | 0.0658379 |
+| Sky                     | 0.90435   |
+| VegetationMisc          | 0.68171   |
 
 #### Qualitative Results
 
