@@ -37,7 +37,7 @@ dataset.
 <details>
 <summary>SegNet</summary>
 
-## [SegNet][Badrinarayanan et al. (2015)]
+## [SegNet][Badrinarayanan et al. 2015]
 
 <table>
   <tr>
@@ -62,10 +62,10 @@ The following table describes training hyperparameters.
     -   original paper uses a static statistics computed over the training data
 -   encoder transfer learning from VGG16 trained on ImageNet
 -   best model in terms of validation accuracy is kept as final model
--   median frequency balancing of class labels ([Eigen et al. (2014)][])
+-   median frequency balancing of class labels ([Eigen et al. 2014][])
     -   weighted categorical cross-entropy loss function
--   local contrast normalization of inputs ([Jarrett et al. (2009)][])
--   pooling indexes ([Badrinarayanan et al. (2015)][])
+-   local contrast normalization of inputs ([Jarrett et al. 2009][])
+-   pooling indexes ([Badrinarayanan et al. 2015][])
 
 ### Quantitative Results
 
@@ -114,7 +114,7 @@ The following table outlines the testing results from SegNet.
 <details>
 <summary>Bayesian SegNet</summary>
 
-## [Bayesian SegNet][Kendall et al. (2015)]
+## [Bayesian SegNet][Kendall et al. 2015]
 
 ![Bayesian SegNet](img/bayesian-segnet/model.png)
 
@@ -132,10 +132,10 @@ The following table describes training hyperparameters.
     -   note that VGG16 does not have any dropout by default; transfer from a
         Bayesian VGG16 model could improve results
 -   best model in terms of validation accuracy is kept as final model
--   median frequency balancing of class labels ([Eigen et al. (2014)][])
+-   median frequency balancing of class labels ([Eigen et al. 2014][])
     -   weighted categorical cross-entropy loss function
--   local contrast normalization of inputs ([Jarrett et al. (2009)][])
--   pooling indexes ([Badrinarayanan et al. (2015)][])
+-   local contrast normalization of inputs ([Jarrett et al. 2009][])
+-   pooling indexes ([Badrinarayanan et al. 2015][])
 
 ### Quantitative Results
 
@@ -184,7 +184,7 @@ The following table outlines the testing results from Bayesian SegNet.
 <details>
 <summary>The One Hundred Layers Tiramisu</summary>
 
-## [The One Hundred Layers Tiramisu][Jégou et al. (2016)]
+## [The One Hundred Layers Tiramisu][Jégou et al. 2016]
 
 <table>
   <tr>
@@ -210,7 +210,7 @@ The following table describes training hyperparameters.
         vertical anyway and produces empirically better test results
 -   batch normalization statistics computed _per batch_ during training,
     validation, and testing
--   skip connections between encoder and decoder ([Jégou et al. (2016)][])
+-   skip connections between encoder and decoder ([Jégou et al. 2016][])
 
 ### Quantitative Results
 
@@ -259,11 +259,11 @@ The following table outlines the testing results from 103 Layers Tiramisu.
 <details>
 <summary>Bayesian The One Hundred Layers Tiramisu</summary>
 
-## [Bayesian Tiramisu][Kendall et al. (2017)]
+## [Bayesian Tiramisu][Kendall et al. 2017]
 
 ### Aleatoric Uncertainty
 
-![Aleatoric Tiramisu](img/bayesian-tiramisu/model.png)
+![Aleatoric Tiramisu](img/bayesian-tiramisu/aleatoric/arch.png)
 
 The following table describes training hyperparameters.
 
@@ -273,7 +273,7 @@ The following table describes training hyperparameters.
 
 -   network split to predict targets and loss attenuation
     -   custom loss function to train the second head of the network
-        ([Kendall et al. (2017)][])
+        ([Kendall et al. 2017][])
     -   our loss function samples _through the Softmax function_ like their
         paper says (but contrary to the mathematics they present?). without
         applying the Softmax function, the loss is unstable and goes negative
@@ -377,21 +377,21 @@ network samples.
 
 # References
 
-[Badrinarayanan V, Kendall A, Cipolla R (2015) SegNet: A Deep Convolutional Encoder-Decoder Architec- ture for Image Segmentation. ArXiv e-prints.][Badrinarayanan et al. (2015)]
+[Badrinarayanan V, Kendall A, Cipolla R (2015) SegNet: A Deep Convolutional Encoder-Decoder Architec- ture for Image Segmentation. ArXiv e-prints.][Badrinarayanan et al. 2015]
 
-[Eigen D, Fergus R (2014) Predicting Depth, Surface Normals and Semantic Labels with a Common Multi- Scale Convolutional Architecture. ArXiv e-prints.][Eigen et al. (2014)]
+[Eigen D, Fergus R (2014) Predicting Depth, Surface Normals and Semantic Labels with a Common Multi- Scale Convolutional Architecture. ArXiv e-prints.][Eigen et al. 2014]
 
-[Jarrett K, Kavukcuoglu K, Ranzato M, LeCun Y (2009) What is the best multi-stage architecture for object recognition? 2009 IEEE 12th International Conference on Computer Vision, 2146–2153.][Jarrett et al. (2009)]
+[Jarrett K, Kavukcuoglu K, Ranzato M, LeCun Y (2009) What is the best multi-stage architecture for object recognition? 2009 IEEE 12th International Conference on Computer Vision, 2146–2153.][Jarrett et al. 2009]
 
-[Jégou S, Drozdzal M, Vazquez D, Romero A, Bengio Y (2016) The One Hundred Layers Tiramisu: Fully Convolutional DenseNets for Semantic Segmentation. ArXiv e-prints.][Jégou et al. (2016)]
+[Jégou S, Drozdzal M, Vazquez D, Romero A, Bengio Y (2016) The One Hundred Layers Tiramisu: Fully Convolutional DenseNets for Semantic Segmentation. ArXiv e-prints.][Jégou et al. 2016]
 
-[Kendall A, Badrinarayanan V, Cipolla R (2015) Bayesian SegNet: Model Uncertainty in Deep Convolutional Encoder-Decoder Architectures for Scene Understanding. ArXiv e-prints.][Kendall et al. (2015)]
+[Kendall A, Badrinarayanan V, Cipolla R (2015) Bayesian SegNet: Model Uncertainty in Deep Convolutional Encoder-Decoder Architectures for Scene Understanding. ArXiv e-prints.][Kendall et al. 2015]
 
-[Kendall A, Gal Y (2017) What Uncertainties Do We Need in Bayesian Deep Learning for Computer Vision? ArXiv e-prints.][Kendall et al. (2017)]
+[Kendall A, Gal Y (2017) What Uncertainties Do We Need in Bayesian Deep Learning for Computer Vision? ArXiv e-prints.][Kendall et al. 2017]
 
-[Badrinarayanan et al. (2015)]: https://arxiv.org/abs/1511.00561
-[Eigen et al. (2014)]: https://arxiv.org/abs/1411.4734
-[Jarrett et al. (2009)]: https://ieeexplore.ieee.org/document/5459469
-[Jégou et al. (2016)]: https://arxiv.org/abs/1611.09326
-[Kendall et al. (2015)]: https://arxiv.org/abs/1511.02680
-[Kendall et al. (2017)]: https://arxiv.org/abs/1703.04977
+[Badrinarayanan et al. 2015]: https://arxiv.org/abs/1511.00561
+[Eigen et al. 2014]: https://arxiv.org/abs/1411.4734
+[Jarrett et al. 2009]: https://ieeexplore.ieee.org/document/5459469
+[Jégou et al. 2016]: https://arxiv.org/abs/1611.09326
+[Kendall et al. 2015]: https://arxiv.org/abs/1511.02680
+[Kendall et al. 2017]: https://arxiv.org/abs/1703.04977
