@@ -361,7 +361,15 @@ The following box plot describes the mean and standard deviation in wall clock
 time execution of different segmentation models performing inference on images
 of size 352 x 480 pixels.
 
-![Wall Clock Inference Times](img/inference-time.png)
+![Wall Clock Inference Times (Deterministic Inference)](img/inference-time.png)
+
+The following box plot describes the mean and standard deviation in wall clock
+time execution of different Bayesian segmentation models performing inference
+on images of size 352 x 480 pixels. Note that in this case, inference is
+probabilistic due to the test time dropout and Monte Carlo simulation over 50
+network samples.
+
+![Wall Clock Inference Times (Monte Carlo Dropout)](img/inference-time-mc-dropout.png)
 
 </details>
 
