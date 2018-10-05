@@ -79,14 +79,14 @@ The following table outlines the testing results from SegNet.
 | Bicyclist               | 0.424479 |
 | Building                | 0.735429 |
 | Car                     | 0.685271 |
-| Column_Pole             | 0.253229 |
+| Column/Pole             | 0.253229 |
 | Fence                   | 0.317258 |
 | Pedestrian              | 0.372688 |
 | Road                    | 0.905312 |
 | Sidewalk                | 0.772007 |
-| SignSymbol              | 0.180342 |
+| Sign                    | 0.180342 |
 | Sky                     | 0.889403 |
-| VegetationMisc          | 0.684661 |
+| Vegetation              | 0.684661 |
 
 ### Qualitative Results
 
@@ -149,14 +149,14 @@ The following table outlines the testing results from Bayesian SegNet.
 | Bicyclist               | 0.369756 |
 | Building                | 0.709912 |
 | Car                     | 0.675461 |
-| Column_Pole             | 0.20731  |
+| Column/Pole             | 0.20731  |
 | Fence                   | 0.394083 |
 | Pedestrian              | 0.326561 |
 | Road                    | 0.885637 |
 | Sidewalk                | 0.72415  |
-| SignSymbol              | 0.174897 |
+| Sign                    | 0.174897 |
 | Sky                     | 0.886314 |
-| VegetationMisc          | 0.700158 |
+| Vegetation              | 0.700158 |
 
 ### Qualitative Results
 
@@ -224,14 +224,14 @@ The following table outlines the testing results from 103 Layers Tiramisu.
 | Bicyclist               | 0.332004 |
 | Building                | 0.770349 |
 | Car                     | 0.668687 |
-| Column_Pole             | 0.257645 |
+| Column/Pole             | 0.257645 |
 | Fence                   | 0.247566 |
 | Pedestrian              | 0.429406 |
 | Road                    | 0.901876 |
 | Sidewalk                | 0.769319 |
-| SignSymbol              | 0.22198  |
+| Sign                    | 0.22198  |
 | Sky                     | 0.921203 |
-| VegetationMisc          | 0.721953 |
+| Vegetation              | 0.721953 |
 
 ### Qualitative Results
 
@@ -320,14 +320,14 @@ The following table outlines the testing results from Epistemic Tiramisu.
 | Bicyclist               | 0.196561  |
 | Building                | 0.732981  |
 | Car                     | 0.529297  |
-| Column_Pole             | 0.0714451 |
+| Column/Pole             | 0.0714451 |
 | Fence                   | 0.121101  |
 | Pedestrian              | 0.290276  |
 | Road                    | 0.866332  |
 | Sidewalk                | 0.668693  |
-| SignSymbol              | 0.0658379 |
+| Sign                    | 0.0658379 |
 | Sky                     | 0.90435   |
-| VegetationMisc          | 0.68171   |
+| Vegetation              | 0.68171   |
 
 #### Qualitative Results
 
