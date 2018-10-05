@@ -1,22 +1,19 @@
 """A model wrapper to perform Monte Carlo simulations."""
 import numpy as np
 from keras.models import Model
-from tqdm import tqdm
 
 
 class MonteCarlo(object):
     """A model wrapper to perform Monte Carlo simulations."""
 
-    def __init__(self, model: Model, simulations: int,
-        progress_bar: bool=True
-    ) -> None:
+    def __init__(self, model: Model, simulations: int, uncertainty: str='var'):
         """
         Initialize a new Monte Carlo model wrapper.
 
         Args:
             model: the Bayesian model to estimate mean output using Monte Carlo
             simulations: the number of simulations to estimate mean
-            progress_bar: whether to use the progress bar during prediction
+            uncertainty: the type of uncertainty as either 'var' or 'entropy'
 
         Returns:
             None
@@ -31,117 +28,21 @@ class MonteCarlo(object):
             self.simulations = int(simulations)
         except ValueError:
             raise TypeError('simulations must be an integer')
-        # type check progress_bar parameter and store
+        # type check the uncertainty parameter
         try:
-            self.progress_bar = bool(progress_bar)
+            self.uncertainty = str(uncertainty)
         except ValueError:
-            raise TypeError('progress_bar must be a boolean')
-
-    def _simulate(self, method, *args, **kwargs):
-        # create a list to store the output predictions in
-        simulations = [None] * self.simulations
-        # create an iterator over the number of simulations
-        iterator = range(self.simulations)
-        # if the progress bar is enabled, wrap the iterator with TQDM
-        if self.progress_bar:
-            iterator = tqdm(iterator, unit='simulation')
-        # evaluate over the number of simulations
-        for idx in iterator:
-            simulations[idx] = getattr(self.model, method)(*args, **kwargs)
-        # return the mean of each metric over the simulations
-        return simulations
-
-    def summary(self):
-        return self.model.summary()
+            raise TypeError('uncertainty must be a string')
+        # make sure uncertainty is a legal value
+        if self.uncertainty not in {'var', 'entropy'}:
+            raise ValueError('uncertainty must be either "var" or "entropy"')
 
     @property
-    def layers(self):
-        return self.model.layers
+    def input_shape(self):
+        """Return the input shape of the model for this Monte Carlo."""
+        return self.model.input_shape
 
-    def get_layer(self, *args, **kwargs):
-        """Retrieve a layer based on either its name (unique) or index."""
-        return self.model.get_layer(*args, **kwargs)
-
-    @property
-    def updates(self):
-        """Retrieve the model's updates."""
-        return self.model.updates
-
-    @property
-    def losses(self):
-        """Retrieve the model's losses."""
-        return self.model.losses
-
-    @property
-    def uses_learning_phase(self):
-        return self.model.uses_learning_phase
-
-    @property
-    def stateful(self):
-        return self.model.stateful
-
-    def reset_states(self):
-        return self.model.reset_states()
-
-    @property
-    def state_updates(self):
-        """Return the `updates` from all layers that are stateful."""
-        return self.model.state_updates
-
-    @property
-    def trainable_weights(self):
-        return self.model.trainable_weights
-
-    @property
-    def non_trainable_weights(self):
-        return self.model.non_trainable_weights
-
-    def get_weights(self):
-        """Return the weights of the model."""
-        return self.model.get_weights()
-
-    def set_weights(self, *args, **kwargs):
-        """Set the weights of the model."""
-        return self.model.set_weights(*args, **kwargs)
-
-    def load_weights(self, *args, **kwargs):
-        """Load the weights of the model from disk."""
-        return self.model.load_weights(*args, **kwargs)
-
-    def save_weights(self, *args, **kwargs):
-        """Save the weights of the model to disk."""
-        return self.model.save_weights(*args, **kwargs)
-
-    @property
-    def input_spec(self):
-        """Return the input spec of the model."""
-        return self.model.input_spec
-
-    def call(self, *args, **kwargs):
-        """Call the model as a layer"""
-        raise ValueError('cannot call a Monte Carlo simulation Model.')
-
-    def compile(self, *args, **kwargs):
-        """Configure the model for training."""
-        return self.model.compile(*args, **kwargs)
-
-    @property
-    def metrics_names(self) -> list:
-        """Return the names of metrics for this Model wrapper."""
-        return self.model.metrics_names
-
-    def fit(self, *args, **kwargs):
-        """Train the model for a given number of epochs (iterations on a dataset)."""
-        return self.model.fit(*args, **kwargs)
-
-    def evaluate(self, *args, **kwargs) -> list:
-        """Return the loss value & metrics values for the model in test mode."""
-        # simulate the method
-        metrics = self._simulate('evaluate', *args, **kwargs)
-        # return the mean of each metric over the simulations
-        return np.mean(metrics, axis=0)
-
-    def predict(self, *args, **kwargs) -> np.ndarray:
+    def predict(self, X: np.ndarray) -> np.ndarray:
         """
         Return mean target and output variance for given inputs.
 
@@ -155,56 +56,21 @@ class MonteCarlo(object):
             - variance of predictions over self.simulations passes
 
         """
-        # simulate the method
-        y = self._simulate('predict', *args, **kwargs)
-        # return the mean and variance of the simulations
-        return np.mean(y, axis=0), np.var(y, axis=0)
-
-    def train_on_batch(self, *args, **kwargs):
-        """Runs a single gradient update on a single batch of data."""
-        return self.model.train_on_batch(*args, **kwargs)
-
-    def test_on_batch(self, *args, **kwargs):
-        """Test the model on a single batch of samples."""
-        # simulate the method
-        metrics = self._simulate('test_on_batch', *args, **kwargs)
-        # return the mean of each metric over the simulations
-        return np.mean(metrics, axis=0)
-
-    def predict_on_batch(self, *args, **kwargs):
-        """Returns predictions for a single batch of samples."""
-        # simulate the method
-        y = self._simulate('predict_on_batch', *args, **kwargs)
-        # return the mean and variance of the simulations
-        return np.mean(y, axis=0), np.var(y, axis=0)
-
-    def fit_generator(self, *args, **kwargs):
-        """Train the model on data generated batch-by-batch."""
-        return self.model.fit_generator(*args, **kwargs)
-
-    def evaluate_generator(self, *args, **kwargs) -> list:
-        """
-        Evaluate the model using a generator for input.
-
-        Args:
-            args: the positional arguments for evaluate_generator
-            kwargs: the keyword arguments for evaluate_generator
-
-        Returns:
-            the mean evaluation metrics over self.simulations passes
-
-        """
-        # simulate the method
-        metrics = self._simulate('evaluate_generator', *args, **kwargs)
-        # return the mean of each metric over the simulations
-        return np.mean(metrics, axis=0)
-
-    def predict_generator(self, *args, **kwargs):
-        """Generate predictions for the input samples from a data generator."""
-        # simulate the method
-        y = self._simulate('predict_generator', *args, **kwargs)
-        # return the mean and variance of the simulations
-        return np.mean(y, axis=0), np.var(y, axis=0)
+        # create a list to store the output predictions in
+        simulations = [None] * self.simulations
+        # predict for the number of simulations
+        for idx in range(self.simulations):
+            simulations[idx] = self.model.predict(X)
+        # take the mean prediction in the simulations
+        mean = np.mean(simulations, axis=0)
+        # return the mean and the variance
+        if self.uncertainty == 'var':
+            return mean, np.mean(np.var(simulations, axis=0), axis=-1)
+        # return the mean and the entropy of the means
+        elif self.uncertainty == 'entropy':
+            return mean, -1 * np.sum(np.log(mean) * mean, axis=-1)
+        # unrecognized value, raise error
+        raise ValueError('self.uncertainty must be either "var" or "entropy"')
 
 
 # explicitly define the outward facing API of this module

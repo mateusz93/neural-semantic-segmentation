@@ -1,6 +1,5 @@
 """A class for generating data from a NumPy tensor on disk"""
 import glob
-import cv2
 from keras_preprocessing.image import *
 from keras_preprocessing.image import _count_valid_files_in_directory
 from keras_preprocessing.image import _list_valid_filenames_in_directory

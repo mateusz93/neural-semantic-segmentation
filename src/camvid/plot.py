@@ -39,7 +39,7 @@ def plot(dpi: float=256.0, order: list=None, **kwargs: dict) -> None:
         kwargs: images to plot
 
     Returns:
-        None
+        the figure holding the axes of the plot
 
     """
     # determine the figsize for plotting based on image_shape and DPI
@@ -48,17 +48,19 @@ def plot(dpi: float=256.0, order: list=None, **kwargs: dict) -> None:
     # if there is no order, iterate over all keyword args
     if order is None:
         # create subplots for each image
-        _, axarr = plt.subplots(len(kwargs), 1, figsize=figsize, dpi=dpi)
+        fig, axarr = plt.subplots(len(kwargs), 1, figsize=figsize, dpi=dpi)
         # iterate over the images in the dictionary
         for idx, (title, img) in enumerate(kwargs.items()):
             _plot(axarr[idx], img, title)
     # if there is an order, plot the images in order
     else:
         # create subplots for each image
-        _, axarr = plt.subplots(len(order), 1, figsize=figsize, dpi=dpi)
+        fig, axarr = plt.subplots(len(order), 1, figsize=figsize, dpi=dpi)
         # iterate over the images in order
         for idx, title in enumerate(order):
             _plot(axarr[idx], kwargs[title], title)
+
+    return fig
 
 
 # explicitly define the outward facing API of this module
