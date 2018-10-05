@@ -261,22 +261,28 @@ The following table outlines the testing results from 103 Layers Tiramisu.
 
 ## [Bayesian Tiramisu][Kendall et al. (2017)]
 
-<!-- ### Aleatoric Uncertainty
+### Aleatoric Uncertainty
 
 ![Aleatoric Tiramisu](img/bayesian-tiramisu/model.png)
 
+The following table describes training hyperparameters.
+
+| Crop Size | Epochs | Batch Size | Patience | Optimizer | α    | α Decay | Dropout |
+|:----------|:-------|:-----------|:---------|:----------|:-----|:--------|:--------|
+| 352 x 480 | 100    | 1          | 10       | RMSprop   | 1e-4 | 1.000   | 20%     |
+
 -   network split to predict targets and loss attenuation
-    -   masked categorical cross entropy to train the target head of the
-        network
     -   custom loss function to train the second head of the network
         ([Kendall et al. (2017)][])
+    -   our loss function samples _through the Softmax function_ like their
+        paper says (but contrary to the mathematics they present?). without
+        applying the Softmax function, the loss is unstable and goes negative
+-   pre-trained with fine weights from original Tiramisu
+-   pre-trained network frozen while head to predict sigma is trained
 
 #### Quantitative Results
 
-The following table outlines the testing results from Aleatoric Tiramisu.
-
-| Metric                  | Test Score |
-|:------------------------|:-----------|
+The quantitative results are the same as the standard Tiramisu model.
 
 #### Qualitative Results
 
@@ -295,7 +301,7 @@ The following table outlines the testing results from Aleatoric Tiramisu.
       <img src="img/bayesian-tiramisu/aleatoric/3.png" />
     </td>
   </tr>
-</table> -->
+</table>
 
 ### Epistemic Uncertainty
 
