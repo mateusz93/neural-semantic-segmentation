@@ -5,23 +5,6 @@ from keras.backend.tensorflow_backend import _preprocess_conv2d_input
 from keras.backend.tensorflow_backend import _preprocess_padding
 
 
-def confusion_matrix(y_true, y_pred, num_classes=None):
-    """
-    Compute a confusion matrix from predictions and ground truths.
-
-    Args:
-        y_true: the ground truth labels
-        y_pred: the predicted labels
-        num_classes: the optional number of classes. if not provided, the
-                     labels are assumed to be in [0, max]
-
-    Returns:
-        a confusion matrix computed based on y_true and y_pred
-
-    """
-    return tf.confusion_matrix(y_true, y_pred, num_classes=num_classes)
-
-
 def pool2d_argmax(x, pool_size,
     strides=(1, 1),
     padding='valid',
