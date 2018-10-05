@@ -98,7 +98,6 @@ def unpool2d_argmax(x, idx, pool_size):
 
 # explicitly define the outward facing API of this module
 __all__ = [
-    confusion_matrix.__name__,
     pool2d_argmax.__name__,
     unpool2d_argmax.__name__,
 ]
