@@ -71,22 +71,22 @@ The following table describes training hyperparameters.
 
 The following table outlines the testing results from SegNet.
 
-| Metric                  | Test Score |
-|:------------------------|:-----------|
-| Global Accuracy         | 0.888466
-| Mean Per Class Accuracy | 0.593288
-| Mean I/U                | 0.495996
-| Bicyclist               | 0.301233
-| Building                | 0.693133
-| Car                     | 0.503114
-| Column/Pole             | 0.218290
-| Fence                   | 0.152144
-| Pedestrian              | 0.332084
-| Road                    | 0.887113
-| Sidewalk                | 0.756714
-| Sign                    | 0.161815
-| Sky                     | 0.871147
-| Vegetation              | 0.579169
+| Metric                  |    Value |
+|:------------------------|---------:|
+| Accuracy                | 0.889125 |
+| Mean Per Class Accuracy | 0.681254 |
+| Mean I/U                | 0.565375 |
+| Bicyclist               | 0.404283 |
+| Building                | 0.741864 |
+| Car                     | 0.65399  |
+| Column/Pole             | 0.228868 |
+| Fence                   | 0.353242 |
+| Pedestrian              | 0.414915 |
+| Road                    | 0.899917 |
+| Sidewalk                | 0.761276 |
+| Sign                    | 0.181454 |
+| Sky                     | 0.886353 |
+| Vegetation              | 0.692969 |
 
 ### Qualitative Results
 
@@ -141,22 +141,22 @@ The following table describes training hyperparameters.
 
 The following table outlines the testing results from Bayesian SegNet.
 
-| Metric                  | Test Score |
-|:------------------------|:-----------|
-| Global Accuracy         | 0.854635
-| Mean Per Class Accuracy | 0.634437
-| Mean I/U                | 0.444531
-| Bicyclist               | 0.097716
-| Building                | 0.624091
-| Car                     | 0.470470
-| Column/Pole             | 0.180791
-| Fence                   | 0.117226
-| Pedestrian              | 0.252237
-| Road                    | 0.866110
-| Sidewalk                | 0.712532
-| Sign                    | 0.148314
-| Sky                     | 0.860612
-| Vegetation              | 0.559742
+| Metric                  |    Value |
+|:------------------------|---------:|
+| Accuracy                | 0.868504 |
+| Mean Per Class Accuracy | 0.768151 |
+| Mean I/U                | 0.552435 |
+| Bicyclist               | 0.373514 |
+| Building                | 0.704571 |
+| Car                     | 0.673924 |
+| Column/Pole             | 0.215869 |
+| Fence                   | 0.380968 |
+| Pedestrian              | 0.342802 |
+| Road                    | 0.887177 |
+| Sidewalk                | 0.726655 |
+| Sign                    | 0.188998 |
+| Sky                     | 0.888031 |
+| Vegetation              | 0.694272 |
 
 ### Qualitative Results
 
@@ -216,22 +216,22 @@ The following table describes training hyperparameters.
 
 The following table outlines the testing results from 103 Layers Tiramisu.
 
-| Metric                  | Test Score |
-|:------------------------|:-----------|
-| Global Accuracy         | 0.893243
-| Mean Per Class Accuracy | 0.645533
-| Mean I/U                | 0.499167
-| Bicyclist               | 0.098403
-| Building                | 0.709252
-| Car                     | 0.548525
-| Column/Pole             | 0.294447
-| Fence                   | 0.098811
-| Pedestrian              | 0.342050
-| Road                    | 0.900283
-| Sidewalk                | 0.787167
-| Sign                    | 0.209551
-| Sky                     | 0.907727
-| Vegetation              | 0.594623
+| Metric                  |    Value |
+|:------------------------|---------:|
+| Accuracy                | 0.893861 |
+| Mean Per Class Accuracy | 0.711902 |
+| Mean I/U                | 0.551638 |
+| Bicyclist               | 0.283309 |
+| Building                | 0.750968 |
+| Car                     | 0.628742 |
+| Column/Pole             | 0.298966 |
+| Fence                   | 0.179862 |
+| Pedestrian              | 0.390952 |
+| Road                    | 0.912307 |
+| Sidewalk                | 0.797389 |
+| Sign                    | 0.209731 |
+| Sky                     | 0.916814 |
+| Vegetation              | 0.698974 |
 
 ### Qualitative Results
 
@@ -312,22 +312,22 @@ The quantitative results are the same as the standard Tiramisu model.
 
 The following table outlines the testing results from Epistemic Tiramisu.
 
-| Metric                  | Test Score |
-|:------------------------|:-----------|
-| Global Accuracy         | 0.900153
-| Per Class Accuracy      | 0.623793
-| Mean I/U                | 0.498584
-| Bicyclist               | 0.111818
-| Building                | 0.723211
-| Car                     | 0.541242
-| Column/Pole             | 0.270681
-| Fence                   | 0.076327
-| Pedestrian              | 0.353104
-| Road                    | 0.899739
-| Sidewalk                | 0.788833
-| Sign                    | 0.197824
-| Sky                     | 0.909898
-| Vegetation              | 0.611748
+| Metric                  |    Value |
+|:------------------------|---------:|
+| Accuracy                | 0.906531 |
+| Mean Per Class Accuracy | 0.696133 |
+| Mean I/U                | 0.573954 |
+| Bicyclist               | 0.361406 |
+| Building                | 0.773772 |
+| Car                     | 0.660941 |
+| Column/Pole             | 0.288474 |
+| Fence                   | 0.188135 |
+| Pedestrian              | 0.444522 |
+| Road                    | 0.914459 |
+| Sidewalk                | 0.804674 |
+| Sign                    | 0.226198 |
+| Sky                     | 0.923827 |
+| Vegetation              | 0.727091 |
 
 #### Qualitative Results
 
@@ -347,39 +347,6 @@ The following table outlines the testing results from Epistemic Tiramisu.
     </td>
   </tr>
 </table>
-
-<!-- ### Hybrid Uncertainty (Aleatoric + Epistemic)
-
--   pre-trained with fine weights from Aleatoric Tiramisu
--   50 samples for Monte Carlo Dropout sampling at test time
-    -   aleatoric uncertainty averaged the same as targets
-
-#### Quantitative Results
-
-The following table outlines the testing results from Hybrid Tiramisu
-(Aleatoric + Epistemic).
-
-| Metric                  | Test Score |
-|:------------------------|:-----------|
-
-#### Qualitative Results
-
-<table>
-  <tr>
-    <td>
-      <img src="img/bayesian-tiramisu/hybrid/0.png" />
-    </td>
-    <td>
-      <img src="img/bayesian-tiramisu/hybrid/1.png" />
-    </td>
-    <td>
-      <img src="img/bayesian-tiramisu/hybrid/2.png" />
-    </td>
-    <td>
-      <img src="img/bayesian-tiramisu/hybrid/3.png" />
-    </td>
-  </tr>
-</table> -->
 
 </details>
 
