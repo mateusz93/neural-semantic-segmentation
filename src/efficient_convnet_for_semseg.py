@@ -74,6 +74,8 @@ def _non_bottleneck_1D(x,
     x = Dropout(dropout_rate)(x)
     # concatenate outputs of the last layer with the inputs to the block
     x = Add()([inputs, x])
+    # pass the outputs from convolution through ReLU nonlinearity
+    x = Activation('relu')(x)
 
     return x
 
@@ -90,6 +92,9 @@ def _encode_block(x, num_filters: int):
         a tensor with a new encoder block appended to it
 
     """
+    # compute the actual number of filters based on the desired output
+    # filters and actual input activation maps
+    num_filters = num_filters - K.int_shape(x)[-1]
     # pass the x through a convolution
     x1 = Conv2D(num_filters,
         kernel_size=(3, 3),
@@ -101,6 +106,8 @@ def _encode_block(x, num_filters: int):
     x2 = MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(x)
     # concatenate the outputs from convolution and max pooling
     x = Concatenate()([x1, x2])
+    # pass the outputs from convolution through ReLU nonlinearity
+    x = Activation('relu')(x)
 
     return x
 
