@@ -61,7 +61,7 @@ def _bottleneck_module(x, num_filters: int, conv,
     kernel_size=(1, 1),
     strides=(1, 1),
     dropout_rate: float=0.01,
-    **conv_kwargs,
+    **conv_kwargs
 ):
     """
     Create a new bottleneck module.
