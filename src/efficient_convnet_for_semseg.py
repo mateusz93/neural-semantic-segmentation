@@ -44,6 +44,7 @@ def _non_bottleneck_1D(x,
         apply_dilations: a boolean vector of whether to use given dilation
                          rate for convolutional layer with kernel size of
                          matching index
+        dilation_rate: the dilation rate to apply to dilated conv layers
         dropout_rate: the rate to use for dropout at the end of the block
                       (before the add operation)
 
