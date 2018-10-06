@@ -56,8 +56,8 @@ def _non_bottleneck_1D(x,
     # get the number of filters from the shape of the input activations
     num_filters = K.int_shape(inputs)[-1]
     # iterate over the kernel sizes provided for each layer
-    iterator = zip(batch_norms, kernel_sizes, apply_dilations)
-    for batch_norm, kernel_size, apply_dilation in iterator:
+    iterator = enumerate(zip(batch_norms, kernel_sizes, apply_dilations))
+    for idx, (batch_norm, kernel_size, apply_dilation) in iterator:
         # pass the last outputs through a convolutional layer with kernel size
         x = Conv2D(num_filters,
             kernel_size=kernel_size,
@@ -68,8 +68,10 @@ def _non_bottleneck_1D(x,
         # if batch normalization is active for this layer, apply it
         if batch_norm:
             x = BatchNormalization()(x)
-        # pass the outputs from convolution through ReLU nonlinearity
-        x = Activation('relu')(x)
+        # pass the outputs from convolution through ReLU nonlinearity if the
+        # output _is not_ the last of the block
+        if idx < len(kernel_sizes) - 1:
+            x = Activation('relu')(x)
     # pass the values through dropout
     x = Dropout(dropout_rate)(x)
     # concatenate outputs of the last layer with the inputs to the block
