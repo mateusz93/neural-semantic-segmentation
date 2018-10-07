@@ -21,11 +21,10 @@ def confusion_matrix(y_true, y_pred, num_classes=None):
     return tf.confusion_matrix(y_true, y_pred, num_classes=num_classes)
 
 
-def pool2d_argmax(x, pool_size,
-    strides=(1, 1),
-    padding='valid',
-    data_format=None,
-    pool_mode='max'
+def pool2d_argmax(x, pool_size: tuple,
+    strides: tuple=(1, 1),
+    padding: str='valid',
+    data_format: str=None
 ) -> tuple:
     """
     2D Pooling that returns indexes too.
@@ -36,37 +35,34 @@ def pool2d_argmax(x, pool_size,
         strides: tuple of 2 integers.
         padding: string, `"same"` or `"valid"`.
         data_format: string, `"channels_last"` or `"channels_first"`.
-        pool_mode: string, `"max"` or `"avg"`.
 
     Returns:
         A tensor, result of 2D pooling.
 
     Raises:
         ValueError: if `data_format` is neither `"channels_last"` or `"channels_first"`.
-        ValueError: if `pool_mode` is neither `"max"` or `"avg"`.
 
     """
+    # get the normalized data format
     data_format = K.common.normalize_data_format(data_format)
-
+    # pre-process the input tensor
     x, tf_data_format = _preprocess_conv2d_input(x, data_format)
     padding = _preprocess_padding(padding)
+    # update strides and pool size based on data format
     if tf_data_format == 'NHWC':
         strides = (1,) + strides + (1,)
         pool_size = (1,) + pool_size + (1,)
     else:
         strides = (1, 1) + strides
         pool_size = (1, 1) + pool_size
-
-    if pool_mode == 'max':
-        x, idx = tf.nn.max_pool_with_argmax(x, pool_size, strides, padding=padding)
-    elif pool_mode == 'avg':
-        raise NotImplementedError('no support for avg pooling with index')
-    else:
-        raise ValueError('Invalid pool_mode: ' + str(pool_mode))
-
+    # get the values and the indexes from the max pool operation
+    x, idx = tf.nn.max_pool_with_argmax(x, pool_size, strides, padding=padding)
+    # update shapes if necessary
     if data_format == 'channels_first' and tf_data_format == 'NHWC':
-        x = tf.transpose(x, (0, 3, 1, 2))  # NHWC -> NCHW
-        idx = tf.transpose(idx, (0, 3, 1, 2))  # NHWC -> NCHW
+        # NHWC -> NCHW
+        x = tf.transpose(x, (0, 3, 1, 2))
+        # NHWC -> NCHW
+        idx = tf.transpose(idx, (0, 3, 1, 2))
 
     return x, idx
 

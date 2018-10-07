@@ -12,10 +12,13 @@ class MemorizedMaxPooling2D(MaxPooling2D):
         self.idx = None
 
     def _pooling_function(self, inputs, pool_size, strides, padding, data_format):
-        pool = pool2d_argmax(inputs, pool_size, strides, padding, data_format,
-            pool_mode='max'
+        # get the output and indexes from the pool 2D with ArgMax method
+        output, self.idx = pool2d_argmax(inputs, pool_size,
+            strides=strides,
+            padding=padding,
+            data_format=data_format,
         )
-        output, self.idx = pool
+        # return the max pooling output
         return output
 
 
