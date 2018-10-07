@@ -93,21 +93,22 @@ def unpool2d_argmax(x: 'Tensor', idx: 'Tensor', pool_size: tuple) -> 'Tuple':
     flat_output_shape = [out_s[0], out_s[1] * out_s[2] * out_s[3]]
 
     # create an index over the batches
-    batch_range = K.arange(K.cast(out_s[0], 'int64'))
+    batch_range = K.arange(K.cast(in_s[0], 'int64'))
     batch_range = K.reshape(batch_range, shape=[in_s[0], 1, 1, 1])
     # create a ones tensor in the shape of index
     batch_idx = K.ones_like(idx) * batch_range
     batch_idx = K.reshape(batch_idx, (-1, 1))
     # create a complete index
     index = K.reshape(idx, (-1, 1))
-    index = K.concatenate([batch_idx, index], 1)
+    index = K.concatenate([batch_idx, index])
 
     # flatten the inputs and un-pool
     pool = K.flatten(x)
-    ret = tf.scatter_nd(index, pool, shape=K.cast(flat_output_shape, 'int64'))
+    ret = tf.scatter_nd(index, pool, K.cast(flat_output_shape, 'int64'))
     # reshape the output in the correct shape
     ret = K.reshape(ret, out_s)
 
+    # update the integer shape of the Keras Tensor
     in_s = K.int_shape(x)
     ret_s = [in_s[0], in_s[1] * pool_size[0], in_s[2] * pool_size[1], in_s[3]]
     ret.set_shape(ret_s)
