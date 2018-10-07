@@ -21,7 +21,7 @@ def confusion_matrix(y_true, y_pred, num_classes=None):
     return tf.confusion_matrix(y_true, y_pred, num_classes=num_classes)
 
 
-def pool2d_argmax(x, pool_size: tuple,
+def pool2d_argmax(x: 'Tensor', pool_size: tuple,
     strides: tuple=(1, 1),
     padding: str='valid',
     data_format: str=None
@@ -67,13 +67,13 @@ def pool2d_argmax(x, pool_size: tuple,
     return x, idx
 
 
-def unpool2d_argmax(x, idx, pool_size):
+def unpool2d_argmax(x: 'Tensor', idx: 'Tensor', pool_size: tuple) -> 'Tuple':
     """
-    Un-pooling layer after pool2d_argmax.
+    Un-pooling layer to complement pool2d_argmax.
 
     Args:
-        x: Tensor or variable
-        idx: index matching the shape of x
+        x: input Tensor or variable
+        idx: index matching the shape of x from the pooling operation
         pool_size: the pool_size used by the pooling operation
 
     Returns:
@@ -84,21 +84,28 @@ def unpool2d_argmax(x, idx, pool_size):
         https://github.com/tensorflow/tensorflow/issues/2169
 
     """
+    # get the input shape of the tensor
     in_s = K.shape(x)
+    # get the output shape of the tensor
     out_s = [in_s[0], in_s[1] * pool_size[0], in_s[2] * pool_size[1], in_s[3]]
 
-    flat_input_size = K.prod(in_s)
+    # get the size of the batch-wise flattened output matrix
     flat_output_shape = [out_s[0], out_s[1] * out_s[2] * out_s[3]]
 
-    b_shape = [in_s[0], 1, 1, 1]
-    b_range = K.reshape(K.arange(K.cast(out_s[0], 'int64')), shape=b_shape)
-    b = K.ones_like(idx) * b_range
-    b1 = K.reshape(b, [flat_input_size, 1])
-    ind_ = K.reshape(idx, [flat_input_size, 1])
-    ind_ = K.concatenate([b1, ind_], 1)
+    # create an index over the batches
+    batch_range = K.arange(K.cast(out_s[0], 'int64'))
+    batch_range = K.reshape(batch_range, shape=[in_s[0], 1, 1, 1])
+    # create a ones tensor in the shape of index
+    batch_idx = K.ones_like(idx) * batch_range
+    batch_idx = K.reshape(batch_idx, (-1, 1))
+    # create a complete index
+    index = K.reshape(idx, (-1, 1))
+    index = K.concatenate([batch_idx, index], 1)
 
-    pool = K.reshape(x, [flat_input_size])
-    ret = tf.scatter_nd(ind_, pool, shape=K.cast(flat_output_shape, 'int64'))
+    # flatten the inputs and un-pool
+    pool = K.flatten(x)
+    ret = tf.scatter_nd(index, pool, shape=K.cast(flat_output_shape, 'int64'))
+    # reshape the output in the correct shape
     ret = K.reshape(ret, out_s)
 
     in_s = K.int_shape(x)
