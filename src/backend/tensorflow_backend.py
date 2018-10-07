@@ -56,7 +56,7 @@ def pool2d_argmax(x: 'Tensor', pool_size: tuple,
         strides = (1, 1) + strides
         pool_size = (1, 1) + pool_size
     # get the values and the indexes from the max pool operation
-    x, idx = tf.nn.max_pool_with_argmax(x, pool_size, strides, padding=padding)
+    x, idx = tf.nn.max_pool_with_argmax(x, pool_size, strides, padding)
     # update shapes if necessary
     if data_format == 'channels_first' and tf_data_format == 'NHWC':
         # NHWC -> NCHW
@@ -85,16 +85,10 @@ def unpool2d_argmax(x: 'Tensor', idx: 'Tensor', pool_size: tuple) -> 'Tuple':
 
     """
     # get the input shape of the tensor
-    in_s = K.shape(x)
-    # get the output shape of the tensor
-    out_s = [in_s[0], in_s[1] * pool_size[0], in_s[2] * pool_size[1], in_s[3]]
-
-    # get the size of the batch-wise flattened output matrix
-    flat_output_shape = [out_s[0], out_s[1] * out_s[2] * out_s[3]]
-
+    ins = K.shape(x)
     # create an index over the batches
-    batch_range = K.arange(K.cast(in_s[0], 'int64'))
-    batch_range = K.reshape(batch_range, shape=[in_s[0], 1, 1, 1])
+    batch_range = K.arange(K.cast(ins[0], 'int64'))
+    batch_range = K.reshape(batch_range, shape=[ins[0], 1, 1, 1])
     # create a ones tensor in the shape of index
     batch_idx = K.ones_like(idx) * batch_range
     batch_idx = K.reshape(batch_idx, (-1, 1))
@@ -102,18 +96,19 @@ def unpool2d_argmax(x: 'Tensor', idx: 'Tensor', pool_size: tuple) -> 'Tuple':
     index = K.reshape(idx, (-1, 1))
     index = K.concatenate([batch_idx, index])
 
+    # get the output shape of the tensor
+    outs = [ins[0], ins[1] * pool_size[0], ins[2] * pool_size[1], ins[3]]
+    flat_output_shape = [outs[0], outs[1] * outs[2] * outs[3]]
     # flatten the inputs and un-pool
-    pool = K.flatten(x)
-    ret = tf.scatter_nd(index, pool, K.cast(flat_output_shape, 'int64'))
+    x = tf.scatter_nd(index, K.flatten(x), K.cast(flat_output_shape, 'int64'))
     # reshape the output in the correct shape
-    ret = K.reshape(ret, out_s)
+    x = K.reshape(x, outs)
 
     # update the integer shape of the Keras Tensor
-    in_s = K.int_shape(x)
-    ret_s = [in_s[0], in_s[1] * pool_size[0], in_s[2] * pool_size[1], in_s[3]]
-    ret.set_shape(ret_s)
+    ins = K.int_shape(idx)
+    x.set_shape([ins[0], ins[1] * pool_size[0], ins[2] * pool_size[1], ins[3]])
 
-    return ret
+    return x
 
 
 # explicitly define the outward facing API of this module
