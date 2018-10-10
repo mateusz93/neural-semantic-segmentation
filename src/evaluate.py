@@ -25,7 +25,8 @@ def evaluate(model, generator, steps: int,
 
     """
     # get the number of classes from the output shape of the model
-    num_classes = model.output_shape[-1]
+    out_s = model.output_shape
+    num_classes = out_s[0][-1] if isinstance(out_s, list) else out_s[-1]
     # initialize a confusion matrix
     confusion = np.zeros((num_classes, num_classes))
     # iterate over the number of steps to generate data
