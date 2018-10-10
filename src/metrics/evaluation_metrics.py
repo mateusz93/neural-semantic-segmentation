@@ -67,13 +67,12 @@ def iou(confusion: np.ndarray) -> np.ndarray:
     return intersection / union
 
 
-def metrics(y_true: np.ndarray, y_pred: np.ndarray, mask: np.ndarray) -> tuple:
+def metrics(confusion: np.ndarray, mask: np.ndarray) -> tuple:
     """
     Return metrics evaluating a categorical classification task.
 
     Args:
-        y_true: the ground truth labels to compare against
-        y_pred: the predicted labels from a loss network
+        confusion: the confusion matrix between ground truth and predictions
         mask: the mask to use for the metrics
 
     Returns:
@@ -84,15 +83,8 @@ def metrics(y_true: np.ndarray, y_pred: np.ndarray, mask: np.ndarray) -> tuple:
         -   ndarray: a vector representing the per class I/U
 
     """
-    # get number of labels to calculate a confusion matrix and build masks
-    num_classes = y_pred.shape[-1]
     # set the mask to all 1 if there are none specified
-    mask = np.ones(num_classes) if mask is None else mask
-    # extract the label using ArgMax and flatten into a 1D vector
-    y_true = np.argmax(y_true, axis=-1).flatten()
-    y_pred = np.argmax(y_pred, axis=-1).flatten()
-    # calculate the confusion matrix of the ground truth and predictions
-    confusion = confusion_matrix(y_true, y_pred, list(range(num_classes)))
+    mask = np.ones(y_pred.shape[-1]) if mask is None else mask
     # calculate the global accuracy from the confusion matrix
     _accuracy = accuracy(confusion, mask)
     # calculate the class accuracies from the confusion matrix
