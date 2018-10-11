@@ -73,20 +73,20 @@ The following table outlines the testing results from SegNet.
 
 | Metric                  |    Value |
 |:------------------------|---------:|
-| Accuracy                | 0.885892 |
-| Mean Per Class Accuracy | 0.725983 |
-| Mean I/U                | 0.565462 |
-| Bicyclist               | 0.424479 |
-| Building                | 0.735429 |
-| Car                     | 0.685271 |
-| Column/Pole             | 0.253229 |
-| Fence                   | 0.317258 |
-| Pedestrian              | 0.372688 |
-| Road                    | 0.905312 |
-| Sidewalk                | 0.772007 |
-| Sign                    | 0.180342 |
-| Sky                     | 0.889403 |
-| Vegetation              | 0.684661 |
+| Accuracy                | 0.888625 |
+| Mean Per Class Accuracy | 0.722078 |
+| Mean I/U                | 0.577455 |
+| Bicyclist               | 0.435263 |
+| Building                | 0.743735 |
+| Car                     | 0.700505 |
+| Column/Pole             | 0.254089 |
+| Fence                   | 0.385431 |
+| Pedestrian              | 0.393298 |
+| Road                    | 0.895652 |
+| Sidewalk                | 0.747693 |
+| Sign                    | 0.219355 |
+| Sky                     | 0.888208 |
+| Vegetation              | 0.688779 |
 
 ### Qualitative Results
 
@@ -143,20 +143,20 @@ The following table outlines the testing results from Bayesian SegNet.
 
 | Metric                  |    Value |
 |:------------------------|---------:|
-| Accuracy                | 0.868758 |
-| Mean Per Class Accuracy | 0.767013 |
-| Mean I/U                | 0.550385 |
-| Bicyclist               | 0.369756 |
-| Building                | 0.709912 |
-| Car                     | 0.675461 |
-| Column/Pole             | 0.20731  |
-| Fence                   | 0.394083 |
-| Pedestrian              | 0.326561 |
-| Road                    | 0.885637 |
-| Sidewalk                | 0.72415  |
-| Sign                    | 0.174897 |
-| Sky                     | 0.886314 |
-| Vegetation              | 0.700158 |
+| Accuracy                | 0.863547 |
+| Mean Per Class Accuracy | 0.769486 |
+| Mean I/U                | 0.547227 |
+| Bicyclist               | 0.407042 |
+| Building                | 0.68995  |
+| Car                     | 0.678854 |
+| Column/Pole             | 0.206012 |
+| Fence                   | 0.376584 |
+| Pedestrian              | 0.305958 |
+| Road                    | 0.88796  |
+| Sidewalk                | 0.727901 |
+| Sign                    | 0.155895 |
+| Sky                     | 0.888182 |
+| Vegetation              | 0.69516  |
 
 ### Qualitative Results
 
@@ -218,20 +218,20 @@ The following table outlines the testing results from 103 Layers Tiramisu.
 
 | Metric                  |    Value |
 |:------------------------|---------:|
-| Accuracy                | 0.901727 |
-| Mean Per Class Accuracy | 0.685065 |
-| Mean I/U                | 0.567453 |
-| Bicyclist               | 0.332004 |
-| Building                | 0.770349 |
-| Car                     | 0.668687 |
-| Column/Pole             | 0.257645 |
-| Fence                   | 0.247566 |
-| Pedestrian              | 0.429406 |
-| Road                    | 0.901876 |
-| Sidewalk                | 0.769319 |
-| Sign                    | 0.22198  |
-| Sky                     | 0.921203 |
-| Vegetation              | 0.721953 |
+| Accuracy                | 0.908092 |
+| Mean Per Class Accuracy | 0.716523 |
+| Mean I/U                | 0.585788 |
+| Bicyclist               | 0.34839  |
+| Building                | 0.775576 |
+| Car                     | 0.689861 |
+| Column/Pole             | 0.312897 |
+| Fence                   | 0.261254 |
+| Pedestrian              | 0.4299   |
+| Road                    | 0.918804 |
+| Sidewalk                | 0.802591 |
+| Sign                    | 0.253895 |
+| Sky                     | 0.91806  |
+| Vegetation              | 0.732444 |
 
 ### Qualitative Results
 
@@ -312,22 +312,22 @@ The quantitative results are the same as the standard Tiramisu model.
 
 The following table outlines the testing results from Epistemic Tiramisu.
 
-| Metric                  |     Value |
-|:------------------------|----------:|
-| Accuracy                | 0.873417  |
-| Mean Per Class Accuracy | 0.544427  |
-| Mean I/U                | 0.466235  |
-| Bicyclist               | 0.196561  |
-| Building                | 0.732981  |
-| Car                     | 0.529297  |
-| Column/Pole             | 0.0714451 |
-| Fence                   | 0.121101  |
-| Pedestrian              | 0.290276  |
-| Road                    | 0.866332  |
-| Sidewalk                | 0.668693  |
-| Sign                    | 0.0658379 |
-| Sky                     | 0.90435   |
-| Vegetation              | 0.68171   |
+| Metric                  |    Value |
+|:------------------------|---------:|
+| Accuracy                | 0.881144 |
+| Mean Per Class Accuracy | 0.59509  |
+| Mean I/U                | 0.506473 |
+| Bicyclist               | 0.280771 |
+| Building                | 0.734256 |
+| Car                     | 0.587708 |
+| Column/Pole             | 0.124245 |
+| Fence                   | 0.164669 |
+| Pedestrian              | 0.322883 |
+| Road                    | 0.886696 |
+| Sidewalk                | 0.724571 |
+| Sign                    | 0.165528 |
+| Sky                     | 0.88297  |
+| Vegetation              | 0.696909 |
 
 #### Qualitative Results
 
