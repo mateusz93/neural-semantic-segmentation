@@ -42,6 +42,11 @@ class MonteCarlo(object):
         """Return the input shape of the model for this Monte Carlo."""
         return self.model.input_shape
 
+    @property
+    def output_shape(self):
+        """Return the output shape of the model for this Monte Carlo."""
+        return self.model.output_shape
+
     def predict(self, X: np.ndarray) -> np.ndarray:
         """
         Return mean target and output variance for given inputs.

@@ -2,6 +2,7 @@
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
+from sklearn.metrics import confusion_matrix
 from .metrics.evaluation_metrics import metrics
 
 
@@ -23,24 +24,28 @@ def evaluate(model, generator, steps: int,
         a DataFrame with the metrics from the generator data
 
     """
-    y_true = [None] * steps
-    y_pred = [None] * steps
+    # get the number of classes from the output shape of the model
+    out_s = model.output_shape
+    num_classes = out_s[0][-1] if isinstance(out_s, list) else out_s[-1]
+    # initialize a confusion matrix
+    confusion = np.zeros((num_classes, num_classes))
     # iterate over the number of steps to generate data
     for step in tqdm(range(steps), unit='step'):
         # get the batch of data from the generator
-        imgs, true = next(generator)
-        # if true is a tuple or list, take the first target value
-        y_true[step] = true[0] if isinstance(true, (tuple, list)) else true
+        imgs, y_true = next(generator)
+        # if y_true is a tuple or list, take the first model output
+        y_true = y_true[0] if isinstance(y_true, (tuple, list)) else y_true
         # get predictions from the network
         pred = model.predict(imgs)
         # if pred is a tuple or list, take the first network output
-        y_pred[step] = pred[0] if isinstance(pred, (tuple, list)) else pred
-    # convert the batch of targets to a NumPy tensor
-    y_true = np.array(y_true)
-    y_pred = np.array(y_pred)
+        y_pred = pred[0] if isinstance(pred, (tuple, list)) else pred
+        # extract the label using ArgMax and flatten into a 1D vector
+        y_true = np.argmax(y_true, axis=-1).flatten()
+        y_pred = np.argmax(y_pred, axis=-1).flatten()
+        # calculate the confusion matrix and add to the accumulated matrix
+        confusion += confusion_matrix(y_true, y_pred, list(range(num_classes)))
     # calculate the metrics from the predicted and ground truth values
-    _metrics = metrics(y_true, y_pred, mask)
-    accuracy, mean_per_class_accuracy, mean_iou, iou = _metrics
+    accuracy, mean_per_class_accuracy, mean_iou, iou = metrics(confusion, mask)
     # build a dictionary to store metrics in
     _metrics = {
         '#1#Accuracy': accuracy,
