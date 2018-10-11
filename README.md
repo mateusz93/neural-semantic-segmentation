@@ -116,7 +116,7 @@ The following table outlines the testing results from SegNet.
 
 ## [Bayesian SegNet][Kendall et al. 2015]
 
-![Bayesian SegNet](img/bayesian-segnet/model.png)
+![Bayesian SegNet](img/segnet-bayesian/model.png)
 
 The following table describes training hyperparameters.
 
@@ -163,16 +163,16 @@ The following table outlines the testing results from Bayesian SegNet.
 <table>
   <tr>
     <td>
-      <img src="img/bayesian-segnet/0.png" />
+      <img src="img/segnet-bayesian/0.png" />
     </td>
     <td>
-      <img src="img/bayesian-segnet/1.png" />
+      <img src="img/segnet-bayesian/1.png" />
     </td>
     <td>
-      <img src="img/bayesian-segnet/2.png" />
+      <img src="img/segnet-bayesian/2.png" />
     </td>
     <td>
-      <img src="img/bayesian-segnet/3.png" />
+      <img src="img/segnet-bayesian/3.png" />
     </td>
   </tr>
 </table>
@@ -263,7 +263,7 @@ The following table outlines the testing results from 103 Layers Tiramisu.
 
 ### Aleatoric Uncertainty
 
-![Aleatoric Tiramisu](img/bayesian-tiramisu/aleatoric/arch.png)
+![Aleatoric Tiramisu](img/tiramisu-bayesian/aleatoric/arch.png)
 
 The following table describes training hyperparameters.
 
@@ -289,16 +289,16 @@ The quantitative results are the same as the standard Tiramisu model.
 <table>
   <tr>
     <td>
-      <img src="img/bayesian-tiramisu/aleatoric/0.png" />
+      <img src="img/tiramisu-bayesian/aleatoric/0.png" />
     </td>
     <td>
-      <img src="img/bayesian-tiramisu/aleatoric/1.png" />
+      <img src="img/tiramisu-bayesian/aleatoric/1.png" />
     </td>
     <td>
-      <img src="img/bayesian-tiramisu/aleatoric/2.png" />
+      <img src="img/tiramisu-bayesian/aleatoric/2.png" />
     </td>
     <td>
-      <img src="img/bayesian-tiramisu/aleatoric/3.png" />
+      <img src="img/tiramisu-bayesian/aleatoric/3.png" />
     </td>
   </tr>
 </table>
@@ -334,16 +334,16 @@ The following table outlines the testing results from Epistemic Tiramisu.
 <table>
   <tr>
     <td>
-      <img src="img/bayesian-tiramisu/epistemic/0.png" />
+      <img src="img/tiramisu-bayesian/epistemic/0.png" />
     </td>
     <td>
-      <img src="img/bayesian-tiramisu/epistemic/1.png" />
+      <img src="img/tiramisu-bayesian/epistemic/1.png" />
     </td>
     <td>
-      <img src="img/bayesian-tiramisu/epistemic/2.png" />
+      <img src="img/tiramisu-bayesian/epistemic/2.png" />
     </td>
     <td>
-      <img src="img/bayesian-tiramisu/epistemic/3.png" />
+      <img src="img/tiramisu-bayesian/epistemic/3.png" />
     </td>
   </tr>
 </table>
