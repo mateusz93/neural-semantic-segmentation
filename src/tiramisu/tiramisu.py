@@ -15,7 +15,7 @@ def tiramisu(image_shape: tuple, num_classes: int,
     bottleneck_size: int=15,
     dropout: float=0.2,
     learning_rate: float=1e-3,
-    mc_dropout=False,
+    mc_dropout: bool=None,
 ) -> Model:
     """
     Build a Tiramisu model for the given image shape.
