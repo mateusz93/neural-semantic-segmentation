@@ -132,6 +132,7 @@ def segnet(image_shape: tuple, num_classes: int,
     class_weights=None,
     lcn: bool=True,
     dropout_rate: float=None,
+    mc_dropout: bool=True,
     optimizer=SGD(lr=0.1, momentum=0.9),
     pretrain_encoder: bool=True,
 ) -> Model:
@@ -144,6 +145,7 @@ def segnet(image_shape: tuple, num_classes: int,
         class_weights: the weights for each class
         lcn: whether to use local contrast normalization on inputs
         dropout_rate: the dropout rate to use for permanent dropout
+        mc_dropout: whether to apply dropout at test time
         optimizer: the optimizer for training the network
         pretrain_encoder: whether to initialize the encoder from VGG16
 
@@ -170,7 +172,7 @@ def segnet(image_shape: tuple, num_classes: int,
         dropout = lambda x: x
     # if there is a dropout rate, make lambda return the output from Dropout
     else:
-        dropout = lambda x: Dropout(dropout_rate)(x, training=True)
+        dropout = lambda x: Dropout(dropout_rate)(x, training=mc_dropout)
     # encoder
     x, pool_1 = _encode(x, 2 * [64])
     x, pool_2 = _encode(x, 2 * [128])
