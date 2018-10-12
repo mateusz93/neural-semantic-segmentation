@@ -1,6 +1,5 @@
 """Tiramisu model that has head split to estimate aleatoric uncertainty."""
 from keras.layers import Activation
-from keras.layers import Conv2D
 from keras.models import Model
 from keras.optimizers import RMSprop
 from ..layers import Stack
