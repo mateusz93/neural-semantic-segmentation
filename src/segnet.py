@@ -172,7 +172,9 @@ def segnet(image_shape: tuple, num_classes: int,
         dropout = lambda x: x
     # if there is a dropout rate, make lambda return the output from Dropout
     else:
-        dropout = lambda x: Dropout(dropout_rate)(x, training=mc_dropout)
+        # set training to True if mc dropout enabled, otherwise None.
+        training = True if mc_dropout else None
+        dropout = lambda x: Dropout(dropout_rate)(x, training=training)
     # encoder
     x, pool_1 = _encode(x, 2 * [64])
     x, pool_2 = _encode(x, 2 * [128])
