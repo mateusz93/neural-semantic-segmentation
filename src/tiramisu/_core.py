@@ -48,7 +48,7 @@ def dense_block(inputs,
     # create a placeholder list to store references to output tensors
     outputs = [None] * num_layers
     # if skip is a tensor, concatenate with inputs (upstream mode)
-    if K.is_tensor(skip):
+    if K.is_keras_tensor(skip):
         # concatenate the skip with the inputs
         inputs = Concatenate()([inputs, skip])
     # copy a reference to the block inputs for later
