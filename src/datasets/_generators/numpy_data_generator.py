@@ -1,13 +1,13 @@
 """A class for generating data from a NumPy tensor on disk"""
 import glob
 from keras_preprocessing.image import *
-from keras_preprocessing.image import _count_valid_files_in_directory
 from keras_preprocessing.image import _list_valid_filenames_in_directory
 from skimage.transform import resize
 
 
 class DirectoryIterator(Iterator):
     """Iterator capable of reading images from a directory on disk.
+
     # Arguments
         directory: Path to the directory to read images from.
             Each subdirectory in this directory will be
@@ -32,6 +32,7 @@ class DirectoryIterator(Iterator):
         batch_size: Integer, size of a batch.
         shuffle: Boolean, whether to shuffle the data between epochs.
         seed: Random seed for data shuffling.
+        data_format: String, one of `channels_first`, `channels_last`.
         save_to_dir: Optional directory where to save the pictures
             being yielded, in a viewable format. This is useful
             for visualizing the random transformations being
@@ -55,37 +56,21 @@ class DirectoryIterator(Iterator):
                  target_size=(256, 256), color_mode='rgb',
                  classes=None, class_mode='categorical',
                  batch_size=32, shuffle=True, seed=None,
+                 data_format='channels_last',
                  save_to_dir=None, save_prefix='', save_format='png',
                  follow_links=False,
                  subset=None,
                  interpolation='nearest',
                  dtype='float32'):
-        self.image_data_generator = image_data_generator
-        self.target_size = tuple(target_size)
-        if color_mode not in {'rgb', 'rgba', 'grayscale'}:
-            raise ValueError('Invalid color mode:', color_mode,
-                             '; expected "rgb", "rgba", or "grayscale".')
-        c = np.load(glob.glob('{}/**/*.npz'.format(directory))[0])['y'].shape[-1]
-        self.image_shape = self.target_size + (c, )
-        self.save_to_dir = save_to_dir
-        self.save_prefix = save_prefix
-        self.save_format = save_format
-        self.interpolation = interpolation
-        if subset is not None:
-            validation_split = self.image_data_generator._validation_split
-            if subset == 'validation':
-                split = (0, validation_split)
-            elif subset == 'training':
-                split = (validation_split, 1)
-            else:
-                raise ValueError(
-                    'Invalid subset name: %s;'
-                    'expected "training" or "validation"' % (subset,))
-        else:
-            split = None
-        self.split = split
-        self.subset = subset
-
+        super(DirectoryIterator, self).common_init(image_data_generator,
+                                                   target_size,
+                                                   color_mode,
+                                                   data_format,
+                                                   save_to_dir,
+                                                   save_prefix,
+                                                   save_format,
+                                                   subset,
+                                                   interpolation)
         self.directory = directory
         self.classes = classes
         if class_mode not in {'categorical', 'binary', 'sparse',
@@ -96,7 +81,8 @@ class DirectoryIterator(Iterator):
                              ' or None.')
         self.class_mode = class_mode
         self.dtype = dtype
-        white_list_formats = {'npz'}
+        white_list_formats = {'png', 'jpg', 'jpeg', 'bmp',
+                              'ppm', 'tif', 'tiff', 'npz'}
         # First, count the number of samples and classes.
         self.samples = 0
 
@@ -109,34 +95,30 @@ class DirectoryIterator(Iterator):
         self.class_indices = dict(zip(classes, range(len(classes))))
 
         pool = multiprocessing.pool.ThreadPool()
-        function_partial = partial(_count_valid_files_in_directory,
-                                   white_list_formats=white_list_formats,
-                                   follow_links=follow_links,
-                                   split=self.split)
-        self.samples = sum(pool.map(function_partial,
-                                    (os.path.join(directory, subdir)
-                                     for subdir in classes)))
-
-        print('Found %d images belonging to %d classes.' %
-              (self.samples, self.num_classes))
 
         # Second, build an index of the images
         # in the different class subfolders.
         results = []
         self.filenames = []
-        self.classes = np.zeros((self.samples,), dtype='int32')
         i = 0
         for dirpath in (os.path.join(directory, subdir) for subdir in classes):
             results.append(
                 pool.apply_async(_list_valid_filenames_in_directory,
                                  (dirpath, white_list_formats, self.split,
                                   self.class_indices, follow_links)))
+        classes_list = []
         for res in results:
             classes, filenames = res.get()
-            self.classes[i:i + len(classes)] = classes
+            classes_list.append(classes)
             self.filenames += filenames
+        self.samples = len(self.filenames)
+        self.classes = np.zeros((self.samples,), dtype='int32')
+        for classes in classes_list:
+            self.classes[i:i + len(classes)] = classes
             i += len(classes)
 
+        print('Found %d images belonging to %d classes.' %
+              (self.samples, self.num_classes))
         pool.close()
         pool.join()
         super(DirectoryIterator, self).__init__(self.samples,
@@ -164,14 +146,16 @@ class DirectoryIterator(Iterator):
         # optionally save augmented images to disk for debugging purposes
         if self.save_to_dir:
             raise NotImplementedError
-            # for i, j in enumerate(index_array):
-            #     img = array_to_img(batch_x[i], self.data_format, scale=True)
-            #     fname = '{prefix}_{index}_{hash}.{format}'.format(
-            #         prefix=self.save_prefix,
-            #         index=j,
-            #         hash=np.random.randint(1e7),
-            #         format=self.save_format)
-            #     img.save(os.path.join(self.save_to_dir, fname))
+        # optionally save augmented images to disk for debugging purposes
+        if self.save_to_dir:
+            for i, j in enumerate(index_array):
+                img = array_to_img(batch_x[i], self.data_format, scale=True)
+                fname = '{prefix}_{index}_{hash}.{format}'.format(
+                    prefix=self.save_prefix,
+                    index=j,
+                    hash=np.random.randint(1e7),
+                    format=self.save_format)
+                img.save(os.path.join(self.save_to_dir, fname))
         # build batch of labels
         if self.class_mode == 'input':
             batch_y = batch_x.copy()
@@ -191,6 +175,7 @@ class DirectoryIterator(Iterator):
 
     def next(self):
         """For python 2.x.
+
         # Returns
             The next batch.
         """
